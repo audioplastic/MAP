@@ -24,6 +24,10 @@ while(any(x.todoStatus==0))
     x.genFeat(x.wavList(todoNow).name);
     % --- END OF WORK ---
     
+    wTime = randi(1000)+1000; %3,000-10,000 ms
+    disp(['DONE. Waiting for ' num2str(wTime) ' ms to reduce collisions'])
+    pause(wTime/1000);
+    
     x.lockJobList;
     x = x.loadSelf; %Reload incase changed while processing (probably has)
     x.todoStatus(todoNow) = 2; %Flag as complete
