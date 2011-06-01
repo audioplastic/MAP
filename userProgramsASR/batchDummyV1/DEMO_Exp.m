@@ -27,14 +27,14 @@ learnFolder = fullfile(expFolder,'featL');
 xL = jobject('L', learnFolder);
 
 
-xL.noiseLevToUse   =  50;
-xL.speechLevToUse  =  70;
+xL.noiseLevToUse   =  30;
+xL.speechLevToUse  =  60;
 
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
 xL.MAPuseEfferent = 1;
-xL.numWavs = 30;
+xL.numWavs = 8442; %MAx=8442
 
 if isMasterNode
     mkdir(xL.opFolder);
@@ -45,7 +45,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sort out the testing (RECOGNITION) conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-nzLevel = [40 50 60];
+nzLevel = [30 40 50 60 70];
 xR=cell(size(nzLevel));
 recConditions = numel(nzLevel);
 for nn = 1:recConditions    
@@ -54,7 +54,7 @@ for nn = 1:recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 5;
+    xR{nn}.numWavs = 358; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(nn);
     
     %Now just to wrap it up ready for processing
