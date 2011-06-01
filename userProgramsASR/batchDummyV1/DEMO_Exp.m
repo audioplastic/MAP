@@ -34,7 +34,7 @@ xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
 xL.MAPuseEfferent = 1;
-xL.numWavs = 8442; %MAx=8442
+xL.numWavs = 8440; %MAx=8440
 
 if isMasterNode
     mkdir(xL.opFolder);
