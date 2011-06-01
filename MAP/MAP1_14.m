@@ -18,7 +18,7 @@ function  MAP1_14(inputSignal, sampleRate, BFlist, MAPparamsName, ...
 %  and stored as global
 
 restorePath=path;
-addpath (['..' filesep 'parameterStore'])
+% addpath (['..' filesep 'parameterStore'])
 
 global OMEParams DRNLParams IHC_cilia_RPParams IHCpreSynapseParams
 global AN_IHCsynapseParams MacGregorParams MacGregorMultiParams
