@@ -7,7 +7,7 @@ function worker(workFolder)
 
 %main script
 
-if numel(fullfile(workFolder,'jobLock.txt')) %Check to see if lock already in place
+if numel(dir(fullfile(workFolder,'jobLock.txt'))) %Check to see if lock already in place
     assert(false,'Failed due to job lock')
 else
     load(fullfile(workFolder,'jobObject.mat'))
