@@ -206,7 +206,7 @@ classdef jobject
             lockON = false;
             while (~lockON)
                 if numel(dir(obj.jobLockTxtFile)) %Check to see if lock already in place
-                    wTime = randi(3800)+200; %200-4000 ms
+                    wTime = randi(7000)+3000; %3,000-10,000 ms
                     disp(['File mutex in place. Retrying in ' num2str(wTime) ' ms'])
                     pause(wTime/1000);
                 else
