@@ -211,6 +211,8 @@ classdef jobject
                     pause(wTime/1000);
                 else
                     obj.jobLockFid = fopen(obj.jobLockTxtFile,'w');
+                    disp('Job locked');
+                    pause(50/1000);
                     lockON = true;
                 end
             end
@@ -225,6 +227,8 @@ classdef jobject
             while(lockON)
                 try
                     delete(obj.jobLockTxtFile);
+                    disp('Job unlocked');
+                    pause(50/1000);
                     lockON = false;
                 catch %#ok<CTCH>
                     disp('Unjamming lock - retrying immediately')
