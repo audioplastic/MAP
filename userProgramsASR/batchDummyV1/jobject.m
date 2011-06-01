@@ -347,6 +347,7 @@ classdef jobject
         % generate  feature
         %************************************************************
         function obj = genFeat(obj, currentWav)
+            fprintf(1,'Processing: %s \n', currentWav);
             if strcmpi(obj.speechDist,'Gaussian')
                 tempSpeechLev = obj.speechLevToUse + obj.speechLevStd*randn;
             elseif strcmpi(obj.speechDist,'Uniform')
@@ -376,9 +377,7 @@ classdef jobject
             obj.currentNoiseLevel = tempNoiseLev;
             %             obj.currentFeatureFile = currentWav;
             [finalFeatures, ~, ~] = processWavs(obj, currentWav); %discard the output from ANprobabilityResponse and method using ~
-            opForHTK(obj, currentWav, finalFeatures);
-            
-            fprintf(1,'DONE: %s \n', currentWav);
+            opForHTK(obj, currentWav, finalFeatures);                        
         end % ------ OF GENFEAT
         
         %% **********************************************************

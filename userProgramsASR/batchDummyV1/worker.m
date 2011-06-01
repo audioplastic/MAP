@@ -23,13 +23,15 @@ personalWork = 0;
 while(any(x.todoStatus==0))        
     x.lockJobList;
     x = x.loadSelf; %Reload incase changed
-    todoNow = find(~x.todoStatus,1,'first'); %Grab 1st open job
-    x.todoStatus(todoNow) = 1; %Flag it as pending
+    todoNow = find(~x.todoStatus,10,'first'); %Grab 1st 10 open jobs
+    x.todoStatus(todoNow) = 1; %Flag it (them) as pending
     x.storeSelf; %store pending flag as quickly as possible to minimise race condition impact
     x.unlockJobList;
         
     % ---  DO WORK  ---
-    x.genFeat(x.wavList(todoNow).name);
+    for tt=1:numel(todoNow)
+        x.genFeat(x.wavList(todoNow(kk)).name);
+    end
     % --- END OF WORK ---
     
     
