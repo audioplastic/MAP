@@ -30,7 +30,7 @@ while(any(x.todoStatus==0))
         
     % ---  DO WORK  ---
     for tt=1:numel(todoNow)
-        x.genFeat(x.wavList(todoNow(kk)).name);
+        x.genFeat(x.wavList(todoNow(tt)).name);
     end
     % --- END OF WORK ---
     
