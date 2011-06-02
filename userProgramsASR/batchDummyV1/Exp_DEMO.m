@@ -1,4 +1,4 @@
-function DEMO_Exp(isMasterNode)
+function Exp_DEMO(isMasterNode)
 % This is a template function on which other experiments can be based. If
 % you are running this function with just a single node, isMasterNode
 % should be set to true. On a distributed system, then set isMasterNode to
