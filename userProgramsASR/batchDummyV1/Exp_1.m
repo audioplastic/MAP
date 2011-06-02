@@ -8,7 +8,7 @@ function Exp_1(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '_DEMO_ExpEff';
+expName = '_OHC_run1';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -26,7 +26,8 @@ learnFolder = fullfile(expFolder,'featL');
 
 xL = jobject('L', learnFolder);
 
-xL.participant = 'NormalNOEFF';
+% xL.participant = 'NormalNOEFF';
+xL.participant = 'OHC';
 
 xL.noiseLevToUse   =  30;
 xL.speechLevToUse  =  60;
