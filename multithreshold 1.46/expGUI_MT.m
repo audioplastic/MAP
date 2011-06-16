@@ -616,6 +616,7 @@ experiment.singleShot=0;
 switch experiment.paradigm
     case 'thr_IFMC'
         %% special option for two successive and linked measurements
+        clc
         experiment.paradigm='threshold_16ms';
         set(handles.editstopCriteriaBox,'string','30') % nTrials
         run (handles)
@@ -637,6 +638,7 @@ switch experiment.paradigm
 
     case 'thr_TMC'
         %% special option for two successive and linked measurements
+        clc
         experiment.paradigm='threshold_16ms';
         set(handles.edittargetDuration,'string', num2str(0.25))
         set(handles.editstopCriteriaBox,'string','30') % nTrials
@@ -1290,8 +1292,6 @@ betweenRuns.forceThresholds=	[];
 betweenRuns.observationCount=	[];
 betweenRuns.timesOfFirstReversals=	[];
 betweenRuns.bestThresholdTracks='';
-betweenRuns.bestThresholdMeanTracks='';
-betweenRuns.bestThresholdMedianTracks='';
 betweenRuns.levelTracks='';
 betweenRuns.responseTracks='';
 betweenRuns.slopeKTracks=	[];

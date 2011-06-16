@@ -1,9 +1,8 @@
-function [PSTH dataPointsPerBin]= ...
-    UTIL_makePSTH(inputData, dt, PSTHbinWidth)
-% UTIL_PSTHmaker accumulates values into bins.
+function [PSTH ]=UTIL_PSTHmakerb(inputData, dt, PSTHbinWidth)
+% UTIL_PSTHmakerb averages mean values into bins.
 % No corrections are applied
 % usage:
-%	PSTH=UTIL_makePSTH(inputData, dt, PSTHbinWidth)
+%	PSTH=UTIL_PSTHmaker(inputData, method)
 %
 % arguments
 %	inputData is a channel x time matrix
@@ -34,6 +33,5 @@ for ch=1:numChannels
 	% the content of a single PSTH bin
 	PSTH2D=reshape (inputData(ch,:), dataPointsPerBin, numBins );
 	% and sum within each bin (across the rows
-	PSTH(ch,:)=sum (PSTH2D,1);
+	PSTH(ch,:)=mean (PSTH2D,1);
 end
-

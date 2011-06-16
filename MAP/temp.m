@@ -18,7 +18,7 @@ function  MAP1_14(inputSignal, sampleRate, BFlist, MAPparamsName, ...
 %  and stored as global
 
 restorePath=path;
-% addpath (['..' filesep 'parameterStore'])
+addpath (['..' filesep 'parameterStore'])
 
 global OMEParams DRNLParams IHC_cilia_RPParams IHCpreSynapseParams
 global AN_IHCsynapseParams MacGregorParams MacGregorMultiParams
@@ -535,34 +535,34 @@ while segmentStartPTR<signalLength
     % shorter segments after speed up.
     shorterSegmentEndPTR=reducedSegmentPTR+reducedSegmentLength-1;
 
-    inputPressureSegment=inputSignal...
+    iputPressureSegment=inputSignal...
         (:,segmentStartPTR:segmentStartPTR+segmentLength-1);
 
     % segment debugging plots
     % figure(98)
-    % plot(segmentTime,inputPressureSegment), title('signalSegment')
+    % plot(segmentTime,iputPressureSegment), title('signalSegment')
 
 
     % OME ----------------------
 
     % OME Stage 1: external resonances. Add to inputSignal pressure wave
-    y=inputPressureSegment;
+    y=iputPressureSegment;
     for n=1:nOMEExtFilters
         % any number of resonances can be used
         [x  OMEExtFilterBndry{n}] = ...
             filter(ExtFilter_b{n},ExtFilter_a{n},...
-            inputPressureSegment, OMEExtFilterBndry{n});
+            iputPressureSegment, OMEExtFilterBndry{n});
         x= x* OMEgainScalars(n);
         % This is a parallel resonance so add it
         y=y+x;
     end
-    inputPressureSegment=y;
-    OMEextEarPressure(segmentStartPTR:segmentEndPTR)= inputPressureSegment;
+    iputPressureSegment=y;
+    OMEextEarPressure(segmentStartPTR:segmentEndPTR)= iputPressureSegment;
     
     % OME stage 2: convert input pressure (velocity) to
     %  tympanic membrane(TM) displacement using low pass filter
     [TMdisplacementSegment  OME_TMdisplacementBndry] = ...
-        filter(TMdisp_b,TMdisp_a,inputPressureSegment, ...
+        filter(TMdisp_b,TMdisp_a,iputPressureSegment, ...
         OME_TMdisplacementBndry);
     % and save it
     TMoutput(segmentStartPTR:segmentEndPTR)= TMdisplacementSegment;
@@ -610,30 +610,31 @@ while segmentStartPTR<signalLength
         else    % no MOC available yet
             MOC=ones(1, segmentLength);
         end
-        % apply MOC to nonlinear input function       
-        nonlinOutput=stapesDisplacement.* MOC;
 
-        %       first gammatone filter (nonlin path)
+        %       first gammatone filter
         for order = 1 : GTnonlinOrder
             [nonlinOutput GTnonlinBdry1{BFno,order}] = ...
                 filter(GTnonlin_b(BFno,:), GTnonlin_a(BFno,:), ...
-                nonlinOutput, GTnonlinBdry1{BFno,order});
+                stapesDisplacement, GTnonlinBdry1{BFno,order});
         end
+
         %       broken stick instantaneous compression
-        y= nonlinOutput.* DRNLa;  % linear section.
-        % compress parts of the signal above the compression threshold
+        % nonlinear gain is weakend by MOC before applied to BM response
+        y= nonlinOutput.*(MOC* DRNLa);  % linear section.
+        % compress those parts of the signal above the compression
+        % threshold
         abs_x = abs(nonlinOutput);
         idx=find(abs_x>DRNLcompressionThreshold);
         if ~isempty(idx)>0
-            y(idx)=sign(y(idx)).* (DRNLb*abs_x(idx).^DRNLc);
+            y(idx)=sign(nonlinOutput(idx)).*...
+                (DRNLb*abs_x(idx).^DRNLc);
         end
         nonlinOutput=y;
 
         %       second filter removes distortion products
         for order = 1 : GTnonlinOrder
             [ nonlinOutput GTnonlinBdry2{BFno,order}] = ...
-                filter(GTnonlin_b(BFno,:), GTnonlin_a(BFno,:), ...
-                nonlinOutput, GTnonlinBdry2{BFno,order});
+                filter(GTnonlin_b(BFno,:), GTnonlin_a(BFno,:), nonlinOutput, GTnonlinBdry2{BFno,order});
         end
 
         %  combine the two paths to give the DRNL displacement
@@ -756,18 +757,14 @@ while segmentStartPTR<signalLength
 
             % Estimate efferent effects. ARattenuation (0 <> 1)
             %  acoustic reflex
-            [r c]=size(ANrate);
-            if r>nBFs % Only if LSR fibers are computed
-                ARAttSeg=mean(ANrate(1:nBFs,:),1); %LSR channels are 1:nBF
-                % smooth
-                [ARAttSeg, ARboundaryProb] = ...
-                    filter(ARfilt_b, ARfilt_a, ARAttSeg, ARboundaryProb);
-                ARAttSeg=ARAttSeg-ARrateThreshold;
-                ARAttSeg(ARAttSeg<0)=0;   % prevent negative strengths
-                ARattenuation(segmentStartPTR:segmentEndPTR)=...
-                    (1-ARrateToAttenuationFactorProb.* ARAttSeg);
-            end
-            %             plot(ARattenuation)
+            ARAttSeg=mean(ANrate(1:nBFs,:),1); %LSR channels are 1:nBF
+            % smooth
+            [ARAttSeg, ARboundaryProb] = ...
+                filter(ARfilt_b, ARfilt_a, ARAttSeg, ARboundaryProb);
+            ARAttSeg=ARAttSeg-ARrateThreshold;
+            ARAttSeg(ARAttSeg<0)=0;   % prevent negative strengths
+            ARattenuation(segmentStartPTR:segmentEndPTR)=...
+                (1-ARrateToAttenuationFactorProb.* ARAttSeg);
 
             % MOC attenuation
             % within-channel HSR response only
@@ -783,8 +780,6 @@ while segmentStartPTR<signalLength
                     (1- smoothedRates* rateToAttenuationFactorProb);
             end
             MOCattenuation(MOCattenuation<0)=0.001;
-
-            %             plot(MOCattenuation)
 
 
         case 'spikes'
@@ -1108,7 +1103,6 @@ while segmentStartPTR<signalLength
                     [smoothedRates, MOCboundary{idx}] = ...
                         filter(MOCfilt_b, MOCfilt_a, rates(idx,:), ...
                         MOCboundary{idx});
-                    % spont 'rates' is zero for IC
                     MOCattSegment(idx,:)=smoothedRates;
                     % expand timescale back to model dt from ANdt
                     x= repmat(MOCattSegment(idx,:), ANspeedUpFactor,1);
