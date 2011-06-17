@@ -26,8 +26,8 @@ learnFolder = fullfile(expFolder,'featL');
 
 xL = jobject('L', learnFolder);
 
-% xL.participant = 'NormalNOEFF';
-xL.participant = 'Normal';
+xL.participant = 'NormalNOEFF';
+% xL.participant = 'Normal';
 
 xL.noiseLevToUse   =  30;
 xL.speechLevToUse  =  60;
