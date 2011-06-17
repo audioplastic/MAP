@@ -57,8 +57,8 @@ toneFrequency= 500;            % or a pure tone (Hz8
 rampDuration=.005;              % seconds
 
 % or
-% signalType= 'file';
-% fileName='twister_44kHz';
+signalType= 'file';
+fileName='twister_44kHz';
 
 
 %% #4 rms level
@@ -77,7 +77,11 @@ BFlist=round(logspace(log10(lowestBF), log10(highestBF), numChannels));
 
 
 %% #6 change model parameters
-paramChanges=[];
+paramChanges={};
+% paramChanges{numel(paramChanges)+1}= 'OMEParams.rateToAttenuationFactor=0;';        % 0= off
+% paramChanges{numel(paramChanges)+1}= 'OMEParams.rateToAttenuationFactorProb=0;';    % 0= off
+% paramChanges{numel(paramChanges)+1}= 'DRNLParams.rateToAttenuationFactor = 0;';     % 0 = MOC off (probability)
+% paramChanges{numel(paramChanges)+1}= 'DRNLParams.rateToAttenuationFactorProb = 0;'; % 0 = MOC off (spikes)
 
 % or
 % Parameter changes can be used to change one or more model parameters
@@ -180,6 +184,6 @@ inputSignal=inputSignal.*ramp;
 
 % add 10 ms silence
 silence= zeros(1,round(0.03/dt));
-silence= zeros(1,round(0.01/dt));
+% silence= zeros(1,round(0.01/dt));
 inputSignal= [silence inputSignal silence];
 

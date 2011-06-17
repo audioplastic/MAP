@@ -47,9 +47,9 @@ classdef jobject
         %************************************************************
         % MAP params
         %************************************************************
-        MAProot                 = fullfile('..','..');
+        MAProot                 = fullfile('..');
 %         mapVer                  = 'MAP1_12_experimental';
-        MAPuseEfferent          = 0;
+        MAPuseEfferent          = 1;
         MAPplotGraphs           = 0;
         MAPDRNLSave             = 0;
         
@@ -546,7 +546,8 @@ classdef jobject
             eval(paramsToLoad);
             %             DRNLParams.fixedMOCAttenuation= -20;
             
-            % now that the correct parameters have been loaded, change them!
+            % now that the correct parameters have been loaded, change
+            % them!
             inputStimulusParams.sampleRate = sampleRate;
             method.plotGraphs =	obj.MAPplotGraphs;
             method.DRNLSave = obj.MAPDRNLSave;
