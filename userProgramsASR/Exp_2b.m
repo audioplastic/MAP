@@ -8,7 +8,7 @@ function Exp_2b(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = 'JunTest_LOUD_0';
+expName = 'JunTest_LOUD_doubARquadMOC';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -26,7 +26,7 @@ learnFolder = fullfile(expFolder,'featL');
 
 xL = jobject('L', learnFolder);
 
-xL.participant = 'NormalNOEFF';
+xL.participant = 'NormalBOOST2';
 % xL.participant = 'Normal';
 
 xL.noiseLevToUse   =  50;
@@ -35,7 +35,7 @@ xL.speechLevToUse  =  80;
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
-xL.MAPuseEfferent = 0;
+xL.MAPuseEfferent = 1;
 xL.numWavs = 1000; %MAx=8440
 
 if isMasterNode
