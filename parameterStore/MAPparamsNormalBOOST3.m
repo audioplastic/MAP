@@ -1,5 +1,5 @@
 function method=MAPparamsNormalBOOST3 ...
-    (BFlist, sampleRate, showParams)
+    (BFlist, sampleRate, showParams, paramChanges)
 % MAPparams<> establishes a complete set of MAP parameters
 % Parameter file names must be of the form <MAPparams> <name>
 %
