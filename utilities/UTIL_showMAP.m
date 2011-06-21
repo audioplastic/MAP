@@ -1,16 +1,16 @@
-function UTIL_showMAP (options)
+function UTIL_showMAP (showMapOptions, paramChanges)
 % UTIL_showMAP produces summaries of the output from MAP's mmost recent run
 %  All MAP outputs are stored in global variables and UTIL_showMAP
 %  simply assumes that they are in place.
 %
-% options
-% options.printModelParameters=1; % print model parameters 
-% options.showModelOutput=1;      % plot all stages output
-% options.printFiringRates=1;     % mean activity at all stages
-% options.showACF=1;              % SACF (probabilities only)
-% options.showEfferent=1;         % plot of efferent activity
-% options.surfProbability=0;      % HSR (probability) surf plot
-% options.fileName=[];            % parameter filename for plot title
+% showMapOptions
+% showMapOptions.printModelParameters=1; % print model parameters 
+% showMapOptions.showModelOutput=1;      % plot all stages output
+% showMapOptions.printFiringRates=1;     % mean activity at all stages
+% showMapOptions.showACF=1;              % SACF (probabilities only)
+% showMapOptions.showEfferent=1;         % plot of efferent activity
+% showMapOptions.surfProbability=0;      % HSR (probability) surf plot
+% showMapOptions.fileName=[];            % parameter filename for plot title
 
 dbstop if warning
 
@@ -27,28 +27,35 @@ restorePath=path;
 addpath ( ['..' filesep 'utilities'], ['..' filesep 'parameterStore'])
 
 if nargin<1
-    options=[];
+    showMapOptions=[];
 end
-% defaults (plot staged outputs and print rates only)
-if ~isfield(options,'printModelParameters')
-        options.printModelParameters=0; end
-if ~isfield(options,'showModelOutput'),options.showModelOutput=1;end
-if ~isfield(options,'printFiringRates'),options.printFiringRates=1;end
-if ~isfield(options,'showACF'),options.showACF=0;end
-if ~isfield(options,'showEfferent'),options.showEfferent=0;end
-if ~isfield(options,'surfProbability'),options.surfProbability=0;end
-if ~isfield(options,'fileName'),options.fileName=[];end
+% defaults (plot staged outputs and print rates only) if options omitted
+if ~isfield(showMapOptions,'printModelParameters')
+        showMapOptions.printModelParameters=0; end
+if ~isfield(showMapOptions,'showModelOutput'),showMapOptions.showModelOutput=1;end
+if ~isfield(showMapOptions,'printFiringRates'),showMapOptions.printFiringRates=1;end
+if ~isfield(showMapOptions,'showACF'),showMapOptions.showACF=0;end
+if ~isfield(showMapOptions,'showEfferent'),showMapOptions.showEfferent=0;end
+if ~isfield(showMapOptions,'surfProbability'),showMapOptions.surfProbability=0;end
+if ~isfield(showMapOptions,'fileName'),showMapOptions.fileName=[];end
+if ~isfield(showMapOptions,'surfSpikes'),showMapOptions.surfSpikes=0;end
 
-
-if options.printModelParameters
+%% send all model parameters to command window
+if showMapOptions.printModelParameters
     % Read parameters from MAPparams<***> file in 'parameterStore' folder
     %  and print out all parameters
-    cmd=['MAPparams' saveMAPparamsName ...
-        '(-1, 1/dt, 1);'];
-    eval(cmd);
+    if nargin>1
+        cmd=['MAPparams' saveMAPparamsName '(-1, 1/dt, 1, paramChanges);'];
+        eval(cmd);
+    else
+        cmd=['MAPparams' saveMAPparamsName '(-1, 1/dt, 1);'];
+        eval(cmd);
+        disp(' no parameter changes found')
+    end
 end
 
-if options.printFiringRates
+%% summarise firing rates in command window
+if showMapOptions.printFiringRates
     %% print summary firing rates
     fprintf('\n\n')
     disp('summary')
@@ -70,15 +77,15 @@ if options.printFiringRates
         %         disp(['IC by type: ' num2str(mean(ICfiberTypeRates,2)')])
     else
         disp(['AN: ' num2str(mean(mean(ANprobRateOutput)))])
-        [PSTH pointsPerBin]= UTIL_makePSTH(ANprobRateOutput, dt, 0.001);
+        PSTH= UTIL_PSTHmakerb(ANprobRateOutput, dt, 0.001);
         disp(['max max AN: ' num2str(max(max(...
-            PSTH/pointsPerBin )))])
+            PSTH )))])
     end
 end
 
 
-%% figure (99) summarises main model output
-if options.showModelOutput
+%% figure (99): display output from all model stages
+if showMapOptions.showModelOutput
     plotInstructions.figureNo=99;
     signalRMS=mean(savedInputSignal.^2)^0.5;
     signalRMSdb=20*log10(signalRMS/20e-6);
@@ -149,8 +156,10 @@ if options.showModelOutput
                 UTIL_plotMatrix(ICmembraneOutput, plotInstructions);
             end
 
-        otherwise % probability (4-6)
-            plotInstructions.displaydt=dt;
+        otherwise % AN rate based on probability of firing
+            PSTHbinWidth=0.001;
+        PSTH= UTIL_PSTHmakerb(ANprobRateOutput, dt, PSTHbinWidth);
+            plotInstructions.displaydt=PSTHbinWidth;
             plotInstructions.numPlots=2;
             plotInstructions.subPlotNo=2;
             plotInstructions.yLabel='BF';
@@ -158,13 +167,15 @@ if options.showModelOutput
                 plotInstructions.yLabel='LSR    HSR';
                 plotInstructions.plotDivider=1;
             end
-            plotInstructions.title='AN - spike probability';
-            UTIL_plotMatrix(ANprobRateOutput, plotInstructions);
+            plotInstructions.title='AN - spike rate';
+            UTIL_plotMatrix(PSTH, plotInstructions);
     end
 end
 
-if options.surfProbability
+if showMapOptions.surfProbability
     %% surface plot of probability
+    if strcmp(saveAN_spikesOrProbability,'probability') && ...
+            length(savedBFlist)>2
     figure(97), clf
     % select only HSR fibers at the bottom of the matrix
     ANprobRateOutput= ANprobRateOutput(end-length(savedBFlist)+1:end,:);
@@ -183,12 +194,36 @@ if options.surfProbability
     zlabel('spike rate')
     view([-20 60])
     %     view([0 90])
-    title ([options.fileName ':   ' num2str(signalRMSdb,'% 3.0f') ' dB'])
+    title ([showMapOptions.fileName ':   ' num2str(signalRMSdb,'% 3.0f') ' dB'])
+    end
+end
+
+if showMapOptions.surfSpikes
+    %% surface plot of AN spikes
+    figure(97), clf
+    % select only HSR fibers at the bottom of the matrix
+    ANoutput= ANoutput(end-length(savedBFlist)+1:end,:);
+    PSTHbinWidth=0.005; % 1 ms bins
+    PSTH=UTIL_makePSTH(ANoutput, ANdt, PSTHbinWidth);
+    [nY nX]=size(PSTH);
+    time=PSTHbinWidth*(1:nX);
+    surf(time, savedBFlist, PSTH)
+    shading interp
+    set(gca, 'yScale','log')
+    xlim([0 max(time)])
+    ylim([0 max(savedBFlist)])
+%     zlim([0 1000])
+    xlabel('time (s)')
+    ylabel('best frequency (Hz)')
+    zlabel('spike rate')
+    view([-20 60])
+    %     view([0 90])
+    title ([showMapOptions.fileName ':   ' num2str(signalRMSdb,'% 3.0f') ' dB'])
 end
 
 
-%% plot efferent control values as dB
-if options.showEfferent
+%% figure(98) plot efferent control values as dB
+if showMapOptions.showEfferent
     plotInstructions=[];
     plotInstructions.figureNo=98;
     figure(98), clf
@@ -212,7 +247,7 @@ if options.showEfferent
 end
 
 %% ACF plot if required
-if options.showACF
+if showMapOptions.showACF
     tic
     method.dt=dt;
     method.segmentNo=1;

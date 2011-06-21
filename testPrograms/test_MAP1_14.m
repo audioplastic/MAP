@@ -32,6 +32,7 @@ function test_MAP1_14
 %
 % When the demonstration is satisfactory, freeze it by renaming it <demoxx>
 
+dbstop if error
 restorePath=path;
 addpath (['..' filesep 'MAP'],    ['..' filesep 'wavFileStore'], ...
     ['..' filesep 'utilities'])
@@ -41,7 +42,7 @@ MAPparamsName='Normal';
 
 
 %% #2 probability (fast) or spikes (slow) representation
-AN_spikesOrProbability='spikes';
+% AN_spikesOrProbability='spikes';
 
 % or
 % NB probabilities are not corrected for refractory effects
@@ -50,20 +51,26 @@ AN_spikesOrProbability='probability';
 
 %% #3 pure tone, harmonic sequence or speech file input
 signalType= 'tones';
-sampleRate= 100000;
-duration=0.50;                 % seconds
+sampleRate= 50000;
+duration=0.250;                 % seconds
 % toneFrequency= 250:250:8000;    % harmonic sequence (Hz)
-toneFrequency= 500;            % or a pure tone (Hz8
+toneFrequency= 1000;            % or a pure tone (Hz8
 rampDuration=.005;              % seconds
 
 % or
+<<<<<<< HEAD
 signalType= 'file';
 fileName='twister_44kHz';
+=======
+
+% signalType= 'file';
+% fileName='twister_44kHz';
+>>>>>>> upstream/master
 
 
 %% #4 rms level
 % signal details
-leveldBSPL= 90;                  % dB SPL
+leveldBSPL= 30;                  % dB SPL
 
 
 %% #5 number of channels in the model
@@ -73,6 +80,7 @@ lowestBF=250; 	highestBF= 8000;
 BFlist=round(logspace(log10(lowestBF), log10(highestBF), numChannels));
 
 %   or specify your own channel BFs
+% numChannels=1;
 % BFlist=toneFrequency;
 
 
@@ -88,25 +96,33 @@ paramChanges={};
 %  *after* the MAPparams file has been read
 % This example declares only one fiber type with a calcium clearance time
 % constant of 80e-6 s (HSR fiber) when the probability option is selected.
+
 % paramChanges={'AN_IHCsynapseParams.ANspeedUpFactor=5;', ...
 %     'IHCpreSynapseParams.tauCa=86e-6;'};
-% paramChanges={'DRNLParams.rateToAttenuationFactorProb = 0;'};
+
+paramChanges={'DRNLParams.rateToAttenuationFactorProb = 0;'};
+
+% paramChanges={'IHCpreSynapseParams.tauCa=86e-6;',
+%     'AN_IHCsynapseParams.numFibers=	1000;'};
 
 
 %% delare 'showMap' options to control graphical output
-global showMapOptions
 
-% or (example: show everything including an smoothed SACF output
 showMapOptions.printModelParameters=1;   % prints all parameters
 showMapOptions.showModelOutput=1;       % plot of all stages
 showMapOptions.printFiringRates=1;      % prints stage activity levels
 showMapOptions.showACF=0;               % shows SACF (probability only)
 showMapOptions.showEfferent=1;          % tracks of AR and MOC
 showMapOptions.surfProbability=1;       % 2D plot of HSR response 
+showMapOptions.surfSpikes=1;            % 2D plot of spikes histogram
+
+% disable certain silly options
 if strcmp(AN_spikesOrProbability, 'spikes')
     % avoid nonsensical options
     showMapOptions.surfProbability=0;
     showMapOptions.showACF=0;
+else
+    showMapOptions.surfSpikes=0;
 end
 if strcmp(signalType, 'file')
     % needed for labeling plot
@@ -117,9 +133,6 @@ end
 
 %% Generate stimuli
 
-dbstop if error
-restorePath=path;
-addpath (['..' filesep 'MAP'],    ['..' filesep 'wavFileStore'])
 switch signalType
     case 'tones'
         inputSignal=createMultiTone(sampleRate, toneFrequency, ...
@@ -149,15 +162,10 @@ disp('Computing ...')
 
 MAP1_14(inputSignal, sampleRate, BFlist, ...
     MAPparamsName, AN_spikesOrProbability, paramChanges);
-toc
+
 
 % the model run is now complete. Now display the results
-disp(' param changes to list of parameters below')
-for i=1:length(paramChanges)
-    disp(paramChanges{i})
-end
-UTIL_showMAP(showMapOptions)
-
+UTIL_showMAP(showMapOptions, paramChanges)
 
 toc
 path(restorePath)
@@ -183,7 +191,11 @@ ramp=fliplr(ramp);
 inputSignal=inputSignal.*ramp;
 
 % add 10 ms silence
+<<<<<<< HEAD
 silence= zeros(1,round(0.03/dt));
 % silence= zeros(1,round(0.01/dt));
+=======
+silence= zeros(1,round(0.05/dt));
+>>>>>>> upstream/master
 inputSignal= [silence inputSignal silence];
 
