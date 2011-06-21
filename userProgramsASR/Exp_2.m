@@ -8,7 +8,7 @@ function Exp_2(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = 'JunTest_LOUD_doubARdoubMOC';
+expName = 'JunTest_LOUD_okPars';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -27,7 +27,7 @@ learnFolder = fullfile(expFolder,'featL');
 xL = jobject('L', learnFolder);
 
 % xL.participant = 'NormalNOEFF';
-xL.participant = 'NormalBOOST1';
+xL.participant = 'NormalBOOST3';
 
 xL.noiseLevToUse   =  50;
 xL.speechLevToUse  =  80;
