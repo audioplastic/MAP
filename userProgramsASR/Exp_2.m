@@ -8,7 +8,7 @@ function Exp_2(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = 'jasa_sil_optEff';
+expName = 'jasa_sil_10Eff';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -27,7 +27,7 @@ learnFolder = fullfile(expFolder,'featL');
 xL = jobject('L', learnFolder);
 
 % xL.participant = 'NormalNOEFF';
-xL.participant = 'NormalDIFF';
+xL.participant = 'NormalFIX';
 
 xL.noiseLevToUse   =  -200;
 xL.speechLevToUse  =  60;
