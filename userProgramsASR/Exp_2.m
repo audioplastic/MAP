@@ -8,7 +8,7 @@ function Exp_2(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = 'jasa_sil';
+expName = 'jasa_sil_optEff';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -27,7 +27,7 @@ learnFolder = fullfile(expFolder,'featL');
 xL = jobject('L', learnFolder);
 
 % xL.participant = 'NormalNOEFF';
-xL.participant = 'Normal';
+xL.participant = 'NormalDIFF';
 
 xL.noiseLevToUse   =  -200;
 xL.speechLevToUse  =  60;
@@ -35,7 +35,7 @@ xL.speechLevToUse  =  60;
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
-xL.MAPuseEfferent = 0;
+xL.MAPuseEfferent = 1;
 xL.numWavs = 1000; %MAx=8440
 
 if isMasterNode && ~isdir(xL.opFolder)
@@ -76,8 +76,11 @@ end
 % member of the jobjects.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 worker(xL.opFolder);
-for nn = 1:recConditions
-    worker(xR{nn}.opFolder);
+
+if ~isMasterNode %dont bother wasting master node effort on testing features
+    for nn = 1:recConditions
+        worker(xR{nn}.opFolder);
+    end
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -94,7 +97,7 @@ if isMasterNode
     xR{end}.unlockJobList;
     while(~all(xR{end}.todoStatus==2))        
         disp('Waiting on straggler nodes to complete their jobs before HMM is tested . . .')
-        pause(2);
+        pause(20);
         xR{end}.lockJobList;
         xR{end} = xR{end}.loadSelf; %Reload incase changed
         xR{end}.unlockJobList;
