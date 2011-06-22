@@ -38,7 +38,7 @@ xL.MAPopLSR = 0;
 xL.MAPuseEfferent = 0;
 xL.numWavs = 1000; %MAx=8440
 
-if isMasterNode
+if isMasterNode && ~isdir(xL.opFolder)
     mkdir(xL.opFolder);
     xL = xL.assignFiles;
     xL.storeSelf;
@@ -60,7 +60,7 @@ for nn = 1:recConditions
     xR{nn}.noiseLevToUse = nzLevel(nn);
     
     %Now just to wrap it up ready for processing
-    if isMasterNode
+    if isMasterNode && ~isdir(xR{nn}.opFolder)
         mkdir(xR{nn}.opFolder);
         xR{nn} = xR{nn}.assignWavPaths('R');
         xR{nn} = xR{nn}.assignFiles;
