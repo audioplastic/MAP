@@ -70,7 +70,7 @@ fileName='twister_44kHz';
 
 %% #4 rms level
 % signal details
-leveldBSPL= 30;                  % dB SPL
+leveldBSPL= 90;                  % dB SPL
 
 
 %% #5 number of channels in the model
@@ -100,11 +100,13 @@ paramChanges={};
 % paramChanges={'AN_IHCsynapseParams.ANspeedUpFactor=5;', ...
 %     'IHCpreSynapseParams.tauCa=86e-6;'};
 
-paramChanges={'DRNLParams.rateToAttenuationFactorProb = 0;'};
+% paramChanges={'DRNLParams.rateToAttenuationFactorProb = 0;'};
 
 % paramChanges={'IHCpreSynapseParams.tauCa=86e-6;',
 %     'AN_IHCsynapseParams.numFibers=	1000;'};
 
+% fixed MOC attenuation(using negative factor)
+paramChanges={'DRNLParams.rateToAttenuationFactorProb=-0.005;'};
 
 %% delare 'showMap' options to control graphical output
 
