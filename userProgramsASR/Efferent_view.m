@@ -13,7 +13,7 @@ close all; clear all; clc;
 sr = 44100;
 dt = 1/sr;
 dur = 0.5;
-freq = 4000;
+freq = 1000;
 
 nn=0;
 for levelSPL = 0:10:100;

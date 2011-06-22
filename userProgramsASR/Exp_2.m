@@ -8,7 +8,7 @@ function Exp_2(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = 'JunTest_LOUD_goodPars';
+expName = 'jasa_sil';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -27,15 +27,15 @@ learnFolder = fullfile(expFolder,'featL');
 xL = jobject('L', learnFolder);
 
 % xL.participant = 'NormalNOEFF';
-xL.participant = 'NormalDIFF';
+xL.participant = 'Normal';
 
-xL.noiseLevToUse   =  50;
-xL.speechLevToUse  =  80;
+xL.noiseLevToUse   =  -200;
+xL.speechLevToUse  =  60;
 
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
-xL.MAPuseEfferent = 1;
+xL.MAPuseEfferent = 0;
 xL.numWavs = 1000; %MAx=8440
 
 if isMasterNode
@@ -47,7 +47,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sort out the testing (RECOGNITION) conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-nzLevel = 50:5:100;
+nzLevel = [-200 40:5:60];
 xR=cell(size(nzLevel));
 recConditions = numel(nzLevel);
 for nn = 1:recConditions    
