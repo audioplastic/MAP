@@ -26,7 +26,7 @@ method.segmentDuration=efferentDelay;
 if nargin<3, showParams=0; end
 if nargin<2, sampleRate=50000; end
 if nargin<1 || BFlist(1)<0 % if BFlist= -1, set BFlist to default
-    lowestBF=250; 	highestBF= 8000; 	numChannels=21;
+    lowestBF=100; 	highestBF= 4500; 	numChannels=30;
     % 21 chs (250-8k)includes BFs at 250 500 1000 2000 4000 8000
     BFlist=round(logspace(log10(lowestBF),log10(highestBF),numChannels));
 end
@@ -75,7 +75,7 @@ DRNLParams=[];  % clear the structure first
 DRNLParams.BFlist=BFlist;
 
 % DRNL nonlinear path
-DRNLParams.a=5e4;     % DRNL.a=0 means no OHCs (no nonlinear path)
+DRNLParams.a=1e4;     % DRNL.a=0 means no OHCs (no nonlinear path)
 
 DRNLParams.b=8e-6;    % *compression threshold raised compression
 % DRNLParams.b=1;    % b=1 means no compression

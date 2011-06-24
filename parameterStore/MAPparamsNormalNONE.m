@@ -1,4 +1,4 @@
-function method=MAPparamsNormalDIFF ...
+function method=MAPparamsNormalFIX ...
     (BFlist, sampleRate, showParams, paramChanges)
 % MAPparams<> establishes a complete set of MAP parameters
 % Parameter file names must be of the form <MAPparams> <name>
@@ -61,7 +61,7 @@ OMEParams.rateToAttenuationFactor=0.006;   % * N(all ICspikes)
 % OMEParams.rateToAttenuationFactor=0;   % * N(all ICspikes)
 
 % 'probability model': Ar based on AN firing probabilities (LSR)
-OMEParams.rateToAttenuationFactorProb=0.00;% * N(all ANrates)
+OMEParams.rateToAttenuationFactorProb=0.0;% * N(all ANrates)
 % OMEParams.rateToAttenuationFactorProb=0;% * N(all ANrates)
 
 % asymptote should be around 100-200 ms
@@ -104,11 +104,11 @@ DRNLParams.MOCdelay = efferentDelay;            % must be < segment length!
 DRNLParams.rateToAttenuationFactor = .01;  % strength of MOC
 %      DRNLParams.rateToAttenuationFactor = 0;  % strength of MOC
 % 'probability' model: MOC based on AN spiking activity (HSR)
-DRNLParams.rateToAttenuationFactorProb = 0.012;  % strength of MOC
+DRNLParams.rateToAttenuationFactorProb = 0;  % strength of MOC
 % DRNLParams.rateToAttenuationFactorProb = .0;  % strength of MOC
-DRNLParams.MOCrateThresholdProb =60;                % spikes/s probability only
+DRNLParams.MOCrateThresholdProb =70;                % spikes/s probability only
 
-DRNLParams.MOCtau =0.45;                         % smoothing for MOC
+DRNLParams.MOCtau =.1;                         % smoothing for MOC
 
 
 %% #4 IHC_cilia_RPParams

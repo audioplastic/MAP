@@ -1,0 +1,230 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      --><title>Hunting down the MOC time constant</title><meta name="generator" content="MATLAB 7.10"><meta name="date" content="2011-06-24"><meta name="m-file" content="RateLevel_MOC_TC"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Hunting down the MOC time constant</h1><p>This is a little script made to hunt down the MOC time constant based on the very limited data that we have. MOC data is scaled and then overlayed upon the data.</p><pre class="codeinput">obj.MAProot = fullfile(<span class="string">'..'</span>);
+addpath(<span class="keyword">...</span><span class="comment">fullfile(obj.MAProot, 'modules'),...</span>
+                fullfile(obj.MAProot, <span class="string">'utilities'</span>),<span class="keyword">...</span>
+                fullfile(obj.MAProot, <span class="string">'MAP'</span>),<span class="keyword">...</span>
+                fullfile(obj.MAProot, <span class="string">'parameterStore'</span>),<span class="keyword">...</span>
+                fullfile(<span class="string">'ASR files'</span>));
+
+close <span class="string">all</span>; clear <span class="string">all</span>; clc;
+
+sr = 44100;
+dt = 1/sr;
+dur = 3.6;
+freq = 1000;
+
+nn=0;
+<span class="comment">% for levelSPL = 0:10:100;</span>
+levelSPL = 60;
+SNR = 10;
+preDur = .1;
+
+nn = nn+1;
+levelRec(nn) = levelSPL;
+
+tAxis = dt:dt:dur;
+
+ipSig = sin(2*pi*freq*tAxis);
+
+
+ipSig = ipSig./sqrt(mean(ipSig.^2));
+ipSig = ipSig * 20e-6 * 10 ^ (levelSPL/20);
+
+preS = ceil(preDur*sr);
+ipSig = [zeros(preS, 1)'  ipSig   zeros(preS, 1)'];
+
+
+
+
+
+<span class="keyword">for</span> kk = [0.005 0.010 0.020]
+    <span class="keyword">for</span> jj = 0.05:0.05:0.05
+
+        paramChanges = {};
+        paramChanges{numel(paramChanges)+1} = [<span class="string">'DRNLParams.rateToAttenuationFactorProb = '</span> num2str(kk) <span class="string">';'</span>];<span class="comment">%FIX = -10^(-10/20); %GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC</span>
+        paramChanges{numel(paramChanges)+1} = <span class="string">'DRNLParams.MOCrateThresholdProb = 60;'</span>;<span class="comment">%GOOD=140 %DEFAULT = 70;</span>
+
+        paramChanges{numel(paramChanges)+1} = <span class="string">'OMEParams.rateToAttenuationFactorProb = 0;'</span>;<span class="comment">%DEFAULT = 0.01;</span>
+        paramChanges{numel(paramChanges)+1} = <span class="string">'DRNLParams.a=1e4;'</span>; <span class="comment">%DEFAULT = 5e4;</span>
+        paramChanges{numel(paramChanges)+1} = [<span class="string">'DRNLParams.MOCtau ='</span> num2str(jj) <span class="string">';'</span>];
+
+
+        AN_spikesOrProbability = <span class="string">'probability'</span>;
+        MAP1_14(ipSig, sr, -1, <span class="string">'Normal'</span>, AN_spikesOrProbability, paramChanges)
+
+        <span class="comment">% options.showEfferent=1;</span>
+        <span class="comment">% UTIL_showMAP(options)</span>
+        <span class="comment">% drawnow</span>
+
+
+        <span class="keyword">global</span> MOCattenuation
+
+        chanID = find(mean(MOCattenuation,2) == min(mean(MOCattenuation,2)), 1);
+        pAxis = 2:0.1:9;
+        pData = [0.200000000000000,0.190000000000000,0.180000000000000,0.180000000000000,0.160000000000000,0.150000000000000,0.150000000000000,0.150000000000000,0.120000000000000,0.120000000000000,0.100000000000000,0.100000000000000,0.0500000000000000,0.0500000000000000,0,-0.100000000000000,-0.400000000000000,-1.20000000000000,-1.60000000000000,-1.80000000000000,-1.85000000000000,-2,-2.05000000000000,-2.05000000000000,-2.15000000000000,-2.20000000000000,-2.15000000000000,-2.10000000000000,-2.15000000000000,-2.20000000000000,-2.10000000000000,-2.10000000000000,-2.25000000000000,-2.10000000000000,-2.15000000000000,-2.10000000000000,-2.15000000000000,-2.10000000000000,-2.20000000000000,-2.05000000000000,-2.15000000000000,-2.05000000000000,-2,-2.20000000000000,-2.10000000000000,-2.05000000000000,-2.05000000000000,-2.05000000000000,-2.20000000000000,-2.10000000000000,-2.05000000000000,-2.05000000000000,-0.700000000000000,-0.100000000000000,0,0.100000000000000,0.200000000000000,0.350000000000000,0.200000000000000,0.150000000000000,0.200000000000000,0.150000000000000,0.150000000000000,0.150000000000000,0.120000000000000,0.100000000000000,0.0900000000000000,0.0800000000000000,0.0700000000000000,0.0600000000000000,0.0500000000000000;];
+
+        startT = 3.5 - preDur;
+        endT = startT + numel(MOCattenuation(chanID,:))*dt - dt;
+        tAxis  = startT:dt:endT;
+
+        attdB = 20*log10(MOCattenuation(chanID,:));
+        normFactor = abs(mean(attdB(tAxis&gt;6 &amp; tAxis&lt;7)))/2.15;
+
+        figure(567)
+        plot(pAxis,pData, <span class="string">'^r'</span>)
+        hold <span class="string">on</span>
+        plot(tAxis,attdB /  normFactor ,<span class="string">'k'</span> )
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="RateLevel_MOC_TC_01.png" alt=""> <p class="footer"><br>
+      Published with MATLAB&reg; 7.10<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Hunting down the MOC time constant
+% This is a little script made to hunt down the MOC time constant based on
+% the very limited data that we have. MOC data is scaled and then overlayed
+% upon the data.
+
+obj.MAProot = fullfile('..');
+addpath(...fullfile(obj.MAProot, 'modules'),...
+                fullfile(obj.MAProot, 'utilities'),...
+                fullfile(obj.MAProot, 'MAP'),...
+                fullfile(obj.MAProot, 'parameterStore'),...
+                fullfile('ASR files'));
+
+close all; clear all; clc;
+
+sr = 44100;
+dt = 1/sr;
+dur = 3.6;
+freq = 1000;
+
+nn=0;
+% for levelSPL = 0:10:100;
+levelSPL = 60;
+SNR = 10;
+preDur = .1;
+
+nn = nn+1;
+levelRec(nn) = levelSPL;
+
+tAxis = dt:dt:dur;
+
+ipSig = sin(2*pi*freq*tAxis);
+
+
+ipSig = ipSig./sqrt(mean(ipSig.^2));
+ipSig = ipSig * 20e-6 * 10 ^ (levelSPL/20);
+
+preS = ceil(preDur*sr);
+ipSig = [zeros(preS, 1)'  ipSig   zeros(preS, 1)'];
+
+
+
+ 
+
+for kk = [0.005 0.010 0.020]
+    for jj = 0.05:0.05:0.05
+        
+        paramChanges = {};
+        paramChanges{numel(paramChanges)+1} = ['DRNLParams.rateToAttenuationFactorProb = ' num2str(kk) ';'];%FIX = -10^(-10/20); %GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
+        paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 60;';%GOOD=140 %DEFAULT = 70;
+        
+        paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0;';%DEFAULT = 0.01;
+        paramChanges{numel(paramChanges)+1} = 'DRNLParams.a=1e4;'; %DEFAULT = 5e4;
+        paramChanges{numel(paramChanges)+1} = ['DRNLParams.MOCtau =' num2str(jj) ';'];
+        
+        
+        AN_spikesOrProbability = 'probability';
+        MAP1_14(ipSig, sr, -1, 'Normal', AN_spikesOrProbability, paramChanges)
+        
+        % options.showEfferent=1;
+        % UTIL_showMAP(options)
+        % drawnow
+        
+        
+        global MOCattenuation
+        
+        chanID = find(mean(MOCattenuation,2) == min(mean(MOCattenuation,2)), 1);
+        pAxis = 2:0.1:9;
+        pData = [0.200000000000000,0.190000000000000,0.180000000000000,0.180000000000000,0.160000000000000,0.150000000000000,0.150000000000000,0.150000000000000,0.120000000000000,0.120000000000000,0.100000000000000,0.100000000000000,0.0500000000000000,0.0500000000000000,0,-0.100000000000000,-0.400000000000000,-1.20000000000000,-1.60000000000000,-1.80000000000000,-1.85000000000000,-2,-2.05000000000000,-2.05000000000000,-2.15000000000000,-2.20000000000000,-2.15000000000000,-2.10000000000000,-2.15000000000000,-2.20000000000000,-2.10000000000000,-2.10000000000000,-2.25000000000000,-2.10000000000000,-2.15000000000000,-2.10000000000000,-2.15000000000000,-2.10000000000000,-2.20000000000000,-2.05000000000000,-2.15000000000000,-2.05000000000000,-2,-2.20000000000000,-2.10000000000000,-2.05000000000000,-2.05000000000000,-2.05000000000000,-2.20000000000000,-2.10000000000000,-2.05000000000000,-2.05000000000000,-0.700000000000000,-0.100000000000000,0,0.100000000000000,0.200000000000000,0.350000000000000,0.200000000000000,0.150000000000000,0.200000000000000,0.150000000000000,0.150000000000000,0.150000000000000,0.120000000000000,0.100000000000000,0.0900000000000000,0.0800000000000000,0.0700000000000000,0.0600000000000000,0.0500000000000000;];
+        
+        startT = 3.5 - preDur;
+        endT = startT + numel(MOCattenuation(chanID,:))*dt - dt;
+        tAxis  = startT:dt:endT;
+        
+        attdB = 20*log10(MOCattenuation(chanID,:));
+        normFactor = abs(mean(attdB(tAxis>6 & tAxis<7)))/2.15;
+        
+        figure(567)
+        plot(pAxis,pData, '^r')
+        hold on
+        plot(tAxis,attdB /  normFactor ,'k' )
+    end
+end
+
+
+##### SOURCE END #####
+--></body></html>
