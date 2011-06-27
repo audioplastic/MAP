@@ -8,7 +8,7 @@ function Exp_3a(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '3a';
+expName = '3aMINI';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -35,7 +35,7 @@ xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
 xL.MAPuseEfferent = 1;
-xL.numWavs = 8440; %MAx=8440
+xL.numWavs = 1000; %MAx=8440
 
 xL.noisePreDur = 1;
 xL.noisePostDur = 0.1;
