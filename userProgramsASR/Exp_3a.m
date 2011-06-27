@@ -8,7 +8,7 @@ function Exp_3a(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '3aMINI';
+expName = '3aSil';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -28,7 +28,7 @@ xL = jobject('L', learnFolder);
 
 xL.participant = 'NormalNONE';
 
-xL.noiseLevToUse   =  30;
+xL.noiseLevToUse   =  -200;
 xL.speechLevToUse  =  60;
 
 xL.MAPopHSR = 1;
@@ -52,7 +52,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sort out the testing (RECOGNITION) conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-nzLevel = 30:5:60;
+nzLevel = 40:5:60;
 xR=cell(size(nzLevel));
 recConditions = numel(nzLevel);
 for nn = 1:recConditions    
