@@ -5,7 +5,7 @@ function Exp_4(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '3';
+expName = '4';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -72,14 +72,16 @@ for nn = 1:recConditions
     end
 end
 
+tmpIdx=0;
 for nn = recConditions+1:2*recConditions    
+    tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['FIXfeatR_nz' num2str(nzLevel(nn))]);
+    recFolder = fullfile(expFolder,['FIXfeatR_nz' num2str(nzLevel(tmpIdx))]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = 358; %MAX = 358
-    xR{nn}.noiseLevToUse = nzLevel(nn);
+    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
     xR{nn}.participant = 'NormalFIX';
     
     %Now just to wrap it up ready for processing
@@ -91,14 +93,16 @@ for nn = recConditions+1:2*recConditions
     end
 end
 
-for nn = 2*recConditions+1:3*recConditions     
+tmpIdx=0;
+for nn = 2*recConditions+1:3*recConditions   
+    tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['AUTOfeatR_nz' num2str(nzLevel(nn))]);
+    recFolder = fullfile(expFolder,['AUTOfeatR_nz' num2str(nzLevel(tmpIdx))]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = 358; %MAX = 358
-    xR{nn}.noiseLevToUse = nzLevel(nn);
+    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
     xR{nn}.participant = 'NormalDIFF';
     
     %Now just to wrap it up ready for processing
