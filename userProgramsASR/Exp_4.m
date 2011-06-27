@@ -49,7 +49,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sort out the testing (RECOGNITION) conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-nzLevel = 40:5:60;
+nzLevel = [-200 40:5:60];
 xR=cell(size(nzLevel));
 recConditions = numel(nzLevel);
 for nn = 1:recConditions    
