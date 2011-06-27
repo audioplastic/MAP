@@ -1,14 +1,11 @@
-function Exp_3c(isMasterNode)
-% This is a template function on which other experiments can be based. If
-% you are running this function with just a single node, isMasterNode
-% should be set to true. On a distributed system, then set isMasterNode to
-% true for the first node initialized and then to false for all subsequent
-% nodes that join the party.
+function Exp_4(isMasterNode)
+% This experiment tests a recogniser on 3 different training sets with
+% different efferent conditions
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '3cSil';
+expName = '3';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -26,7 +23,7 @@ learnFolder = fullfile(expFolder,'featL');
 
 xL = jobject('L', learnFolder);
 
-xL.participant = 'NormalDIFF';
+xL.participant = 'NormalNONE';%'NormalDIFF';
 
 xL.noiseLevToUse   =  -200;
 xL.speechLevToUse  =  60;
@@ -57,12 +54,52 @@ xR=cell(size(nzLevel));
 recConditions = numel(nzLevel);
 for nn = 1:recConditions    
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['featR_nz' num2str(nzLevel(nn))]);
+    recFolder = fullfile(expFolder,['NONEfeatR_nz' num2str(nzLevel(nn))]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = 358; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(nn);
+    xR{nn}.participant = 'NormalNONE'; % This line is redundent but included for documentation purpose
+    
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
+
+for nn = recConditions+1:2*recConditions    
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['FIXfeatR_nz' num2str(nzLevel(nn))]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.noiseLevToUse = nzLevel(nn);
+    xR{nn}.participant = 'NormalFIX';
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
+
+for nn = 2*recConditions+1:3*recConditions     
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['AUTOfeatR_nz' num2str(nzLevel(nn))]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.noiseLevToUse = nzLevel(nn);
+    xR{nn}.participant = 'NormalDIFF';
     
     %Now just to wrap it up ready for processing
     if isMasterNode

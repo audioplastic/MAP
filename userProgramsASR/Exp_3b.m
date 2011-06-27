@@ -102,7 +102,7 @@ if isMasterNode
     xR{end}.unlockJobList;
     while(~all(xR{end}.todoStatus==2))        
         disp('Waiting on straggler nodes to complete their jobs before HMM is tested . . .')
-        pause(2);
+        pause(20);
         xR{end}.lockJobList;
         xR{end} = xR{end}.loadSelf; %Reload incase changed
         xR{end}.unlockJobList;
