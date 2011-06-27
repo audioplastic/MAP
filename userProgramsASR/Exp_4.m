@@ -32,7 +32,7 @@ xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
 xL.MAPuseEfferent = 1;
-xL.numWavs = 1000; %MAx=8440
+xL.numWavs = 8440; %MAx=8440
 
 xL.noisePreDur = 1;
 xL.noisePostDur = 0.1;
@@ -124,7 +124,7 @@ end
 worker(xL.opFolder);
 
 if ~isMasterNode %dont bother wasting master node effort on testing features
-    for nn = 1:recConditions
+    for nn = 1:3*recConditions
         worker(xR{nn}.opFolder);
     end
 end
@@ -149,13 +149,13 @@ if isMasterNode
         xR{end}.unlockJobList;
     end
       
-    for nn = 1:recConditions
+    for nn = 1:3*recConditions
         y.createSCP(xR{nn}.opFolder);
         y.test(xR{nn}.opFolder);
     end
     
     %Show all of the scores in the command window at the end
-    for nn = 1:recConditions
+    for nn = 1:3*recConditions
         y.score(xR{nn}.opFolder);
     end
 end
