@@ -46,6 +46,7 @@ classdef jobject
         
         featHaxes = [];
         useSpectrogram = false;
+        numCoeff = 9;
         
         %************************************************************
         % MAP params
@@ -628,7 +629,7 @@ classdef jobject
             AN_spikesOrProbability = 'probability';
             
             if obj.useSpectrogram
-                lowestBF=100; 	highestBF= 4500; 	numChannels=30;
+                lowestBF=100; 	highestBF= 4500; 	numChannels=60;
                 F=round(logspace(log10(lowestBF),log10(highestBF),numChannels));
                 
                 nfft = 512;
@@ -715,7 +716,7 @@ classdef jobject
             end
                 
             finalFeatures = obj.makeANfeatures(  ...
-                obj.makeANsmooth(ANprobabilityResponse, 1/ANdt)  );            
+                obj.makeANsmooth(ANprobabilityResponse, 1/ANdt), obj.numCoeff  );            
             
             if obj.removeEnergyStatic
                 finalFeatures = finalFeatures(2:end,:);
@@ -769,10 +770,10 @@ classdef jobject
         %% ********************************************************
         % makeANfeatures - dct wizardry
         %********************************************************** 
-        function ANfeatures = makeANfeatures(ANrate)
+        function ANfeatures = makeANfeatures(ANrate, numCoeff)
             % make feature vectors
             features = GJB_dct(ANrate);
-            ANfeatures = features(1:9,:);            
+            ANfeatures = features(1:numCoeff,:);            
         end % ------ OF makeANfeatures
         
     end % ------ OF STATIC METHODS

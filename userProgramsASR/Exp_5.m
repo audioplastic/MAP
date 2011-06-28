@@ -35,7 +35,7 @@ xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
 xL.MAPuseEfferent = 1;
-xL.numWavs = 1000; %MAx=8440
+xL.numWavs = 100; %MAx=8440
 
 xL.noisePreDur = 0;
 xL.noisePostDur = 0;
@@ -44,6 +44,7 @@ xL.truncateDur  = 0; %Dr. RF used 0.550
 xL.noiseName = 'pink';
 
 xL.useSpectrogram = 1;
+xL.numCoeff = 18;
 
 if isMasterNode
     mkdir(xL.opFolder);
@@ -63,7 +64,7 @@ for nn = 1:recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 150; %MAX = 358
+    xR{nn}.numWavs = 20; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(nn);
     
     %Now just to wrap it up ready for processing
@@ -94,7 +95,8 @@ end
 % Train and test the recogniser - a job for the master node only
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if isMasterNode    
-    y = HMMclass(hmmFolder);    
+    y = HMMclass(hmmFolder);  
+    y.numCoeff = 54;
     y.createSCP(xL.opFolder)
     y.createMLF(xL.opFolder)
     y.train(xL.opFolder) %This node can be busy training, even if other jobs are being processed
