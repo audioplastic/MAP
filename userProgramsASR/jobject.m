@@ -130,7 +130,7 @@ classdef jobject
         %'config_tr_zcpa12' there is a flag called NATURALREADORDER that is set to
         %FALSE and thus appears to override x86 standard
         %little-endian. Endianess has **!nothing!** to do with win vs *nix
-        byteOrder = 'be';  % byte order is big endian
+        byteOrder = 'le';  % byte order is big endian
     end
     
     %%  *********************************************************
