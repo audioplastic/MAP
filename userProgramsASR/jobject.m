@@ -45,6 +45,7 @@ classdef jobject
         currentNoiseLevel
         
         featHaxes = [];
+        useSpectrogram = false;
         
         %************************************************************
         % MAP params
@@ -155,7 +156,11 @@ classdef jobject
                 obj.opFolder = jobFolder;
             else
                 if isunix
-                    obj.opFolder = '/scratch/nrclark/exps/_foo';
+                    if ismac
+                        obj.opFolder = '~/ASR/exps/_foo';
+                    else
+                        obj.opFolder = '/scratch/nrclark/exps/_foo';
+                    end
                 else
                     obj.opFolder = 'D:\exps\_foo';
                 end                    
@@ -171,9 +176,15 @@ classdef jobject
         %************************************************************
         function obj = assignWavPaths(obj, LearnOrRecWavs)
             if isunix
-                lWAVpath = '/scratch/nrclark/corpora/AURORA digits (wav)/TrainingData-Clean/';
-                rWAVpath  = '/scratch/nrclark/corpora/AURORA digits (wav)/TripletTestData/';
-                obj.noiseFolder = '/scratch/nrclark/corpora/noises';
+                if ismac
+                    lWAVpath = '~/ASR/reducedAURORA/TrainingData-Clean/';
+                    rWAVpath  = '~/ASR/reducedAURORA/TripletTestData/';
+                    obj.noiseFolder = '~/ASR/noises';
+                else                    
+                    lWAVpath = '/scratch/nrclark/corpora/AURORA digits (wav)/TrainingData-Clean/';
+                    rWAVpath  = '/scratch/nrclark/corpora/AURORA digits (wav)/TripletTestData/';
+                    obj.noiseFolder = '/scratch/nrclark/corpora/noises';
+                end
             else
                 %lWAVpath = 'D:\ASRexperiments\Stimuli\AURORA digits (wav)\TrainingData-Clean';
                 %rWAVpath  = 'D:\ASRexperiments\Stimuli\AURORA digits (wav)\TripletTestData';
@@ -615,8 +626,22 @@ classdef jobject
                 paramChanges{numel(paramChanges)+1}= 'DRNLParams.rateToAttenuationFactorProb = 0;'; % 0 = MOC off (spikes)
             end
             AN_spikesOrProbability = 'probability';
-            [ANprobabilityResponse, ANdt] = MAPwrap(stimulus, sampleRate, -1, obj.participant, AN_spikesOrProbability, paramChanges);
             
+            if obj.useSpectrogram
+                lowestBF=100; 	highestBF= 4500; 	numChannels=30;
+                F=round(logspace(log10(lowestBF),log10(highestBF),numChannels));
+                
+                nfft = 512;
+                noverlap = nfft/4;
+                ANdt = noverlap/sampleRate;
+                method.dt = ANdt;
+                
+                [~,~,~,ANprobabilityResponse] = spectrogram(stimulus,512,256,F,sampleRate);                
+                
+                figure; imagesc(ANprobabilityResponse)
+            else
+                [ANprobabilityResponse, ANdt] = MAPwrap(stimulus, sampleRate, -1, obj.participant, AN_spikesOrProbability, paramChanges);
+            end
             
 %             %**********************************************************
 %             % If using efferent do some different post processing
@@ -677,14 +702,16 @@ classdef jobject
 %             end
             
             nChannels = numel(method.nonlinCF);
-            if obj.MAPopLSR && ~obj.MAPopHSR
-                ANprobabilityResponse = ANprobabilityResponse(1:nChannels, :); %use LSR
-            end
-            if ~obj.MAPopLSR && obj.MAPopHSR
-                ANprobabilityResponse = ANprobabilityResponse(end-nChannels+1:end, :); %or use HSR
-            end
-            if obj.MAPopMSR
-                assert(0,'Not working with MSR at the mo')
+            if ~obj.useSpectrogram
+                if obj.MAPopLSR && ~obj.MAPopHSR
+                    ANprobabilityResponse = ANprobabilityResponse(1:nChannels, :); %use LSR
+                end
+                if ~obj.MAPopLSR && obj.MAPopHSR
+                    ANprobabilityResponse = ANprobabilityResponse(end-nChannels+1:end, :); %or use HSR
+                end
+                if obj.MAPopMSR
+                    assert(0,'Not working with MSR at the mo')
+                end
             end
                 
             finalFeatures = obj.makeANfeatures(  ...

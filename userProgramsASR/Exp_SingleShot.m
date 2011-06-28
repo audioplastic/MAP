@@ -44,8 +44,9 @@ xL.numWavs = 1; %MAx=8440
 % if isMasterNode
     mkdir(xL.opFolder);
     xL = xL.assignFiles;
-    xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_2841A.wav'));
+    %xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_2841A.wav'));
     xL.removeEnergyStatic = 1;
+    xL.useSpectrogram = 1;
     
     
     
@@ -64,6 +65,6 @@ xL.numWavs = 1; %MAx=8440
 worker(xL.opFolder);
 
 options.showEfferent=1;
-UTIL_showMAP(options)
+% UTIL_showMAP(options)
 
 
