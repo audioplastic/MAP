@@ -44,6 +44,8 @@ classdef jobject
         currentSpeechLevel
         currentNoiseLevel
         
+        featHaxes = [];
+        
         %************************************************************
         % MAP params
         %************************************************************
@@ -376,7 +378,7 @@ classdef jobject
             obj.currentSpeechLevel = tempSpeechLev;
             obj.currentNoiseLevel = tempNoiseLev;
             %             obj.currentFeatureFile = currentWav;
-            [finalFeatures, ~, ~] = processWavs(obj, currentWav); %discard the output from ANprobabilityResponse and method using ~
+            [finalFeatures, ~, ~] = processWavs(obj, currentWav); %discard the output from ANprobabilityResponse and method using ~                                    
             opForHTK(obj, currentWav, finalFeatures);                        
         end % ------ OF GENFEAT
         
@@ -690,6 +692,12 @@ classdef jobject
             
             if obj.removeEnergyStatic
                 finalFeatures = finalFeatures(2:end,:);
+                disp(size(finalFeatures))
+            end
+            
+            % OPTIONAL PLOTTING
+            if ~isempty(obj.featHaxes)
+                pcolor(obj.featHaxes, finalFeatures); shading flat
             end
             
             opForHTK(obj, currentWav, finalFeatures);

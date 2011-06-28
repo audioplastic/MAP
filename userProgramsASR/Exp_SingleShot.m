@@ -26,11 +26,14 @@ learnFolder = fullfile(expFolder,'featL');
 
 xL = jobject('L', learnFolder);
 
-% xL.participant = 'NormalNOEFF';
-xL.participant = 'Normal';
+figure(22);
+xL.featHaxes = gca;
 
-xL.noiseLevToUse   =  30;
-xL.speechLevToUse  =  90;
+% xL.participant = 'NormalNOEFF';
+xL.participant = 'NormalNONE';
+
+xL.noiseLevToUse   =  -300;
+xL.speechLevToUse  =  60;
 
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
@@ -41,8 +44,16 @@ xL.numWavs = 1; %MAx=8440
 % if isMasterNode
     mkdir(xL.opFolder);
     xL = xL.assignFiles;
+    xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_2841A.wav'));
+    xL.removeEnergyStatic = 1;
+    
+    
+    
+    
     xL.storeSelf;
 % end
+
+
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ** Generate features **
@@ -54,3 +65,5 @@ worker(xL.opFolder);
 
 options.showEfferent=1;
 UTIL_showMAP(options)
+
+
