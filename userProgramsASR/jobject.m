@@ -632,11 +632,11 @@ classdef jobject
                 F=round(logspace(log10(lowestBF),log10(highestBF),numChannels));
                 
                 nfft = 512;
-                noverlap = nfft/4;
-                ANdt = noverlap/sampleRate;
+                noverlap = nfft - 64;
+                ANdt = (nfft-noverlap)/sampleRate;
                 method.dt = ANdt;
                 
-                [~,~,~,ANprobabilityResponse] = spectrogram(stimulus,512,256,F,sampleRate);                
+                [~,~,~,ANprobabilityResponse] = spectrogram(stimulus,nfft,noverlap,F,sampleRate);                
                 
                 figure; imagesc(ANprobabilityResponse)
             else
