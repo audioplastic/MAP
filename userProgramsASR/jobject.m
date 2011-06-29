@@ -634,15 +634,17 @@ classdef jobject
                 
                 nfft = 512;
                 noverlap = nfft - 64;
-                ANdt = (nfft-noverlap)/sampleRate;
+                ANdt = noverlap/sampleRate;
                 method.dt = ANdt;
                 
                 [~,~,~,ANprobabilityResponse] = spectrogram(stimulus,nfft,noverlap,F,sampleRate);                
                 
-                figure; imagesc(ANprobabilityResponse)
+                
             else
                 [ANprobabilityResponse, ANdt] = MAPwrap(stimulus, sampleRate, -1, obj.participant, AN_spikesOrProbability, paramChanges);
             end
+            
+            figure; imagesc(ANprobabilityResponse)
             
 %             %**********************************************************
 %             % If using efferent do some different post processing
