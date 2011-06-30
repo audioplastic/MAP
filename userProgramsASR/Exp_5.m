@@ -31,7 +31,7 @@ xL.featHaxes = gca;
 
 xL.participant = 'NormalNONE';
 
-xL.noiseLevToUse   =  10;
+xL.noiseLevToUse   =  -200;
 xL.speechLevToUse  =  60;
 
 xL.MAPopHSR = 1;
