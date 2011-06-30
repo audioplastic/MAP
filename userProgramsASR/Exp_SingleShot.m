@@ -47,7 +47,7 @@ xL.numWavs = 1; %MAx=8440
     xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_9A.wav'));
     
     xL.removeEnergyStatic = 0;
-    xL.useSpectrogram = 0;
+    xL.useSpectrogram = 1;
     xL.numCoeff =9;
                 
     xL.storeSelf;
@@ -65,5 +65,13 @@ worker(xL.opFolder);
 
 options.showEfferent=1;
 % UTIL_showMAP(options)
+
+global dt ANdt saveAN_spikesOrProbability savedBFlist saveMAPparamsName...
+    savedInputSignal TMoutput OMEoutput ARattenuation ...
+    DRNLoutput IHC_cilia_output IHCrestingCiliaCond IHCrestingV...
+    IHCoutput ANprobRateOutput ANoutput savePavailable tauCas  ...
+    CNoutput  ICoutput ICmembraneOutput ICfiberTypeRates MOCattenuation
+
+
 
 

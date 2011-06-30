@@ -35,7 +35,7 @@ xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
 xL.MAPuseEfferent = 1;
-xL.numWavs = 8440; %MAx=8440
+xL.numWavs = 1000; %MAx=8440
 
 xL.noisePreDur = 0;
 xL.noisePostDur = 0;
@@ -64,7 +64,7 @@ for nn = 1:recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.numWavs = 150; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(nn);
     
     %Now just to wrap it up ready for processing

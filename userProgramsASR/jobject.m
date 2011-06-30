@@ -563,8 +563,8 @@ classdef jobject
             % now that the correct parameters have been loaded, change
             % them!
             inputStimulusParams.sampleRate = sampleRate;
-            method.plotGraphs =	obj.MAPplotGraphs;
-            method.DRNLSave = obj.MAPDRNLSave;
+%OBSOLETE              method.plotGraphs =	obj.MAPplotGraphs;
+%             method.DRNLSave = obj.MAPDRNLSave;
             
             %**********************************************************
             % If using efferent change some params pre processing
@@ -633,15 +633,16 @@ classdef jobject
                 F=round(logspace(log10(lowestBF),log10(highestBF),numChannels));
                 
                 nfft = 512;
-                noverlap = nfft - 64;
-                ANdt = noverlap/sampleRate;
-                method.dt = ANdt;
+                hopSamples = 64;
+                noverlap = nfft - hopSamples;
+                dt = hopSamples/sampleRate;
+                %method.dt = ANdt;
                 
                 [~,~,~,ANprobabilityResponse] = spectrogram(stimulus,nfft,noverlap,F,sampleRate);                
                 
                 
             else
-                [ANprobabilityResponse, ANdt] = MAPwrap(stimulus, sampleRate, -1, obj.participant, AN_spikesOrProbability, paramChanges);
+                [ANprobabilityResponse, dt] = MAPwrap(stimulus, sampleRate, -1, obj.participant, AN_spikesOrProbability, paramChanges);
             end
             
             figure; imagesc(ANprobabilityResponse)
@@ -661,7 +662,7 @@ classdef jobject
 %             end
             
             % remove the additional silence periods from start
-            time_ANresponse = method.dt:method.dt:method.dt*size(ANprobabilityResponse,2);
+            time_ANresponse = dt:dt:dt*size(ANprobabilityResponse,2);
             idx = time_ANresponse > obj.truncateDur; %RTF had this @ 0.550
             ANprobabilityResponse = ANprobabilityResponse(:, idx);
             
@@ -704,7 +705,7 @@ classdef jobject
 %                 end
 %             end
             
-            nChannels = numel(method.nonlinCF);
+            nChannels = numel(method.nonlinCF); %nonlin-cf is one of the few remaining method fields in 1_14
             if ~obj.useSpectrogram
                 if obj.MAPopLSR && ~obj.MAPopHSR
                     ANprobabilityResponse = ANprobabilityResponse(1:nChannels, :); %use LSR
@@ -718,7 +719,7 @@ classdef jobject
             end
                 
             finalFeatures = obj.makeANfeatures(  ...
-                obj.makeANsmooth(ANprobabilityResponse, 1/ANdt), obj.numCoeff  );            
+                obj.makeANsmooth(ANprobabilityResponse, 1/dt), obj.numCoeff  );            
             
             if obj.removeEnergyStatic
                 finalFeatures = finalFeatures(2:end,:);
