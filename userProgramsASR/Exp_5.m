@@ -26,6 +26,9 @@ learnFolder = fullfile(expFolder,'featL');
 
 xL = jobject('L', learnFolder);
 
+figure(22);
+xL.featHaxes = gca;
+
 xL.participant = 'NormalNONE';
 
 xL.noiseLevToUse   =  -200;
@@ -44,7 +47,7 @@ xL.truncateDur  = 0; %Dr. RF used 0.550
 xL.noiseName = 'pink';
 
 xL.useSpectrogram = 1;
-xL.numCoeff = 18;
+xL.numCoeff = 9;
 
 if isMasterNode
     mkdir(xL.opFolder);
@@ -96,7 +99,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if isMasterNode    
     y = HMMclass(hmmFolder);  
-    y.numCoeff = 54;
+%     y.numCoeff = 54;
     y.createSCP(xL.opFolder)
     y.createMLF(xL.opFolder)
     y.train(xL.opFolder) %This node can be busy training, even if other jobs are being processed

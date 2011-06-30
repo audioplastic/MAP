@@ -44,7 +44,7 @@ xL.numWavs = 1; %MAx=8440
 % if isMasterNode
     mkdir(xL.opFolder);
     xL = xL.assignFiles;
-    xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_9A.wav'));
+%     xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_9A.wav'));
     
     xL.removeEnergyStatic = 0;
     xL.useSpectrogram = 1;

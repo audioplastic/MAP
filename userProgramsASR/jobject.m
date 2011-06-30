@@ -632,20 +632,22 @@ classdef jobject
                 lowestBF=100; 	highestBF= 4500; 	numChannels=60;
                 F=round(logspace(log10(lowestBF),log10(highestBF),numChannels));
                 
-                nfft = 512;
+                nfft = 2048;
                 hopSamples = 64;
                 noverlap = nfft - hopSamples;
                 dt = hopSamples/sampleRate;
                 %method.dt = ANdt;
                 
-                [~,~,~,ANprobabilityResponse] = spectrogram(stimulus,nfft,noverlap,F,sampleRate);                
+                [~,~,~,P] = spectrogram(stimulus,nfft,noverlap,F,sampleRate);    
+                
+                ANprobabilityResponse = 10*log10(  abs(P) /  ((20e-6)^2)  ); %now correct [(a^2)/(b^2) = (a/b)^2]
                 
                 
             else
                 [ANprobabilityResponse, dt] = MAPwrap(stimulus, sampleRate, -1, obj.participant, AN_spikesOrProbability, paramChanges);
             end
             
-            figure; imagesc(ANprobabilityResponse)
+            figure(11); imagesc(ANprobabilityResponse)
             
 %             %**********************************************************
 %             % If using efferent do some different post processing
