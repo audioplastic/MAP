@@ -37,9 +37,9 @@ xL.MAPopLSR = 0;
 xL.MAPuseEfferent = 1;
 xL.numWavs = 1000; %MAx=8440
 
-xL.noisePreDur = 1;
-xL.noisePostDur = 0.1;
-xL.truncateDur  = 0.9; %Dr. RF used 0.550
+xL.noisePreDur = 0;
+xL.noisePostDur = 0;
+xL.truncateDur  = 0.1; %Dr. RF used 0.550
 
 xL.noiseName = 'pink';
 
@@ -52,7 +52,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sort out the testing (RECOGNITION) conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-nzLevel = 40:5:60;
+nzLevel = [-200 40:5:60];
 xR=cell(size(nzLevel));
 recConditions = numel(nzLevel);
 for nn = 1:recConditions    
