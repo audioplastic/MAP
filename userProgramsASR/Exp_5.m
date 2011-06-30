@@ -31,23 +31,23 @@ xL.featHaxes = gca;
 
 xL.participant = 'NormalNONE';
 
-xL.noiseLevToUse   =  -200;
+xL.noiseLevToUse   =  10;
 xL.speechLevToUse  =  60;
 
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
 xL.MAPuseEfferent = 1;
-xL.numWavs = 1000; %MAx=8440
+xL.numWavs = 400; %MAx=8440
 
 xL.noisePreDur = 0;
 xL.noisePostDur = 0;
-xL.truncateDur  = 0; %Dr. RF used 0.550
+xL.truncateDur  = 0.1; %Dr. RF used 0.550
 
 xL.noiseName = 'pink';
 
 xL.useSpectrogram = 1;
-xL.numCoeff = 9;
+% xL.numCoeff = 9;
 
 if isMasterNode
     mkdir(xL.opFolder);
@@ -67,7 +67,7 @@ for nn = 1:recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 150; %MAX = 358
+    xR{nn}.numWavs = 50; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(nn);
     
     %Now just to wrap it up ready for processing

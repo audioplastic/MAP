@@ -629,10 +629,10 @@ classdef jobject
             AN_spikesOrProbability = 'probability';
             
             if obj.useSpectrogram
-                lowestBF=100; 	highestBF= 4500; 	numChannels=60;
+                lowestBF=100; 	highestBF= 4500; 	numChannels=30;
                 F=round(logspace(log10(lowestBF),log10(highestBF),numChannels));
                 
-                nfft = 2048;
+                nfft = 1024;
                 hopSamples = 64;
                 noverlap = nfft - hopSamples;
                 dt = hopSamples/sampleRate;
@@ -647,7 +647,7 @@ classdef jobject
                 [ANprobabilityResponse, dt] = MAPwrap(stimulus, sampleRate, -1, obj.participant, AN_spikesOrProbability, paramChanges);
             end
             
-            figure(11); imagesc(ANprobabilityResponse)
+           
             
 %             %**********************************************************
 %             % If using efferent do some different post processing
@@ -667,6 +667,8 @@ classdef jobject
             time_ANresponse = dt:dt:dt*size(ANprobabilityResponse,2);
             idx = time_ANresponse > obj.truncateDur; %RTF had this @ 0.550
             ANprobabilityResponse = ANprobabilityResponse(:, idx);
+            
+             figure(11); imagesc(ANprobabilityResponse)
             
 %             %**********************************************************
 %             % Quick method to see whether we have both LSR and HSR fibres
