@@ -72,50 +72,23 @@ classdef jobject
         
         %************************************************************
         % Portable EssexAid params
-        %************************************************************
-        
-        channelBFs= [250; 500; 1000; 2000; 4000;]; %MUST BE A COLUMN!!!!
-        
-        TAspl = 50 * ones(5, 1); %Thresholds actual (in dB SPL)
-        TDspl = 10 * ones(5, 1); %Thresholds desired (in dB SPL)
-        TCspl = 40 * ones(5, 1);      %Compression thresholds (in dB SPL)
-        TMspl = 50 * ones(5, 1);     %MOC thresholds (in dB SPL)
+        %************************************************************        
+%         sampleRate = 48e3;        
+        bwOct = 1/1;
+        filterOrder  = 2;  
+                
+        mainGain = [ 1;    1;    1;    1;    1];     % gain in linear units
+        TCdBO    = [40;   40;   40;   40;   10];      %Compression thresholds (in dB OUTPUT from 2nd filt)
+        TMdBO    = [10;   10;   10;   10;   10];      %MOC thresholds (in dB OUTPUT from 2nd filt)
+        DRNLc    = [ 0.2;  0.2;  0.2;  0.2;  0.2;]
         
         ARtau  = 0.03;            % decay time constant
-        ARthresholddB = 80;      % dB SPL (input signal level) =>200 to disable
-        
-        MOCtau = 0.3;  %0.06
-        MOCfactor = 3e6;       % now that the conversions between velocity and displacement have been removed, internal values are 100 times greater (10kHz / 100 Hz) and so defaults need to be at least 100 times less than the old value of 2e9
-        
-        DRNLc = 0.2 * ones(5, 1);
-        bwOct =    1 * ones(5, 1); %Octaves
-        
-        filterOrder  = 4; %This sounds better than 2nd order
-        
+        ARthresholddB = 85;       % dB SPL (input signal level) =>200 to disable        
+        MOCtau = 0.3;
+        MOCfactor = 0.5;   %dB per dB OUTPUT
+                      
+        numSamples = 1024; %MAX=6912        
         useAid = 0;
-%         
-%         %OBSOLETE - opScaling_dB = 106.58;   % 106.58 --> See experiment 8 in log book
-%         
-%         ARthresholddB = 85;         % 60
-%         ARtau=0.03;               % 0.03
-%         
-%         %OBSOLETE - DRNLaBaseline=1e4;        % 1e4
-%         %OBSOLETE - DRNLb=0.5e-5 ;            % 0.5e-5 ?? --> YES but misleading. This = 5e-6 as in the readme (watch out fot the 0.5 vs 5)
-%         
-%         
-%         MOCfactor=2e9;            % 2e9
-%         MOCtau=0.06;              % 0.06;
-%         %OBSOLETE - MOCthreshold = 5e-10;     % 5e-10;
-%         
-%         channelBFs                  = [250 500 1000 2000 4000];%[250 630 1587 4000];
-%         bwOct                       = 1.0 * ones(size(bwOct));
-%         DRNLc                       = 0.2 * ones(size(bwOct));
-%         %OBSOLETE - DRNLaBaselineRelative_dB    =  [0 0 0 0];
-%         %OBSOLETE - DRNLbRelative_dB            =  [0 0 0 0];
-%         filterOrder                 =  4; 
-%         
-%         %OBSOLETE - doHpFilt                    = 1;    %TRUE                
-
     end
         
     %%  *********************************************************
@@ -547,7 +520,12 @@ classdef jobject
             % NOW TO LOAD IN THE HEARING AID
             %**********************************************************
             if obj.useAid
-                stimulus = EssexAid_wrapper(stimulus, sampleRate, obj);
+%                 disp(size(stimulus))
+                stimulus = [stimulus; stimulus]'; %EsxAid requires stereo stim
+%                 disp(size(stimulus))
+                stimulus = EssexAid_guiEmulatorWrapper(stimulus, sampleRate, obj);
+                stimulus = stimulus(1,:); %convert back to mono
+%                 disp(size(stimulus))
             end
             
             %**********************************************************

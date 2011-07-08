@@ -18,7 +18,7 @@ freq = 1000;
 nn=0;
 % for levelSPL = 0:10:100;
 levelSPL = 60;
-SNR = 10;
+SNR = 1000;
 preDur = 1;
 
 nn = nn+1;
@@ -46,7 +46,7 @@ nzSig = nzSig * 20e-6 * 10 ^ ((levelSPL-SNR)/20);
 ipSig = ipSig+nzSig;
 
 paramChanges = {};
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb = 0.013;';%FIX = -10^(-10/20); %GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb = 0;';%FIX = -10^(-10/20); %GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
 paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 60;';%GOOD=140 %DEFAULT = 70;
 
 paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0;';%DEFAULT = 0.01;

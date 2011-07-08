@@ -1,51 +1,49 @@
+% HOW TO GENERATE THE ALGO FOR THE JUCE IMPLEMENTATION
+% 1) Make sure the the buffer size used corresponds to the name of the c
+% files that you want to generate. For the VFrame version, ensure that the
+% buffer size is max (6912)
+% 2) Copy and paste the appropriate emlc line into the command window
+% 3) Change the MOCcontrol memory allocation line in the appropriate
+% function to reflect the buffer size.
+
+
+
 close all; clear all; clc
+
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PARAMETERS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-channelBFs= [250; 500; 1000; 2000; 4000;]; %MUST BE A COLUMN!!!!
-% channelBFs= 250*2.^(-1:0.5:3.5)';
-% channelBFs= [400; 800; 1600; 3200];
-% channelBFs= [200; 400; 800; 1600; 3200];
+bwOct = 1/1;
 
-TAspl = 50 * ones(size(channelBFs)); %Thresholds actual (in dB SPL)
-TDspl = 10 * ones(size(channelBFs)); %Thresholds desired (in dB SPL)
-TCspl = TDspl + 30;      %Compression thresholds (in dB SPL)
-TMspl = TDspl + 10 ;     %MOC thresholds (in dB SPL)
+% DO NOT EDIT %
+fNmax = 4/bwOct;
+channelBFs = 250 * 2.^((0:fNmax)'*bwOct);
+% END OF DO NOT EDIT %
+
+mainGain = 1 * ones(size(channelBFs));
+
+TCdBO = 2150 * ones(size(channelBFs));      %Compression thresholds (in dB OUTPUT from 2nd filt)
+TMdBO = 30 * ones(size(channelBFs));      %MOC thresholds (in dB OUTPUT from 2nd filt)
 
 ARtau  = 0.03;            % decay time constant
-ARthresholddB = 80;      % dB SPL (input signal level) =>200 to disable
+ARthresholddB = 150;      % dB SPL (input signal level) =>200 to disable
 
-MOCtau = 0.1;  %0.06 
-MOCfactor = 3e6;       % now that the conversions between velocity and displacement have been removed, internal values are 100 times greater (10kHz / 100 Hz) and so defaults need to be at least 100 times less than the old value of 2e9
+MOCtau = 0.3; 
+MOCfactor = 0.5;   %dB per dB OUTPUT
 
 DRNLc = 0.2 * ones(size(channelBFs));
-bwOct =    1 * ones(size(channelBFs)); %Octaves
+bwOct = bwOct * ones(size(channelBFs)); %Octaves
 
-filterOrder  = 4; %This sounds better than 2nd order
+filterOrder  = 2; 
 
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% CONSTANTS
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-stapesScalar =	6e-008; % useful for calibrating the system
-DRNLa1to1 = 1e4; %Default DRNLa calibrated to give unity gain
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DERRIVED CONSTANTS (DO NOT EDIT)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 numChannels = numel(channelBFs);
 ARthresholdPa=  20e-6*10^(ARthresholddB/20);% Pa thresh for triggering AR
-
-DRNLaBaseline = DRNLa1to1 * 10.^((TAspl-TDspl)/20);  
-DRNLb    =   DRNLaBaseline  .*  (stapesScalar * 2e-5 .* 10.^(TCspl/20)) .^ (1-DRNLc)  ;
-MOCthreshold =  min([...
-    DRNLaBaseline *  stapesScalar *  2e-5 .* 10.^(TMspl/20)...
-    DRNLb        .* (stapesScalar .* 2e-5 .* 10.^(TMspl/20)  ) .^ (DRNLc)...
-    ], [], 2); 
-
-opScaling_dB = 20*log10(  1  /  (DRNLa1to1*stapesScalar)  );
-
+DRNLb    =     ( 2e-5 .* 10.^(TCdBO/20)) .^ (1-DRNLc)  ;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ENUMERATIONS USED IN THE FRAME PROCESSOR
@@ -84,25 +82,46 @@ enumS_AR   = 0;
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % EMULATION OF THE GUI PARAMETER CONVERSIONS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-numSamples = 14;
+numSamples = 6912; %MAX=6912
 biggestNumSamples = numSamples; %6192 %Value comes form the maximum that juce can support
 
 
-currentSpeechLevel = 75; %dB
-[speech, sampleRate] = wavread('demo.wav');
-speech = speech./sqrt(mean(speech.^2)); %Normalize RMS to 1
-speech = speech * 20e-6*10^(currentSpeechLevel/20); %Convert RMS to pascals at desired level
+% currentSpeechLevel = 90; %dB
+% [speech, sampleRate] = wavread('demoM.wav');
+% 
+% speech = speech./sqrt(mean(speech.^2)); %Normalize RMS to 1
+% noiseL = 0.2 * randn(size(speech));
+% noiseR = 0.2 * randn(size(speech));
+% 
+% speech = [speech speech];
+% 
+% speech = speech * 20e-6*10^(currentSpeechLevel/20); %Convert RMS to pascals at desired level
+
+%%%%% Sine pulse code %%%%%
+sampleRate = 48e3;
+pulseDur = 0.1;
+dt = 1/sampleRate;
+tAxis = dt:dt:pulseDur;
+freq = 2000;
+sPulse = sin(2*pi*freq*tAxis);
+sPulse = sPulse./sqrt(mean(sPulse.^2));
+rms2dBspl = @(dBspl)20e-6*10^(dBspl/20);
+zPadDur = 0.5;
+zPad = zeros(1,ceil(sampleRate*zPadDur));
+speech = [  sPulse*rms2dBspl(20)  zPad... 
+            sPulse*rms2dBspl(40)  zPad... 
+            sPulse*rms2dBspl(60)  zPad... 
+            sPulse*rms2dBspl(80)  zPad... 
+            sPulse*rms2dBspl(100) zPad  ];
+% figure; plot(speech);
+speech = [speech' speech'];
+%%%%% END of sine pulse code %%%%%
 
 
 
-
-filterStates = (zeros(300,1));
-filterCoeffs = (zeros(500,1));
-
-ipScalar = 1;
-opScalar = 10^(opScaling_dB/20);
-
-
+filterStatesL = (zeros(3000,1));
+filterStatesR = filterStatesL;
+filterCoeffs = (zeros(5000,1));
 
 %filter coefficients
 ARcutOff=1/(2*pi*ARtau);
@@ -114,7 +133,6 @@ MOCcutOff=1/(2*pi*MOCtau);
 [bMOC,aMOC] = butter(1,MOCcutOff/(sampleRate/2));
 filterCoeffs(enumC_MOCb+1:enumC_MOCb+2) = bMOC;
 filterCoeffs(enumC_MOCa+1:enumC_MOCa+2) = aMOC;
-
 
 
 for filterCount = 1:numChannels
@@ -133,61 +151,135 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % EMULATION OF THE JUCE IO CALLBACK
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-frameBuffer = buffer(speech, numSamples);
-nFrames = size(frameBuffer,2);
+frameBufferL = buffer(speech(:,1), numSamples);
+frameBufferR = buffer(speech(:,2), numSamples);
+nFrames = size(frameBufferL,2);
 
 pad = zeros(1,biggestNumSamples-numSamples);
-ARamp=ones(1,biggestNumSamples);
+ARampL=ones(1,biggestNumSamples);
+ARampR = ARampL;
 MOCcontrol = ones(numChannels, biggestNumSamples);
 
+peakIPL = zeros(5,1);
+peakOPL = peakIPL;
+rmsIPL  = peakIPL;
+rmsOPL  = peakIPL;
 
-op = zeros(1,biggestNumSamples);
+peakIPR = peakIPL;
+peakOPR = peakIPL;
+rmsIPR  = peakIPL;
+rmsOPR  = peakIPL;
+
+
+MOCobs = [];
+MOCend = zeros(numChannels,1);
+
+op = [];
 tic
 for nn = 1:nFrames
-    frameBufferPadded = [frameBuffer(:,nn)' pad];
-    
-[ outBuffer, filterStates, ARamp, MOCcontrol ] = EssexAidProcess14Frame( ...    
-    frameBufferPadded,...
-    filterStates,...
+    frameBufferPadL = [frameBufferL(:,nn)' pad];
+    frameBufferPadR = [frameBufferR(:,nn)' pad];
+
+  [ outBufferL, outBufferR, filterStatesL, filterStatesR,  ARampL, ARampR, MOCend, peakIPL, peakOPL, rmsIPL, rmsOPL, peakIPR, peakOPR, rmsIPR, rmsOPR, MOCcontrol ] =...
+    EssexAidProcessVFrameFBack( ...
+    frameBufferPadL,...
+    frameBufferPadR,...
+    filterStatesL,...
+    filterStatesR,...
     filterCoeffs,...
     numChannels,...
     numSamples,...
-    ARamp,...
-    MOCcontrol,...
+    ARampL,...
+    ARampR,...
     ARthresholdPa,...
     filterOrder,...
-    DRNLaBaseline,...
     DRNLb,...
     DRNLc,...
-    MOCthreshold,...
+    TMdBO,...
     MOCfactor,...
-    stapesScalar);
+    peakIPL,...
+    peakOPL,...
+    rmsIPL,...
+    rmsOPL,...
+    peakIPR,...
+    peakOPR,...
+    rmsIPR,...
+    rmsOPR,...
+    MOCend,...
+    MOCcontrol,...
+    mainGain);
+    
 
-    outBuffer = (outBuffer(1:numSamples));
-    op(1+(nn-1)*numSamples:nn*numSamples) = outBuffer;
+    MOCobs = [MOCobs MOCend];
+    outBuffer = ( [outBufferL(:, 1:numSamples); outBufferR(:, 1:numSamples)] );
+%     op(:, 1+(nn-1)*numSamples:nn*numSamples) = outBuffer;
+    op = [op outBuffer];
+%     peakOPsaved = [peakOPsaved peakOP];
+%     peakIPsaved = [peakIPsaved peakIP];
+%     rmsOPsaved = [rmsOPsaved rmsOP];
+%     rmsIPsaved = [rmsIPsaved rmsIP];
 end;
 toc
 
-soundsc([speech' op], sampleRate)
+
+figure; plot(20*log10(MOCobs'))
+20*log10(sqrt(mean(op(1,:).^2)) / 2e-5);
+
+ipdb = 20*log10(abs(speech/20e-6)+(1/(2^32)));
+opdb = 20*log10(abs(op/20e-6)+(1/(2^32)));
+figure; plot(ipdb(:,1),'k'); hold on; plot(opdb(1,:),'r');
+ylim([0 100])
+
+% figure
+% subplot(2,1,1)
+% plot(peakIPsaved')
+% title('INPUT')
+% subplot(2,1,2)
+% plot(peakOPsaved'-80)
+% title('OUTPUT')
+% 
+% figure
+% subplot(2,1,1)
+% plot(rmsIPsaved')
+% title('INPUT')
+% subplot(2,1,2)
+% plot(rmsOPsaved'-80)
+% title('OUTPUT')
+
+
+speechPly = speech(:,1)/sqrt(mean(speech(:,1).^2));
+opPly = op(1,:)/sqrt(mean(op(1,:).^2));
+soundsc([speechPly; opPly'], sampleRate)
 % soundsc(op, sampleRate)
 
 %% For emlc MEX
 z = { ...    
-    frameBufferPadded,...
-    filterStates,...
+    frameBufferPadL,...
+    frameBufferPadR,...
+    filterStatesL,...
+    filterStatesR,...
     filterCoeffs,...
     numChannels,...
     numSamples,...
-    ARamp,...
-    MOCcontrol,...
+    ARampL,...
+    ARampR,...
     ARthresholdPa,...
     filterOrder,...
-    DRNLaBaseline,...
     DRNLb,...
     DRNLc,...
-    MOCthreshold,...
+    TMdBO,...
     MOCfactor,...
-    stapesScalar};
+    peakIPL,...
+    peakOPL,...
+    rmsIPL,...
+    rmsOPL,...
+    peakIPR,...
+    peakOPR,...
+    rmsIPR,...
+    rmsOPR,...
+    MOCend,...
+    MOCcontrol,...
+    mainGain};
 
 % 6912 is the maximum number of frame samples accepted by JUCE Audio Editor
 % 10 is a guess of the maximum number of channels we'll ever use
@@ -221,7 +313,7 @@ rtw_config.FilePartitionMethod = 'SingleFile';
 rtw_config.GenCodeOnly = true;
 
 % % % USE THE FOLLOWING TO COMPILE LIB
-% % emlc EssexAidProcessFrame -eg z -launchreport -T rtw -s rtw_config
+% % emlc EssexAidProcessVFrameFBack -eg z -launchreport -T rtw -s rtw_config
 
 
 %% Filter initial coeffs
