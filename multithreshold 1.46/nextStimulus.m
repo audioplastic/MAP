@@ -2,17 +2,18 @@ function errormsg=nextStimulus(handles)
 % Handles everything concerned with the stimulus presentation
 %  called from startNewRun in subjGUI
 
-global experiment stimulusParameters withinRuns betweenRuns
+global experiment stimulusParameters withinRuns  
 experiment.status='presentingStimulus';
 errormsg='';
 
 % interrupt by 'stop' button
-if experiment.stop
-    disp('******** experiment manually stopped  *****************')
-    experiment.status= 'waitingForStart';
-    addToMsg('manually stopped',1)
-    return
-end
+% if experiment.stop
+%     disp('******** experiment manually stopped  *****************')
+%     experiment.status= 'waitingForStart';
+%     errormsg='manually stopped';
+%     addToMsg(errormsg,1)
+%     return
+% end
 
 % -----------------------------------------choose catch trials at random
 % catch trials are for subject threshold measurements only

@@ -4,7 +4,7 @@ global stimulusParameters experiment betweenRuns
 paradigm_training(handles) % default
 
 stimulusParameters.WRVname='maskerLevel';
-stimulusParameters.WRVstartValues=-10;
+stimulusParameters.WRVstartValues=50;
 stimulusParameters.WRVsteps= [-10 -4];
 stimulusParameters.WRVlimits=[-30 110];
 
@@ -13,7 +13,7 @@ experiment.psyFunSlope = -1;
 withinRuns.direction='up';
 
 betweenRuns.variableName1='gapDuration';
-betweenRuns.variableList1=[.05 .08 .02 .06 .04 ];
+betweenRuns.variableList1=[.05 .09 .01 .07 .03 ];
 betweenRuns.variableName2='targetFrequency';
 % retain existing targetFrequencies
 betweenRuns.variableList2=str2num(get(handles.edittargetFrequency,'string'));
