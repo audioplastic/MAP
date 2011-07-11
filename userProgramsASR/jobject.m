@@ -365,7 +365,7 @@ classdef jobject
             obj.currentSpeechLevel = tempSpeechLev;
             obj.currentNoiseLevel = tempNoiseLev;
             %             obj.currentFeatureFile = currentWav;
-            [finalFeatures, ~, ~] = processWavs(obj, currentWav); %discard the output from ANprobabilityResponse and method using ~                                    
+            [finalFeatures, ~] = processWavs(obj, currentWav); %discard the output from ANprobabilityResponse and method using ~                                    
             opForHTK(obj, currentWav, finalFeatures);                        
         end % ------ OF GENFEAT
         
@@ -509,7 +509,7 @@ classdef jobject
         %% **********************************************************
         % processWavs - do all of the MAP signal processing
         %************************************************************
-        function [finalFeatures, ANprobabilityResponse, method] = processWavs(obj, currentWav)
+        function [finalFeatures, ANprobabilityResponse] = processWavs(obj, currentWav)
             
             %**********************************************************
             % FIRST GET THE STIMULUS
@@ -530,19 +530,19 @@ classdef jobject
 %                 disp(size(stimulus))
             end
             
-            %**********************************************************
-            % Map related bits
-            %**********************************************************
-            %             % global variables - necessary for changing model pars
-            global AN_IHCsynapseParams inputStimulusParams IHCpreSynapseParams DRNLParams; %#ok<NUSED>
-            
-            paramsToLoad = ['method=MAPparams', obj.participant, '();'];
-            eval(paramsToLoad);
-            %             DRNLParams.fixedMOCAttenuation= -20;
-            
-            % now that the correct parameters have been loaded, change
-            % them!
-            inputStimulusParams.sampleRate = sampleRate;
+%             %**********************************************************
+%             % Map related bits
+%             %**********************************************************
+%             %             % global variables - necessary for changing model pars
+%             global AN_IHCsynapseParams inputStimulusParams IHCpreSynapseParams DRNLParams; %#ok<NUSED>
+%             
+%             paramsToLoad = ['method=MAPparams', obj.participant, '();'];
+%             eval(paramsToLoad);
+%             %             DRNLParams.fixedMOCAttenuation= -20;
+%             
+%             % now that the correct parameters have been loaded, change
+%             % them!
+%             inputStimulusParams.sampleRate = sampleRate;
 %OBSOLETE              method.plotGraphs =	obj.MAPplotGraphs;
 %             method.DRNLSave = obj.MAPDRNLSave;
             
