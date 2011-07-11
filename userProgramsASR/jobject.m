@@ -53,13 +53,15 @@ classdef jobject
         %************************************************************
         MAProot                 = fullfile('..');
 %         mapVer                  = 'MAP1_12_experimental';
-        MAPuseEfferent          = 1;
+%         MAPuseEfferent          = 1;
         MAPplotGraphs           = 0;
         MAPDRNLSave             = 0;
         
         MAPopLSR                = 0;
         MAPopMSR                = 0;
         MAPopHSR                = 1;
+        
+        MAPparamChanges = {};
         
         %************************************************************
         % HTK stuff - writing to HTK recogniser format
@@ -596,14 +598,14 @@ classdef jobject
 %             %             method.saveSynapseContents = 0;
 % %             [ANprobabilityResponse, method, ~] = MAPsequenceSeg(stimulus, method, MAPmoduleSequence);
 
-            paramChanges = {};
-            if ~obj.MAPuseEfferent
-                %disp('efferent off')
-                paramChanges{numel(paramChanges)+1}= 'OMEParams.rateToAttenuationFactor=0;';        % 0= off
-                paramChanges{numel(paramChanges)+1}= 'OMEParams.rateToAttenuationFactorProb=0;';    % 0= off
-                paramChanges{numel(paramChanges)+1}= 'DRNLParams.rateToAttenuationFactor = 0;';     % 0 = MOC off (probability)
-                paramChanges{numel(paramChanges)+1}= 'DRNLParams.rateToAttenuationFactorProb = 0;'; % 0 = MOC off (spikes)
-            end
+%             paramChanges = {};
+%             if ~obj.MAPuseEfferent
+%                 %disp('efferent off')
+%                 paramChanges{numel(paramChanges)+1}= 'OMEParams.rateToAttenuationFactor=0;';        % 0= off
+%                 paramChanges{numel(paramChanges)+1}= 'OMEParams.rateToAttenuationFactorProb=0;';    % 0= off
+%                 paramChanges{numel(paramChanges)+1}= 'DRNLParams.rateToAttenuationFactor = 0;';     % 0 = MOC off (probability)
+%                 paramChanges{numel(paramChanges)+1}= 'DRNLParams.rateToAttenuationFactorProb = 0;'; % 0 = MOC off (spikes)
+%             end
             AN_spikesOrProbability = 'probability';
             
             if obj.useSpectrogram
@@ -622,7 +624,7 @@ classdef jobject
                 
                 
             else
-                [ANprobabilityResponse, dt] = MAPwrap(stimulus, sampleRate, -1, obj.participant, AN_spikesOrProbability, paramChanges);
+                [ANprobabilityResponse, dt] = MAPwrap(stimulus, sampleRate, -1, obj.participant, AN_spikesOrProbability, obj.MAPparamChanges);
             end
             
            
