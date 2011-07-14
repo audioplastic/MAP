@@ -80,7 +80,7 @@ classdef jobject
         filterOrder  = 2;  
                 
         mainGain = [ 1;    1;    1;    1;    1];     % gain in linear units
-        TCdBO    = [40;   40;   40;   40;   10];      %Compression thresholds (in dB OUTPUT from 2nd filt)
+        TCdBO    = [40;   40;   40;   40;   40];      %Compression thresholds (in dB OUTPUT from 2nd filt)
         TMdBO    = [10;   10;   10;   10;   10];      %MOC thresholds (in dB OUTPUT from 2nd filt)
         DRNLc    = [ 0.2;  0.2;  0.2;  0.2;  0.2;]
         
