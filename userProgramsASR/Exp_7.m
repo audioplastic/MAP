@@ -7,7 +7,7 @@ function Exp_7(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '7';
+expName = '7b';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -39,7 +39,7 @@ xL.MAPopLSR = 0;
 xL.numCoeff = 10;
 xL.removeEnergyStatic = true;
 
-xL.numWavs = 2000; %MAx=8440
+xL.numWavs = 8440; %MAx=8440
 
 xL.noisePreDur = 1;
 xL.noisePostDur = 0.1;
@@ -65,7 +65,7 @@ for nn = 1:recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 200; %MAX = 358
+    xR{nn}.numWavs = 358; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(nn);    
     
             
@@ -86,7 +86,7 @@ for nn = recConditions+1:2*recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 200; %MAX = 358
+    xR{nn}.numWavs = 358; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
     xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.012;', 'DRNLParams.MOCrateThresholdProb =60;','DRNLParams.MOCtau =0.45;'};
     
@@ -108,7 +108,7 @@ for nn = 2*recConditions+1:3*recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 200; %MAX = 358
+    xR{nn}.numWavs = 358; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
     xR{nn}.MAPparamChanges= {'DRNLParams.a=0;'};
     xR{nn}.useAid = 0; %redundant but here to be explicit
@@ -130,7 +130,7 @@ for nn = 3*recConditions+1:4*recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 200; %MAX = 358
+    xR{nn}.numWavs = 358; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
     xR{nn}.MAPparamChanges= {'DRNLParams.a=0;'};   
     xR{nn}.useAid = 1;
