@@ -707,7 +707,7 @@ classdef jobject
             
             if obj.removeEnergyStatic
                 finalFeatures = finalFeatures(2:end,:);
-                disp(size(finalFeatures))
+                % disp(size(finalFeatures))
             end
             
             % OPTIONAL PLOTTING
