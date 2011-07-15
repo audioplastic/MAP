@@ -624,9 +624,9 @@ classdef jobject
                 
                 
             else
-                [ANprobabilityResponse, dt] = MAPwrap(stimulus, sampleRate, -1, obj.participant, AN_spikesOrProbability, obj.MAPparamChanges);
+                [ANprobabilityResponse, dt, myBFlist] = MAPwrap(stimulus, sampleRate, -1, obj.participant, AN_spikesOrProbability, obj.MAPparamChanges);
             end
-            
+            nChannels = numel(myBFlist);
            
             
 %             %**********************************************************
@@ -689,7 +689,7 @@ classdef jobject
 %                 end
 %             end
             
-            nChannels = numel(method.nonlinCF); %nonlin-cf is one of the few remaining method fields in 1_14
+%             nChannels = numel(method.nonlinCF); %nonlin-cf is one of the few remaining method fields in 1_14
             if ~obj.useSpectrogram
                 if obj.MAPopLSR && ~obj.MAPopHSR
                     ANprobabilityResponse = ANprobabilityResponse(1:nChannels, :); %use LSR

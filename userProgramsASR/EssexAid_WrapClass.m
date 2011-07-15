@@ -409,17 +409,19 @@ classdef EssexAid_WrapClass
         % OVERLOADED plot method 
         %************************************************************
         function plot(obj)
+            clf
             sig2dBSPL = @(sig)20*log10(abs(sig/20e-6)+(1/(2^32)));
             dt = 1/obj.sr;
             tAxis = dt:dt:dt*size(obj.stimulusINTERNAL,1);
             
             subplot(2,1,1)
-            plot(tAxis, sig2dBSPL(obj.stimulusUSER), 'k')
+            plot(tAxis(1:length(obj.stimulusUSER)), sig2dBSPL(obj.stimulusUSER), 'k')
             if ~isempty(obj.aidOPnice)
                 hold on
-                plot(tAxis, sig2dBSPL(obj.aidOPnice), 'r')
+                plot(tAxis(1:length(obj.stimulusUSER)), sig2dBSPL(obj.aidOPnice), 'r')
             end                                   
             ylim([0 100])
+            xlim([0 tAxis(length(obj.stimulusUSER))])
             title('Level response')
             xlabel('Time in seconds')
             ylabel('Level in dB SPL')
