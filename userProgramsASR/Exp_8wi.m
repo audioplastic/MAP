@@ -4,7 +4,7 @@ function Exp_8wi(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '8wi';
+expName = '8wib';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -39,7 +39,7 @@ else
     xL.numCoeff = 9;
 end
 
-xL.numWavs = 2000; %MAx=8440
+xL.numWavs = 8440; %MAx=8440
 
 xL.noisePreDur = 1;
 xL.noisePostDur = 0.1;
@@ -89,7 +89,7 @@ for nn = recConditions+1:2*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = 358; %MAX = 358
     xR{nn}.speechLevToUse = spLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.a=0;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.a=10000;'};
     xR{nn}.useAid = 0; %redundant but here to be explicit
     
     %Now just to wrap it up ready for processing
@@ -101,6 +101,93 @@ for nn = recConditions+1:2*recConditions
     end
 end
 
+tmpIdx=0;
+for nn = 2*recConditions+1:3*recConditions   
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['OHCfeatR_sp' num2str(spLevel(tmpIdx))]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.speechLevToUse = spLevel(tmpIdx);
+    xR{nn}.MAPparamChanges= {'DRNLParams.a=5000;'};
+    xR{nn}.useAid = 0; %redundant but here to be explicit
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
+
+tmpIdx=0;
+for nn = 3*recConditions+1:4*recConditions   
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['OHCfeatR_sp' num2str(spLevel(tmpIdx))]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.speechLevToUse = spLevel(tmpIdx);
+    xR{nn}.MAPparamChanges= {'DRNLParams.a=2500;'};
+    xR{nn}.useAid = 0; %redundant but here to be explicit
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
+
+tmpIdx=0;
+for nn = 4*recConditions+1:5*recConditions   
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['OHCfeatR_sp' num2str(spLevel(tmpIdx))]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.speechLevToUse = spLevel(tmpIdx);
+    xR{nn}.MAPparamChanges= {'DRNLParams.a=1250;'};
+    xR{nn}.useAid = 0; %redundant but here to be explicit
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
+
+tmpIdx=0;
+for nn = 5*recConditions+1:6*recConditions   
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['OHCfeatR_sp' num2str(spLevel(tmpIdx))]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.speechLevToUse = spLevel(tmpIdx);
+    xR{nn}.MAPparamChanges= {'DRNLParams.a=750;'};
+    xR{nn}.useAid = 0; %redundant but here to be explicit
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
 
 % you would normally end here and use a separate script for workers
 
@@ -113,7 +200,7 @@ end
 worker(xL.opFolder);
 
 if ~isMasterNode %dont bother wasting master node effort on generating testing features (for now)
-    for nn = 1:2*recConditions
+    for nn = 1:6*recConditions
         worker(xR{nn}.opFolder);
     end
 end
@@ -136,7 +223,7 @@ if isMasterNode
     
     % ALLOW MASTER NODE TO MUCK IN WITH GENERATING TESTING FEATURES ONCE
     % HMM HAS BEEN TRAINED
-    for nn = 1:2*recConditions
+    for nn = 1:6*recConditions
         worker(xR{nn}.opFolder);
     end    
     
@@ -151,13 +238,13 @@ if isMasterNode
         xR{end}.unlockJobList;
     end
       
-    for nn = 1:2*recConditions
+    for nn = 1:6*recConditions
         y.createSCP(xR{nn}.opFolder);
         y.test(xR{nn}.opFolder);
     end
     
     %Show all of the scores in the command window at the end
-    for nn = 1:2*recConditions
+    for nn = 1:6*recConditions
         y.score(xR{nn}.opFolder);
     end
 end

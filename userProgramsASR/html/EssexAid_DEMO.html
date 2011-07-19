@@ -62,7 +62,7 @@ p.footer {
   color: gray;
 }
 
-  </style></head><body><div class="content"><h1>Demo of the EssexAid and the Matlab Wrapper</h1><!--introduction--><p>Tada</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">General usage examples</a></li><li><a href="#21">Some other analyses</a></li><li><a href="#24">Responses to Gaussian pulse;</a></li></ul></div><h2>General usage examples<a name="1"></a></h2><p>First off, load up the essex aid</p><pre class="codeinput">x = EssexAid_WrapClass
+  </style></head><body><div class="content"><h1>Demo of the EssexAid and the Matlab Wrapper</h1><!--introduction--><p>This is a quick demo showing how to use the Essex aid matlab wrapper. The wrapper performs the jobs that the real time framework performs in the lab.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">General usage examples</a></li><li><a href="#21">Impulse responses</a></li><li><a href="#24">Responses to Gaussian pulse;</a></li></ul></div><h2>General usage examples<a name="1"></a></h2><p>First off, load up the essex aid</p><pre class="codeinput">x = EssexAid_WrapClass
 </pre><pre class="codeoutput">
 x = 
 
@@ -140,12 +140,12 @@ x.stimulusUSER = x.stimulusUSER + nz;
 
 x = x.processStim;
 plot(x)
-</pre><img vspace="5" hspace="5" src="EssexAid_DEMO_08.png" alt=""> <p>The strength of the MOC response can be tuned using the MOC factor parameter. This controlls the dB attenuation applied to the next frame by multiplication of the factor with the number of decibels that the output of the second filter exceeds a threshold in the current frame. The instantaneous compression acts as a soft limiter on the maximum attenuaion that the MOC can apply.</p><pre class="codeinput">x.MOCfactor = 0.95;
+</pre><img vspace="5" hspace="5" src="EssexAid_DEMO_08.png" alt=""> <p>The strength of the MOC response can be tuned using the MOC factor parameter. This controls the dB attenuation applied to the next frame by multiplication of the factor with the number of decibels that the output of the second filter exceeds a threshold in the current frame. The instantaneous compression acts as a soft limiter on the maximum attenuation that the MOC can apply.</p><pre class="codeinput">x.MOCfactor = 0.95;
 
 x = x.processStim;
 plot(x)
-</pre><img vspace="5" hspace="5" src="EssexAid_DEMO_09.png" alt=""> <p>If at any point you want to use the output of the aid for your own analysis, you can directly use, or copy the aidOPnice parameter. This is the aid output reshaped to the shape of the input stimulus. This is useful for implementing the wrapper in the speech recognition framework or in multithreshold. The aid requires a buffered stereo signal, but the wrapper will handle all the conversion behind the scenes and then convert the stimulus back to a friendly format. This will hopefully make inserting the aid into any existing analysis code relaible and painless.</p><pre class="codeinput">myOutput = x.aidOPnice;
-</pre><h2>Some other analyses<a name="21"></a></h2><p>The following code shows how to display the impulse response (94 dB click) for the default aid settings.</p><pre class="codeinput"><span class="comment">% Start with a fresh wrapper with an impulse in it (1 pascal)</span>
+</pre><img vspace="5" hspace="5" src="EssexAid_DEMO_09.png" alt=""> <p>If at any point you want to use the output of the aid for your own analysis, you can directly use, or copy the aidOPnice parameter. This is the aid output reshaped to the shape of the input stimulus. This is useful for implementing the wrapper in the speech recognition framework or in multithreshold. The aid requires a buffered stereo signal, but the wrapper will handle all the conversion behind the scenes and then convert the stimulus back to a friendly format. This will hopefully make inserting the aid into any existing analysis code reliable and painless.</p><pre class="codeinput">myOutput = x.aidOPnice;
+</pre><h2>Impulse responses<a name="21"></a></h2><p>The following code shows how to display the impulse response (94 dB click) for the default aid settings.</p><pre class="codeinput"><span class="comment">% Start with a fresh wrapper with an impulse in it (1 pascal)</span>
 x = EssexAid_WrapClass(48e3, [zeros(999,1); 1; zeros(3000, 1)]);
 x = x.processStim;
 plot(x)
@@ -163,7 +163,7 @@ plot(x)
 n  = 1:x.sr/8;
 width = 50;
 x. stimulusUSER = exp(-.5 * ((n-t0)/width).^2);
-</pre><p>The delay in the "centre of mass" of the output of algorithm in respomnse to a Gaussian pulse in strongly dependent on the bandwidth of the filters used.</p><p>One octave</p><pre class="codeinput">x.bwOct = 1/1;
+</pre><p>The delay in the "centre of mass" of the output of algorithm in response to a Gaussian pulse in strongly dependent on the bandwidth of the filters used.</p><p>One octave</p><pre class="codeinput">x.bwOct = 1/1;
 x = x.processStim;
 plot(x);
 </pre><img vspace="5" hspace="5" src="EssexAid_DEMO_13.png" alt=""> <p>Half octave</p><pre class="codeinput">x.bwOct = 1/2;
@@ -172,22 +172,29 @@ plot(x);
 </pre><img vspace="5" hspace="5" src="EssexAid_DEMO_14.png" alt=""> <p>Third octave</p><pre class="codeinput">x.bwOct = 1/3;
 x = x.processStim;
 plot(x);
-</pre><img vspace="5" hspace="5" src="EssexAid_DEMO_15.png" alt=""> <p>The delay is also strongly dependent on the type of filters used.</p><pre class="codeinput">x.filterOrder = 2;
+</pre><img vspace="5" hspace="5" src="EssexAid_DEMO_15.png" alt=""> <p>The delay is relatively independent of the filter type and filter order, but the following demo shows that the ringing extends for much longer when using a butterworth type filter.</p><pre class="codeinput">x.filterOrder = 2;
 x.useGTF = false;
+x.bwOct = 1/2;
 x = x.processStim;
 plot(x);
-</pre><img vspace="5" hspace="5" src="EssexAid_DEMO_16.png" alt=""> <pre class="codeinput">x.TC_dBHL = 40*ones(size(x.TC_dBHL));
+</pre><img vspace="5" hspace="5" src="EssexAid_DEMO_16.png" alt=""> <p>At the moment, we are leaning towards using 3rd order Gammatone filters with 1/2 octave bandwidth. This makes the heaing aid filter parameters very close to the default MAP parameters.</p><pre class="codeinput">x.filterOrder = 3;
+x.useGTF = true;
 x = x.processStim;
 plot(x);
-
+</pre><img vspace="5" hspace="5" src="EssexAid_DEMO_17.png" alt=""> <p>The summation of all of the channels at the output of a Gammatone filter will not give a completely flat spectrum like one could expect from a bank of even order butterworth filters. However, this is unlikely to be an issue in terms of subjective sound quality.</p><p>The following plots show the effects of the compression on the delay. Firstly the instantaneous compression.</p><pre class="codeinput">x.TC_dBHL = 40*ones(size(x.TC_dBHL));
+x = x.processStim;
+plot(x);
+</pre><img vspace="5" hspace="5" src="EssexAid_DEMO_18.png" alt=""> <pre class="codeinput"><span class="comment">%...and then the MOC feedback compression also</span>
 x.TM_dBHL = 10*ones(size(x.TM_dBHL));
 x = x.processStim;
 plot(x);
-</pre><img vspace="5" hspace="5" src="EssexAid_DEMO_17.png" alt=""> <p class="footer"><br>
+</pre><img vspace="5" hspace="5" src="EssexAid_DEMO_19.png" alt=""> <p class="footer"><br>
       Published with MATLAB&reg; 7.10<br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Demo of the EssexAid and the Matlab Wrapper
-% Tada
+% This is a quick demo showing how to use the Essex aid matlab wrapper. The
+% wrapper performs the jobs that the real time framework performs in the
+% lab.
 
 
 %% General usage examples
@@ -359,11 +366,11 @@ plot(x)
 
 %%
 % The strength of the MOC response can be tuned using the MOC factor
-% parameter. This controlls the dB attenuation applied to the next frame by
+% parameter. This controls the dB attenuation applied to the next frame by
 % multiplication of the factor with the number of decibels that the output
 % of the second filter exceeds a threshold in the current frame. The
 % instantaneous compression acts as a soft limiter on the maximum
-% attenuaion that the MOC can apply.
+% attenuation that the MOC can apply.
 
 x.MOCfactor = 0.95;
 
@@ -378,11 +385,11 @@ plot(x)
 % or in multithreshold. The aid requires a buffered stereo signal, but the
 % wrapper will handle all the conversion behind the scenes and then convert
 % the stimulus back to a friendly format. This will hopefully make
-% inserting the aid into any existing analysis code relaible and painless.
+% inserting the aid into any existing analysis code reliable and painless.
 
 myOutput = x.aidOPnice;
 
-%% Some other analyses
+%% Impulse responses
 % The following code shows how to display the impulse response (94 dB
 % click) for the default aid settings.
 
@@ -423,7 +430,7 @@ width = 50;
 x. stimulusUSER = exp(-.5 * ((n-t0)/width).^2);
 
 %%
-% The delay in the "centre of mass" of the output of algorithm in respomnse to a
+% The delay in the "centre of mass" of the output of algorithm in response to a
 % Gaussian pulse in strongly dependent on the bandwidth of the filters
 % used.
 
@@ -446,20 +453,43 @@ x = x.processStim;
 plot(x);
 
 %%
-% The delay is also strongly dependent on the type of filters used.
+% The delay is relatively independent of the filter type and filter order,
+% but the following demo shows that the ringing extends for much longer
+% when using a butterworth type filter.
 
 x.filterOrder = 2;
 x.useGTF = false;
+x.bwOct = 1/2;
+x = x.processStim;
+plot(x);
+
+%% 
+% At the moment, we are leaning towards using 3rd order Gammatone filters with 1/2 octave
+% bandwidth. This makes the heaing aid filter parameters very close to the
+% default MAP parameters.
+
+x.filterOrder = 3;
+x.useGTF = true;
 x = x.processStim;
 plot(x);
 
 %%
-% 
+% The summation of all of the channels at the output of a Gammatone filter
+% will not give a completely flat spectrum like one could expect from a bank of even
+% order butterworth filters. However, this is unlikely to be an issue in
+% terms of subjective sound quality.
+
+
+%%
+% The following plots show the effects of the compression on the delay.
+% Firstly the instantaneous compression.
 
 x.TC_dBHL = 40*ones(size(x.TC_dBHL));
 x = x.processStim;
 plot(x);
 
+%%
+%...and then the MOC feedback compression also
 x.TM_dBHL = 10*ones(size(x.TM_dBHL));
 x = x.processStim;
 plot(x);

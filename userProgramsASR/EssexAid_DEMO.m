@@ -1,5 +1,7 @@
 %% Demo of the EssexAid and the Matlab Wrapper
-% Tada
+% This is a quick demo showing how to use the Essex aid matlab wrapper. The
+% wrapper performs the jobs that the real time framework performs in the
+% lab.
 
 
 %% General usage examples
@@ -171,11 +173,11 @@ plot(x)
 
 %%
 % The strength of the MOC response can be tuned using the MOC factor
-% parameter. This controlls the dB attenuation applied to the next frame by
+% parameter. This controls the dB attenuation applied to the next frame by
 % multiplication of the factor with the number of decibels that the output
 % of the second filter exceeds a threshold in the current frame. The
 % instantaneous compression acts as a soft limiter on the maximum
-% attenuaion that the MOC can apply.
+% attenuation that the MOC can apply.
 
 x.MOCfactor = 0.95;
 
@@ -190,11 +192,11 @@ plot(x)
 % or in multithreshold. The aid requires a buffered stereo signal, but the
 % wrapper will handle all the conversion behind the scenes and then convert
 % the stimulus back to a friendly format. This will hopefully make
-% inserting the aid into any existing analysis code relaible and painless.
+% inserting the aid into any existing analysis code reliable and painless.
 
 myOutput = x.aidOPnice;
 
-%% Some other analyses
+%% Impulse responses
 % The following code shows how to display the impulse response (94 dB
 % click) for the default aid settings.
 
@@ -235,7 +237,7 @@ width = 50;
 x. stimulusUSER = exp(-.5 * ((n-t0)/width).^2);
 
 %%
-% The delay in the "centre of mass" of the output of algorithm in respomnse to a
+% The delay in the "centre of mass" of the output of algorithm in response to a
 % Gaussian pulse in strongly dependent on the bandwidth of the filters
 % used.
 
