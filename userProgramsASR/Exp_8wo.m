@@ -83,7 +83,7 @@ tmpIdx=0;
 for nn = recConditions+1:2*recConditions   
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['OHCfeatR_sp' num2str(spLevel(tmpIdx))]);
+    recFolder = fullfile(expFolder,['OHCfeatR_sp10000_' num2str(spLevel(tmpIdx))]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -105,7 +105,7 @@ tmpIdx=0;
 for nn = 2*recConditions+1:3*recConditions   
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['OHCfeatR_sp' num2str(spLevel(tmpIdx))]);
+    recFolder = fullfile(expFolder,['OHCfeatR_sp5000_' num2str(spLevel(tmpIdx))]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -127,7 +127,7 @@ tmpIdx=0;
 for nn = 3*recConditions+1:4*recConditions   
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['OHCfeatR_sp' num2str(spLevel(tmpIdx))]);
+    recFolder = fullfile(expFolder,['OHCfeatR_sp2500_' num2str(spLevel(tmpIdx))]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -149,7 +149,7 @@ tmpIdx=0;
 for nn = 4*recConditions+1:5*recConditions   
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['OHCfeatR_sp' num2str(spLevel(tmpIdx))]);
+    recFolder = fullfile(expFolder,['OHCfeatR_sp1250_' num2str(spLevel(tmpIdx))]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -171,13 +171,13 @@ tmpIdx=0;
 for nn = 5*recConditions+1:6*recConditions   
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['OHCfeatR_sp' num2str(spLevel(tmpIdx))]);
+    recFolder = fullfile(expFolder,['OHCfeatR_sp625_' num2str(spLevel(tmpIdx))]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = 358; %MAX = 358
     xR{nn}.speechLevToUse = spLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.a=750;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.a=625;'};
     xR{nn}.useAid = 0; %redundant but here to be explicit
     
     %Now just to wrap it up ready for processing
