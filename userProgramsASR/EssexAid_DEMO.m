@@ -225,4 +225,77 @@ x.ARthreshold_dB = 200;
 x = x.processStim;
 plot(x)
 
+%% Responses to Gaussian pulse;
+% The response to a Gaussian pulse can be seen by using code such as the
+% following.
+
+t0 = ceil(10e-3*x.sr); %Centre of pulse at 10 ms
+n  = 1:x.sr/8;
+width = 50;
+x. stimulusUSER = exp(-.5 * ((n-t0)/width).^2);
+
+%%
+% The delay in the "centre of mass" of the output of algorithm in respomnse to a
+% Gaussian pulse in strongly dependent on the bandwidth of the filters
+% used.
+
+%%
+% One octave
+x.bwOct = 1/1;
+x = x.processStim;
+plot(x);
+
+%%
+% Half octave
+x.bwOct = 1/2;
+x = x.processStim;
+plot(x);
+
+%%
+% Third octave
+x.bwOct = 1/3;
+x = x.processStim;
+plot(x);
+
+%%
+% The delay is relatively independent of the filter type and filter order,
+% but the following demo shows that the ringing extends for much longer
+% when using a butterworth type filter.
+
+x.filterOrder = 2;
+x.useGTF = false;
+x.bwOct = 1/2;
+x = x.processStim;
+plot(x);
+
+%% 
+% At the moment, we are leaning towards using 3rd order Gammatone filters with 1/2 octave
+% bandwidth. This makes the heaing aid filter parameters very close to the
+% default MAP parameters.
+
+x.filterOrder = 3;
+x.useGTF = true;
+x = x.processStim;
+plot(x);
+
+%%
+% The summation of all of the channels at the output of a Gammatone filter
+% will not give a completely flat spectrum like one could expect from a bank of even
+% order butterworth filters. However, this is unlikely to be an issue in
+% terms of subjective sound quality.
+
+
+%%
+% The following plots show the effects of the compression on the delay.
+% Firstly the instantaneous compression.
+
+x.TC_dBHL = 40*ones(size(x.TC_dBHL));
+x = x.processStim;
+plot(x);
+
+%%
+%...and then the MOC feedback compression also
+x.TM_dBHL = 10*ones(size(x.TM_dBHL));
+x = x.processStim;
+plot(x);
 
