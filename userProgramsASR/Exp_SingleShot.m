@@ -38,7 +38,7 @@ xL.speechLevToUse  =  60;
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
-xL.MAPuseEfferent = 1;
+
 xL.numWavs = 1; %MAx=8440
 
 xL.useAid = 0;
@@ -46,7 +46,7 @@ xL.useAid = 0;
 % if isMasterNode
     mkdir(xL.opFolder);
     xL = xL.assignFiles;
-    xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_9A.wav'));
+    xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_2841A.wav'));
     
     xL.removeEnergyStatic = 0;
     xL.useSpectrogram = 0;
@@ -55,7 +55,7 @@ xL.useAid = 0;
     xL.storeSelf;
 % end
 
-
+xL.MAPparamChanges= {'DRNLParams.a=10000;'};
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ** Generate features **

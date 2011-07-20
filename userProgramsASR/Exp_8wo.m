@@ -4,7 +4,7 @@ function Exp_8wo(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '8wob';
+expName = '8woc';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -39,7 +39,7 @@ else
     xL.numCoeff = 9;
 end
 
-xL.numWavs = 8440; %MAx=8440
+xL.numWavs = 2000; %MAx=8440
 
 xL.noisePreDur = 1;
 xL.noisePostDur = 0.1;
@@ -65,7 +65,7 @@ for nn = 1:recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.numWavs = 200; %MAX = 358
     xR{nn}.speechLevToUse = spLevel(nn);    
     
             
@@ -87,7 +87,7 @@ for nn = recConditions+1:2*recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.numWavs = 200; %MAX = 358
     xR{nn}.speechLevToUse = spLevel(tmpIdx);
     xR{nn}.MAPparamChanges= {'DRNLParams.a=10000;'};
     xR{nn}.useAid = 0; %redundant but here to be explicit
@@ -109,7 +109,7 @@ for nn = 2*recConditions+1:3*recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.numWavs = 200; %MAX = 358
     xR{nn}.speechLevToUse = spLevel(tmpIdx);
     xR{nn}.MAPparamChanges= {'DRNLParams.a=5000;'};
     xR{nn}.useAid = 0; %redundant but here to be explicit
@@ -131,7 +131,7 @@ for nn = 3*recConditions+1:4*recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.numWavs = 200; %MAX = 358
     xR{nn}.speechLevToUse = spLevel(tmpIdx);
     xR{nn}.MAPparamChanges= {'DRNLParams.a=2500;'};
     xR{nn}.useAid = 0; %redundant but here to be explicit
@@ -153,7 +153,7 @@ for nn = 4*recConditions+1:5*recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.numWavs = 200; %MAX = 358
     xR{nn}.speechLevToUse = spLevel(tmpIdx);
     xR{nn}.MAPparamChanges= {'DRNLParams.a=1250;'};
     xR{nn}.useAid = 0; %redundant but here to be explicit
@@ -175,7 +175,7 @@ for nn = 5*recConditions+1:6*recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.numWavs = 200; %MAX = 358
     xR{nn}.speechLevToUse = spLevel(tmpIdx);
     xR{nn}.MAPparamChanges= {'DRNLParams.a=625;'};
     xR{nn}.useAid = 0; %redundant but here to be explicit
