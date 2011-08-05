@@ -76,4 +76,48 @@ global dt ANdt saveAN_spikesOrProbability savedBFlist saveMAPparamsName...
 
 
 
+%% Look at the SACF
 
+params.acfTau  = 2;
+params.minLag  = 1 / 4000;
+params.maxLag  = 1 / 50;
+params.lagStep = (params.maxLag - params.minLag) / 128;
+params.lambda = 10e-3;
+
+method.dt = dt;
+method.nonlinCF = savedBFlist(1:30);
+
+[P, BFlist, sacf, boundaryValue] = filteredSACF(ANprobRateOutput, method, params);
+
+
+% imagesc(flipud(P))
+
+%% Current IPIH algorithm
+% 
+% %%%%% IPI analysis %%%%%
+% iih=track_formants_from_IPI_guy(ANprobRateOutput, 1/dt);
+% 
+% %% %%% original VRP pattern
+% niih = 50;
+% [reduced_iih,ctr_freq] = mapping_IPIs_to_channels(iih,1/dt,logspace(log10(min(savedBFlist)),log10(max(savedBFlist)),niih),niih,0);
+% 
+% 
+% subplot(2,1,1)
+% imagesc(flipud(iih))
+% colorbar
+% subplot(2,1,2)
+% imagesc(reduced_iih)
+% colorbar
+
+
+%% Use Tim's reduction on the SACF
+
+niih = 50;
+[reduced_iih,ctr_freq] = mapping_IPIs_to_channels(P,1/dt,logspace(log10(1/params.minLag),log10(1/params.maxLag),niih),niih,0);
+
+subplot(2,1,1)
+imagesc(flipud(P))
+colorbar
+subplot(2,1,2)
+imagesc(reduced_iih)
+colorbar
