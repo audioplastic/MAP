@@ -7,7 +7,7 @@ function Exp_9(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '9';
+expName = '9a';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -56,8 +56,8 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sort out the testing (RECOGNITION) conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-spLevel = [40:5:90];
-xR=cell(size(nzLevel));
+spLevel = 30:10:100;
+xR=cell(size(spLevel));
 recConditions = numel(spLevel);
 for nn = 1:recConditions    
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
