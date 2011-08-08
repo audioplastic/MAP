@@ -44,9 +44,30 @@ classdef jobject
         currentSpeechLevel
         currentNoiseLevel
         
-        featHaxes = [];
+        
         useSpectrogram = false;
         numCoeff = 9;
+        
+        %************************************************************
+        % plotting handles
+        %************************************************************
+        probHaxes   = [];
+        probHaxesSM = [];
+        sacfHaxes   = [];
+        sacfHaxesSM = [];
+        featHaxes   = [];
+        
+        %************************************************************
+        % SACF params
+        %************************************************************
+        useSACF             = false;
+        
+        
+        SACFacfTau          = 2; % > 1 = Wiegrebe mode
+        SACFnBins           = 128;
+        SACFminLag          = 1 / 4000;
+        SACFmaxLag          = 1 / 50;
+        SACFlambda          = 10e-3;
         
         %************************************************************
         % MAP params
@@ -627,11 +648,14 @@ classdef jobject
                 [ANprobabilityResponse, dt, myBFlist] = MAPwrap(stimulus, sampleRate, -1, obj.participant, AN_spikesOrProbability, obj.MAPparamChanges);
             end
             nChannels = numel(myBFlist);
+            
+            
+            
            
             
-%             %**********************************************************
-%             % If using efferent do some different post processing
-%             %**********************************************************
+            %**********************************************************
+            % If using efferent do some different post processing
+            %**********************************************************
             
                 
 %             if obj.MAPuseEfferent
@@ -648,7 +672,7 @@ classdef jobject
             idx = time_ANresponse > obj.truncateDur; %RTF had this @ 0.550
             ANprobabilityResponse = ANprobabilityResponse(:, idx);
             
-             figure(11); imagesc(ANprobabilityResponse)
+             
             
 %             %**********************************************************
 %             % Quick method to see whether we have both LSR and HSR fibres
@@ -701,6 +725,71 @@ classdef jobject
                     assert(0,'Not working with MSR at the mo')
                 end
             end
+            
+            % OPTIONAL PLOTTING
+            YTickIdx = 1:floor(numel(myBFlist)/6):numel(myBFlist);
+            YTickIdxRev = numel(myBFlist)+1-YTickIdx;
+            if ~isempty(obj.probHaxes)
+                axes(obj.probHaxes);  %#ok<MAXES>
+                imagesc(ANprobabilityResponse); colorbar('peer', obj.probHaxes)                
+                set(obj.probHaxes, 'YTick', YTickIdx);                
+                set(obj.probHaxes, 'YTickLabel', num2str(    myBFlist(YTickIdxRev)'     ));
+                ylabel('cf in Hz')                
+            end
+            
+            % OPTIONAL PLOTTING SMOOTHED
+            if ~isempty(obj.probHaxesSM)
+                axes(obj.probHaxesSM); %#ok<MAXES>
+                imagesc([],1:size(ANprobabilityResponse,1),flipud(obj.makeANsmooth(ANprobabilityResponse, 1/dt)));
+                set(obj.probHaxesSM, 'YTick', YTickIdx);
+                set(obj.probHaxesSM, 'YTickLabel', num2str(    myBFlist(YTickIdxRev)'     ));
+                shading(obj.probHaxesSM, 'flat'); colorbar('peer', obj.probHaxesSM)
+                ylabel('cf in Hz')
+            end
+         
+            
+            %**********************************************************
+            % optional SACF stage
+            %**********************************************************
+            if obj.useSACF
+                
+                % A slightly ugly copying is needed 
+%                 SACFparams.minLag = obj.SACFminLag;
+%                 SACFparams.maxLag = obj.SACFmaxLag;       
+                SACFparams.lambda = obj.SACFlambda;
+                SACFparams.acfTau = obj.SACFacfTau;                
+                SACFparams.lags = logspace(log10(obj.SACFminLag),log10(obj.SACFmaxLag),obj.SACFnBins);
+                SACFparams.lags = linspace(obj.SACFminLag, obj.SACFmaxLag,obj.SACFnBins );
+                
+                SACFmethod.dt = dt;
+                SACFmethod.nonlinCF = myBFlist;
+                
+                %This is slightly misleading as the ANprob is now a SACF
+                [ANprobabilityResponse, ~, ~, ~] = filteredSACF(ANprobabilityResponse, SACFmethod, SACFparams);
+                
+                % OPTIONAL PLOTTING
+                YTickIdx = 1:floor(obj.SACFnBins/6):obj.SACFnBins;
+                YTickIdxRev = obj.SACFnBins+1-YTickIdx;
+                if ~isempty(obj.sacfHaxes)
+                    axes(obj.sacfHaxes);  %#ok<MAXES>
+                    imagesc(flipud(ANprobabilityResponse)); shading(obj.sacfHaxes, 'flat'); colorbar('peer', obj.sacfHaxes)
+                    set(obj.sacfHaxes, 'YTick', YTickIdx);
+                    set(obj.sacfHaxes, 'YTickLabel', num2str(    1./SACFparams.lags(YTickIdx)'    ,'%0.1f' ));
+                    ylabel('Pitch in Hz')                    
+                end
+                
+                % OPTIONAL PLOTTING SMOOTHED
+                if ~isempty(obj.sacfHaxesSM)
+                    axes(obj.sacfHaxesSM);  %#ok<MAXES>
+                    imagesc(flipud(obj.makeANsmooth(ANprobabilityResponse, 1/dt))); shading(obj.sacfHaxesSM, 'flat'); colorbar('peer', obj.sacfHaxesSM)
+                    set(obj.sacfHaxesSM, 'YTick', YTickIdx);
+                    set(obj.sacfHaxesSM, 'YTickLabel', num2str(    1./SACFparams.lags(YTickIdx)'    ,'%0.1f' ));
+                    ylabel('Pitch in Hz') 
+                end
+
+                
+            end
+            
                 
             finalFeatures = obj.makeANfeatures(  ...
                 obj.makeANsmooth(ANprobabilityResponse, 1/dt), obj.numCoeff  );            
@@ -712,7 +801,7 @@ classdef jobject
             
             % OPTIONAL PLOTTING
             if ~isempty(obj.featHaxes)
-                pcolor(obj.featHaxes, finalFeatures); shading flat
+                pcolor(obj.featHaxes, finalFeatures); shading(obj.featHaxes, 'flat'); colorbar('peer', obj.featHaxes)
             end
             
             opForHTK(obj, currentWav, finalFeatures);

@@ -1,3 +1,5 @@
+clear classes
+
 % function Exp_2(isMasterNode)
 % This is a template function on which other experiments can be based. If
 % you are running this function with just a single node, isMasterNode
@@ -26,14 +28,24 @@ learnFolder = fullfile(expFolder,'featL');
 
 xL = jobject('L', learnFolder);
 
-figure(22);
+figure(11);
 xL.featHaxes = gca;
+
+figure(22);
+xL.probHaxes = gca;
+figure(23);
+xL.probHaxesSM = gca;
+
+figure(33);
+xL.sacfHaxes = gca;
+figure(34);
+xL.sacfHaxesSM = gca;
 
 % xL.participant = 'NormalNOEFF';
 xL.participant = 'NormalNONE';
 
 xL.noiseLevToUse   =  -300;
-xL.speechLevToUse  =  60;
+xL.speechLevToUse  = 55;
 
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
@@ -43,19 +55,21 @@ xL.numWavs = 1; %MAx=8440
 
 xL.useAid = 0;
 
-% if isMasterNode
-    mkdir(xL.opFolder);
-    xL = xL.assignFiles;
-    xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_2841A.wav'));
-    
-    xL.removeEnergyStatic = 0;
-    xL.useSpectrogram = 0;
-    xL.numCoeff =9;
-                
-    xL.storeSelf;
-% end
+xL.useSACF = 1;
+xL.SACFnBins = 128;
 
-xL.MAPparamChanges= {'DRNLParams.a=10000;'};
+
+mkdir(xL.opFolder);
+xL = xL.assignFiles;
+xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_2841A.wav'));
+
+xL.removeEnergyStatic = 1;
+xL.useSpectrogram = 0;
+xL.numCoeff = 10;
+
+xL.storeSelf;
+
+xL.MAPparamChanges= {' DRNLParams.rateToAttenuationFactorProb = 0;', 'OMEParams.rateToAttenuationFactorProb=0;'};
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ** Generate features **
@@ -78,21 +92,25 @@ global dt ANdt saveAN_spikesOrProbability savedBFlist saveMAPparamsName...
 
 %% Look at the SACF
 
-params.acfTau  = 2;
-params.minLag  = 1 / 4000;
-params.maxLag  = 1 / 50;
-params.lagStep = (params.maxLag - params.minLag) / 128;
-params.lambda = 10e-3;
+% params.acfTau  = 2;
+% nBins = 128;
+% 
+% params.minLag  = 1 / 4000;
+% params.maxLag  = 1 / 50;
+% % params.lagStep = (params.maxLag - params.minLag) / 128;
+% 
+% params.lags = logspace(log10(params.minLag),log10(params.maxLag),nBins);
+% 
+% params.lambda = 10e-3;
+% 
+% method.dt = dt;
+% method.nonlinCF = savedBFlist(1:30);
+% 
+% [P, BFlist, sacf, boundaryValue] = filteredSACF(ANprobRateOutput(1:30,:), method, params);
+% 
+% figure; imagesc(P)
 
-method.dt = dt;
-method.nonlinCF = savedBFlist(1:30);
-
-[P, BFlist, sacf, boundaryValue] = filteredSACF(ANprobRateOutput, method, params);
-
-
-% imagesc(flipud(P))
-
-%% Current IPIH algorithm
+% %% Current IPIH algorithm
 % 
 % %%%%% IPI analysis %%%%%
 % iih=track_formants_from_IPI_guy(ANprobRateOutput, 1/dt);
@@ -112,12 +130,12 @@ method.nonlinCF = savedBFlist(1:30);
 
 %% Use Tim's reduction on the SACF
 
-niih = 50;
-[reduced_iih,ctr_freq] = mapping_IPIs_to_channels(P,1/dt,logspace(log10(1/params.minLag),log10(1/params.maxLag),niih),niih,0);
-
-subplot(2,1,1)
-imagesc(flipud(P))
-colorbar
-subplot(2,1,2)
-imagesc(reduced_iih)
-colorbar
+% niih = 30;
+% [reduced_iih,ctr_freq] = mapping_IPIs_to_channels(P,1/dt,logspace(log10(1/params.minLag),log10(1/params.maxLag),niih),niih,0);
+% 
+% subplot(2,1,1)
+% imagesc(flipud(P))
+% colorbar
+% subplot(2,1,2)
+% imagesc(reduced_iih)
+% colorbar
