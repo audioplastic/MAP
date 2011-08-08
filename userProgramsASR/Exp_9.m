@@ -7,7 +7,7 @@ function Exp_9(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '9a';
+expName = '9b';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -61,7 +61,7 @@ xR=cell(size(spLevel));
 recConditions = numel(spLevel);
 for nn = 1:recConditions    
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['NONEfeatR_nz' num2str(nzLevel(nn))]);
+    recFolder = fullfile(expFolder,['NONEfeatR_nz' num2str(spLevel(nn))]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -82,7 +82,7 @@ tmpIdx=0;
 for nn = recConditions+1:2*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['AUTOfeatR_nz' num2str(nzLevel(tmpIdx))]);
+    recFolder = fullfile(expFolder,['AUTOfeatR_nz' num2str(spLevel(tmpIdx))]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
