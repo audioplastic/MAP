@@ -56,6 +56,7 @@ classdef jobject
         sacfHaxes   = [];
         sacfHaxesSM = [];
         featHaxes   = [];
+        reconHaxes  = [];
         
         %************************************************************
         % SACF params
@@ -769,7 +770,7 @@ classdef jobject
                 
                 % OPTIONAL PLOTTING
                 YTickIdx = 1:floor(obj.SACFnBins/6):obj.SACFnBins;
-                YTickIdxRev = obj.SACFnBins+1-YTickIdx;
+                %YTickIdxRev = obj.SACFnBins+1-YTickIdx;
                 if ~isempty(obj.sacfHaxes)
                     axes(obj.sacfHaxes);  %#ok<MAXES>
                     imagesc(flipud(ANprobabilityResponse)); shading(obj.sacfHaxes, 'flat'); colorbar('peer', obj.sacfHaxes)
@@ -802,6 +803,11 @@ classdef jobject
             % OPTIONAL PLOTTING
             if ~isempty(obj.featHaxes)
                 pcolor(obj.featHaxes, finalFeatures); shading(obj.featHaxes, 'flat'); colorbar('peer', obj.featHaxes)
+            end
+            if ~isempty(obj.reconHaxes)
+                 reconsData = idct(finalFeatures,obj.SACFnBins);
+                 axes(obj.reconHaxes);  %#ok<MAXES>
+                 imagesc(flipud( reconsData ));
             end
             
             opForHTK(obj, currentWav, finalFeatures);

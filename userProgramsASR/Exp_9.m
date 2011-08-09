@@ -7,7 +7,7 @@ function Exp_9(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '9b';
+expName = '9f';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -36,10 +36,10 @@ xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
 
 xL.useSACF=1;
-xL.numCoeff = 10;
+xL.numCoeff = 21;
 xL.removeEnergyStatic = true;
 
-xL.numWavs = 8440; %MAx=8440
+xL.numWavs = 2000; %MAx=8440
 
 xL.noisePreDur = 1;
 xL.noisePostDur = 0.1;
@@ -56,7 +56,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sort out the testing (RECOGNITION) conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-spLevel = 30:10:100;
+spLevel = 40:10:90;
 xR=cell(size(spLevel));
 recConditions = numel(spLevel);
 for nn = 1:recConditions    
@@ -65,7 +65,7 @@ for nn = 1:recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.numWavs = 200; %MAX = 358
     xR{nn}.speechLevToUse = spLevel(nn);    
     
             
@@ -86,7 +86,7 @@ for nn = recConditions+1:2*recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.numWavs = 200; %MAX = 358
     xR{nn}.noiseLevToUse = spLevel(tmpIdx);
     xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.012;', 'DRNLParams.MOCrateThresholdProb =60;','DRNLParams.MOCtau =0.45;'};
     
@@ -127,10 +127,15 @@ if isMasterNode
         xL = xL.loadSelf; %Reload incase changed
         xL.unlockJobList;
     end
-    y = HMMclass(hmmFolder);        
+    y = HMMclass(hmmFolder); 
+    y.numCoeff = 60;
+    
+    
     y.createSCP(xL.opFolder)
     y.createMLF(xL.opFolder)
     y.train(xL.opFolder) %This node can be busy training, even if other jobs are being processed for testing
+    
+    
     
     % ALLOW MASTER NODE TO MUCK IN WITH GENERATING TESTING FEATURES ONCE
     % HMM HAS BEEN TRAINED

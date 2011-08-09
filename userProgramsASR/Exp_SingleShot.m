@@ -31,6 +31,9 @@ xL = jobject('L', learnFolder);
 figure(11);
 xL.featHaxes = gca;
 
+figure(12);
+xL.reconHaxes = gca;
+
 figure(22);
 xL.probHaxes = gca;
 figure(23);
@@ -65,7 +68,7 @@ xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_2841A.wav'));
 
 xL.removeEnergyStatic = 1;
 xL.useSpectrogram = 0;
-xL.numCoeff = 10;
+xL.numCoeff = 21;
 
 xL.storeSelf;
 
@@ -86,7 +89,7 @@ global dt ANdt saveAN_spikesOrProbability savedBFlist saveMAPparamsName...
     savedInputSignal TMoutput OMEoutput ARattenuation ...
     DRNLoutput IHC_cilia_output IHCrestingCiliaCond IHCrestingV...
     IHCoutput ANprobRateOutput ANoutput savePavailable tauCas  ...
-    CNoutput  ICoutput ICmembraneOutput ICfiberTypeRates MOCattenuation
+    CNoutput  ICoutput ICmembraneOutput ICfiberTypeRates MOCattenuation 
 
 
 
