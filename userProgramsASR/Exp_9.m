@@ -7,7 +7,7 @@ function Exp_9(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '9f';
+expName = '9g';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -36,8 +36,8 @@ xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
 
 xL.useSACF=1;
-xL.numCoeff = 21;
-xL.removeEnergyStatic = true;
+xL.numCoeff = 20;
+xL.removeEnergyStatic = 0;
 
 xL.numWavs = 2000; %MAx=8440
 
