@@ -7,7 +7,7 @@ function Exp_7(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '7c';
+expName = '7bsa';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -28,7 +28,7 @@ xL = jobject('L', learnFolder);
 xL.participant = 'Normal';%'NormalDIFF';
 xL.MAPparamChanges= {' DRNLParams.rateToAttenuationFactorProb = 0;', 'OMEParams.rateToAttenuationFactorProb=0;'};
 
-xL.noiseLevToUse   =  -200;
+xL.noiseLevToUse   =  35;
 xL.speechLevToUse  =  60;
 
 xL.MAPopHSR = 1;
@@ -36,8 +36,8 @@ xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
 
 
-xL.numCoeff = 10;
-xL.removeEnergyStatic = true;
+xL.numCoeff = 9;
+xL.removeEnergyStatic = 0;
 
 xL.numWavs = 8440; %MAx=8440
 
@@ -56,7 +56,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sort out the testing (RECOGNITION) conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-nzLevel = [-200 40:5:80];
+nzLevel = 35:5:80;
 xR=cell(size(nzLevel));
 recConditions = numel(nzLevel);
 for nn = 1:recConditions    
@@ -100,27 +100,27 @@ for nn = recConditions+1:2*recConditions
     end
 end
 
-% tmpIdx=0;
-% for nn = 2*recConditions+1:3*recConditions   
-%     tmpIdx=tmpIdx+1;
-%     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-%     recFolder = fullfile(expFolder,['OHCfeatR_nz' num2str(nzLevel(tmpIdx))]);
-%     xR{nn}.opFolder = recFolder;    
-%     
-%     %These are the interesting differences between training and testing
-%     xR{nn}.numWavs = 358; %MAX = 358
-%     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-%     xR{nn}.MAPparamChanges= {'DRNLParams.a=0;'};
-%     xR{nn}.useAid = 0; %redundant but here to be explicit
-%     
-%     %Now just to wrap it up ready for processing
-%     if isMasterNode
-%         mkdir(xR{nn}.opFolder);
-%         xR{nn} = xR{nn}.assignWavPaths('R');
-%         xR{nn} = xR{nn}.assignFiles;
-%         xR{nn}.storeSelf;
-%     end
-% end
+tmpIdx=0;
+for nn = 2*recConditions+1:3*recConditions   
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['OHCfeatR_nz' num2str(nzLevel(tmpIdx))]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = -0.3162;', 'DRNLParams.MOCrateThresholdProb =60;','DRNLParams.MOCtau =0.45;'};
+    xR{nn}.useAid = 0; %redundant but here to be explicit
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
 % 
 % tmpIdx=0;
 % for nn = 3*recConditions+1:4*recConditions   
@@ -155,7 +155,7 @@ end
 worker(xL.opFolder);
 
 if ~isMasterNode %dont bother wasting master node effort on generating testing features (for now)
-    for nn = 1:2*recConditions
+    for nn = 1:3*recConditions
         worker(xR{nn}.opFolder);
     end
 end
@@ -178,7 +178,7 @@ if isMasterNode
     
     % ALLOW MASTER NODE TO MUCK IN WITH GENERATING TESTING FEATURES ONCE
     % HMM HAS BEEN TRAINED
-    for nn = 1:2*recConditions
+    for nn = 1:3*recConditions
         worker(xR{nn}.opFolder);
     end    
     
@@ -193,13 +193,13 @@ if isMasterNode
         xR{end}.unlockJobList;
     end
       
-    for nn = 1:2*recConditions
+    for nn = 1:3*recConditions
         y.createSCP(xR{nn}.opFolder);
         y.test(xR{nn}.opFolder);
     end
     
     %Show all of the scores in the command window at the end
-    for nn = 1:2*recConditions
+    for nn = 1:3*recConditions
         y.score(xR{nn}.opFolder);
     end
 end
