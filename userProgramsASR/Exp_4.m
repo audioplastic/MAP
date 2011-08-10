@@ -31,7 +31,7 @@ xL.speechLevToUse  =  60;
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
-xL.MAPuseEfferent = 1;
+% xL.MAPuseEfferent = 1;
 xL.numWavs = 1000; %MAx=8440
 
 xL.noisePreDur = 1;
