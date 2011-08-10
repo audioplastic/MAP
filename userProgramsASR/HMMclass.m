@@ -492,7 +492,7 @@ classdef HMMclass
         % scoreWhole folder - make my life easier @ command line
         %************************************************************
         function scoreWholeFolder(folderToScore)
-            dirInfo = dir(fullfile(folderToScore, 'featR*'));
+            dirInfo = dir(fullfile(folderToScore, '*featR*'));
 %              dirInfo.name
             numFolders = numel(dirInfo);
             for nn = 1:numFolders;
