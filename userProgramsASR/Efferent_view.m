@@ -28,9 +28,9 @@ ipSig = ipSig./sqrt(mean(ipSig.^2));
 ipSig = ipSig * 20e-6 * 10 ^ (levelSPL/20);
 
 paramChanges = {};
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb = 0;';%DEFAULT = 0.005;  % strength of MOC
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 140;';%DEFAULT = 70;
-paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0;';%DEFAULT = 0.01;
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb = 0.020;';%DEFAULT = 0.005;  % strength of MOC
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 60;';%DEFAULT = 70;
+paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0.00;';%DEFAULT = 0.01;
 
 AN_spikesOrProbability = 'probability';
 MAP1_14(ipSig, sr, -1, 'Normal', AN_spikesOrProbability, paramChanges)

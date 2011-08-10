@@ -29,3 +29,5 @@ s2 = s2*20e-6*10^(dBlev/20);
 x.stimulusUSER = s1+s2;
 x = x.processStim;
 figure; plot(x)
+
+% Beating peaks @50 dB SPL
