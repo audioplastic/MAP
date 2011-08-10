@@ -7,7 +7,7 @@ function Exp_7(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '7bsa';
+expName = '7bsa_200';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -28,7 +28,7 @@ xL = jobject('L', learnFolder);
 xL.participant = 'Normal';%'NormalDIFF';
 xL.MAPparamChanges= {' DRNLParams.rateToAttenuationFactorProb = 0;', 'OMEParams.rateToAttenuationFactorProb=0;'};
 
-xL.noiseLevToUse   =  35;
+xL.noiseLevToUse   =  -200;
 xL.speechLevToUse  =  60;
 
 xL.MAPopHSR = 1;
@@ -39,7 +39,11 @@ xL.MAPopLSR = 0;
 xL.numCoeff = 9;
 xL.removeEnergyStatic = 0;
 
-xL.numWavs = 8440; %MAx=8440
+%%%%% Group of params that will influence simulation run time %%%%%%%
+xL.numWavs = 2000; %MAx=8440
+testWavs = 100;
+nzLevel = 40:10:80;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 1;
 xL.noisePostDur = 0.1;
@@ -56,7 +60,6 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sort out the testing (RECOGNITION) conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-nzLevel = 35:5:80;
 xR=cell(size(nzLevel));
 recConditions = numel(nzLevel);
 for nn = 1:recConditions    
@@ -65,7 +68,7 @@ for nn = 1:recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(nn);    
     
             
@@ -86,7 +89,7 @@ for nn = recConditions+1:2*recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
     xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.012;', 'DRNLParams.MOCrateThresholdProb =60;','DRNLParams.MOCtau =0.45;'};
     
@@ -108,10 +111,10 @@ for nn = 2*recConditions+1:3*recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
     xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = -0.3162;'};
-    xR{nn}.useAid = 0; %redundant but here to be explicit
+
     
     %Now just to wrap it up ready for processing
     if isMasterNode
@@ -121,30 +124,7 @@ for nn = 2*recConditions+1:3*recConditions
         xR{nn}.storeSelf;
     end
 end
-% 
-% tmpIdx=0;
-% for nn = 3*recConditions+1:4*recConditions   
-%     tmpIdx=tmpIdx+1;
-%     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-%     recFolder = fullfile(expFolder,['OHCAIDfeatR_nz' num2str(nzLevel(tmpIdx))]);
-%     xR{nn}.opFolder = recFolder;    
-%     
-%     %These are the interesting differences between training and testing
-%     xR{nn}.numWavs = 358; %MAX = 358
-%     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-%     xR{nn}.MAPparamChanges= {'DRNLParams.a=0;'};   
-%     xR{nn}.useAid = 1;
-%     xR{nn}.mainGain = [30; 30; 30; 30; 30];
-%     
-%     %Now just to wrap it up ready for processing
-%     if isMasterNode
-%         mkdir(xR{nn}.opFolder);
-%         xR{nn} = xR{nn}.assignWavPaths('R');
-%         xR{nn} = xR{nn}.assignFiles;
-%         xR{nn}.storeSelf;
-%     end
-% end
-% you would normally end here and use a separate script for workers
+
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ** Generate features **
