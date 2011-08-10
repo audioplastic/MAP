@@ -104,13 +104,13 @@ tmpIdx=0;
 for nn = 2*recConditions+1:3*recConditions   
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['OHCfeatR_nz' num2str(nzLevel(tmpIdx))]);
+    recFolder = fullfile(expFolder,['FIXfeatR_nz' num2str(nzLevel(tmpIdx))]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = 358; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = -0.3162;', 'DRNLParams.MOCrateThresholdProb =60;','DRNLParams.MOCtau =0.45;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = -0.3162;'};
     xR{nn}.useAid = 0; %redundant but here to be explicit
     
     %Now just to wrap it up ready for processing

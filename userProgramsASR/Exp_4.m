@@ -32,7 +32,7 @@ xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
 xL.MAPuseEfferent = 1;
-xL.numWavs = 8440; %MAx=8440
+xL.numWavs = 1000; %MAx=8440
 
 xL.noisePreDur = 1;
 xL.noisePostDur = 0.1;
@@ -49,7 +49,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sort out the testing (RECOGNITION) conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-nzLevel = [-200 40:5:60];
+nzLevel = [-200 40:10:60];
 xR=cell(size(nzLevel));
 recConditions = numel(nzLevel);
 for nn = 1:recConditions    
@@ -58,7 +58,7 @@ for nn = 1:recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.numWavs = 100; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(nn);
     xR{nn}.participant = 'NormalNONE'; % This line is redundent but included for documentation purpose
     
@@ -80,7 +80,7 @@ for nn = recConditions+1:2*recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.numWavs = 100; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
     xR{nn}.participant = 'NormalFIX';
     
@@ -101,7 +101,7 @@ for nn = 2*recConditions+1:3*recConditions
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
-    xR{nn}.numWavs = 358; %MAX = 358
+    xR{nn}.numWavs = 100; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
     xR{nn}.participant = 'NormalDIFF';
     
