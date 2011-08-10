@@ -5,7 +5,7 @@ function Exp_4_mod(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '4nz';
+expName = '4nonz';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -25,14 +25,14 @@ xL = jobject('L', learnFolder);
 
 xL.participant = 'NormalNONE';%'NormalDIFF';
 
-xL.noiseLevToUse   =  35;
+xL.noiseLevToUse   =  -200;
 xL.speechLevToUse  =  60;
 
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
 % xL.MAPuseEfferent = 1;
-xL.numWavs = 1000; %MAx=8440
+xL.numWavs = 2000; %MAx=8440
 
 xL.noisePreDur = 1;
 xL.noisePostDur = 0.1;
@@ -49,7 +49,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sort out the testing (RECOGNITION) conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-nzLevel = [40:10:60];
+nzLevel = [40:10:80];
 xR=cell(size(nzLevel));
 recConditions = numel(nzLevel);
 for nn = 1:recConditions    
