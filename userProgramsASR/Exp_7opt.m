@@ -7,7 +7,7 @@ function Exp_7opt(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '7opt_2';
+expName = '7opt_3';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -40,9 +40,9 @@ xL.numCoeff = 9;
 xL.removeEnergyStatic = 0;
 
 %%%%% Group of params that will influence simulation run time %%%%%%%
-xL.numWavs = 2000; %MAx=8440
-testWavs = 100;
-nzLevel = 50:5:60;
+xL.numWavs = 8440; %MAx=8440
+testWavs = 358; %MAX = 358
+nzLevel = 40:5:60;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 1;
@@ -91,7 +91,7 @@ for nn = recConditions+1:2*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.005;', 'DRNLParams.MOCrateThresholdProb =60;','DRNLParams.MOCtau =0.45;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =30;','DRNLParams.MOCtau =0.45;'};
     
     
     %Now just to wrap it up ready for processing
@@ -113,7 +113,7 @@ for nn = 2*recConditions+1:3*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =60;','DRNLParams.MOCtau =0.45;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =40;','DRNLParams.MOCtau =0.45;'};
     
     
     %Now just to wrap it up ready for processing
@@ -135,7 +135,7 @@ for nn = 3*recConditions+1:4*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.015;', 'DRNLParams.MOCrateThresholdProb =60;','DRNLParams.MOCtau =0.45;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =50;','DRNLParams.MOCtau =0.45;'};
     
     
     %Now just to wrap it up ready for processing
@@ -157,7 +157,7 @@ for nn = 4*recConditions+1:5*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.005;', 'DRNLParams.MOCrateThresholdProb =60;','DRNLParams.MOCtau =0.3;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =55;','DRNLParams.MOCtau =0.45;'};
     
     
     %Now just to wrap it up ready for processing
@@ -179,7 +179,7 @@ for nn = 5*recConditions+1:6*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =60;','DRNLParams.MOCtau =0.3;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =65;','DRNLParams.MOCtau =0.45;'};
     
     
     %Now just to wrap it up ready for processing
@@ -201,7 +201,7 @@ for nn = 6*recConditions+1:7*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.015;', 'DRNLParams.MOCrateThresholdProb =60;','DRNLParams.MOCtau =0.3;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =70;','DRNLParams.MOCtau =0.45;'};
     
     
     %Now just to wrap it up ready for processing
@@ -223,7 +223,7 @@ for nn = 7*recConditions+1:8*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.005;', 'DRNLParams.MOCrateThresholdProb =60;','DRNLParams.MOCtau =0.15;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =75;','DRNLParams.MOCtau =0.45;'};
     
     
     %Now just to wrap it up ready for processing
@@ -245,7 +245,7 @@ for nn = 8*recConditions+1:9*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =60;','DRNLParams.MOCtau =0.15;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =80;','DRNLParams.MOCtau =0.45;'};
     
     
     %Now just to wrap it up ready for processing
@@ -267,7 +267,7 @@ for nn = 9*recConditions+1:10*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.015;', 'DRNLParams.MOCrateThresholdProb =60;','DRNLParams.MOCtau =0.15;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =90;','DRNLParams.MOCtau =0.45;'};
     
     
     %Now just to wrap it up ready for processing
