@@ -7,7 +7,7 @@ function Exp_7opt(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '7opt_1';
+expName = '7opt_2';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -85,7 +85,7 @@ tmpIdx=0;
 for nn = recConditions+1:2*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['AUTOfeatR_nz' num2str(nzLevel(tmpIdx))]);
+    recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -104,10 +104,10 @@ for nn = recConditions+1:2*recConditions
 end
 
 tmpIdx=0;
-for nn = recConditions+2:3*recConditions    
+for nn = 2*recConditions+1:3*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['AUTOfeatR_nz' num2str(nzLevel(tmpIdx))]);
+    recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -126,10 +126,10 @@ for nn = recConditions+2:3*recConditions
 end
 
 tmpIdx=0;
-for nn = recConditions+3:4*recConditions    
+for nn = 3*recConditions+1:4*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['AUTOfeatR_nz' num2str(nzLevel(tmpIdx))]);
+    recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -148,10 +148,10 @@ for nn = recConditions+3:4*recConditions
 end
 
 tmpIdx=0;
-for nn = recConditions+4:5*recConditions    
+for nn = 4*recConditions+1:5*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['AUTOfeatR_nz' num2str(nzLevel(tmpIdx))]);
+    recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -170,10 +170,10 @@ for nn = recConditions+4:5*recConditions
 end
 
 tmpIdx=0;
-for nn = recConditions+5:6*recConditions    
+for nn = 5*recConditions+1:6*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['AUTOfeatR_nz' num2str(nzLevel(tmpIdx))]);
+    recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -192,10 +192,10 @@ for nn = recConditions+5:6*recConditions
 end
 
 tmpIdx=0;
-for nn = recConditions+6:7*recConditions    
+for nn = 6*recConditions+1:7*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['AUTOfeatR_nz' num2str(nzLevel(tmpIdx))]);
+    recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -214,10 +214,10 @@ for nn = recConditions+6:7*recConditions
 end
 
 tmpIdx=0;
-for nn = recConditions+7:8*recConditions    
+for nn = 7*recConditions+1:8*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['AUTOfeatR_nz' num2str(nzLevel(tmpIdx))]);
+    recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -236,10 +236,10 @@ for nn = recConditions+7:8*recConditions
 end
 
 tmpIdx=0;
-for nn = recConditions+8:9*recConditions    
+for nn = 8*recConditions+1:9*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['AUTOfeatR_nz' num2str(nzLevel(tmpIdx))]);
+    recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -258,10 +258,10 @@ for nn = recConditions+8:9*recConditions
 end
 
 tmpIdx=0;
-for nn = recConditions+9:10*recConditions    
+for nn = 9*recConditions+1:10*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['AUTOfeatR_nz' num2str(nzLevel(tmpIdx))]);
+    recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
