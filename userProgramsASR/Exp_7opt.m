@@ -7,7 +7,7 @@ function Exp_7opt(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '7opt_3';
+expName = '7opt_4';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -41,7 +41,7 @@ xL.removeEnergyStatic = 0;
 
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 4000; %MAx=8440
-testWavs = 150; %MAX = 358
+testWavs = 100; %MAX = 358
 nzLevel = 45:5:60;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
