@@ -16,7 +16,7 @@ x = EssexAid_WrapClass;
 % aid
 dt = 1/x.sr;
 tAxis = dt:dt:0.2;
-f = [x.channelBFs(3)*2^0.15 x.channelBFs(4)*2^-0.15];
+f = [x.channelBFs(3)*2^0.1 x.channelBFs(4)*2^-0.1];
 dBlev = 60;
 
 s1 = sin(2*pi*f(1)*tAxis);

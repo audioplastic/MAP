@@ -28,7 +28,7 @@ xL = jobject('L', learnFolder);
 xL.participant = 'NormalDIFF';%'NormalDIFF';
 xL.MAPparamChanges= {' DRNLParams.rateToAttenuationFactorProb = 0;', 'OMEParams.rateToAttenuationFactorProb=0;'};
 
-xL.noiseLevToUse   =  -200;
+xL.noiseLevToUse   =  35;
 xL.speechLevToUse  =  60;
 
 xL.MAPopHSR = 1;
@@ -40,9 +40,9 @@ xL.numCoeff = 9;
 xL.removeEnergyStatic = 0;
 
 %%%%% Group of params that will influence simulation run time %%%%%%%
-xL.numWavs = 8440; %MAx=8440
-testWavs = 358; %MAX = 358
-nzLevel = 40:5:60;
+xL.numWavs = 4000; %MAx=8440
+testWavs = 150; %MAX = 358
+nzLevel = 45:5:60;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 1;
