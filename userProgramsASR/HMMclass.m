@@ -320,6 +320,8 @@ classdef HMMclass
                 value  = fullfile(pwd, 'def', 'proto_Nick8'); %probability both HSR AND LSR
             elseif (obj.numCoeff == 60) && strcmpi(obj.paramType, 'USER_D_A')
                 value  = fullfile(pwd, 'def', 'proto_Nick20'); %probability both HSR AND LSR
+            elseif (obj.numCoeff == 14*3) && strcmpi(obj.paramType, 'USER_D_A')
+                value  = fullfile(pwd, 'def', 'proto_Nick14'); %probability both HSR AND LSR
             else
                 error('No appropriate prototype')
             end

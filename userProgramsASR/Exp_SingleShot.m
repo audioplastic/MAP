@@ -45,10 +45,10 @@ figure(34);
 xL.sacfHaxesSM = gca;
 
 % xL.participant = 'NormalNOEFF';
-xL.participant = 'NormalNONE';
+xL.participant = 'NormalDIFF';
 
-xL.noiseLevToUse   =  -300;
-xL.speechLevToUse  = 55;
+xL.noiseLevToUse   = -500;
+xL.speechLevToUse  = 60;
 
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
@@ -58,7 +58,7 @@ xL.numWavs = 1; %MAx=8440
 
 xL.useAid = 0;
 
-xL.useSACF = 1;
+xL.useSACF = 0;
 xL.SACFnBins = 128;
 
 
@@ -68,11 +68,17 @@ xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_2841A.wav'));
 
 xL.removeEnergyStatic = 0;
 xL.useSpectrogram = 0;
-xL.numCoeff = 50;
+xL.numCoeff = 14;
+
+xL.noisePreDur = 1;
+xL.noisePostDur = 0.1;
+xL.truncateDur  = 0.9; %Dr. RF used 0.550
+
 
 xL.storeSelf;
 
 xL.MAPparamChanges= {' DRNLParams.rateToAttenuationFactorProb = 0;', 'OMEParams.rateToAttenuationFactorProb=0;'};
+% xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =40;','DRNLParams.MOCtau =0.35;'};
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ** Generate features **
@@ -91,7 +97,11 @@ global dt ANdt saveAN_spikesOrProbability savedBFlist saveMAPparamsName...
     IHCoutput ANprobRateOutput ANoutput savePavailable tauCas  ...
     CNoutput  ICoutput ICmembraneOutput ICfiberTypeRates MOCattenuation 
 
+%%
+% clims = ;
 
+figure(12); set(gca, 'CLim', [30 80] ); colorbar
+figure(23); set(gca, 'CLim', [60 160] )
 
 %% Look at the SACF
 

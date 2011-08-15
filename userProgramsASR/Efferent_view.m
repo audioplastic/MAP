@@ -16,7 +16,7 @@ dur = 0.5;
 freq = 1000;
 
 nn=0;
-for levelSPL = 50:10:90;
+for levelSPL = 20:20:80;
 nn = nn+1;
 
 tAxis = dt:dt:dur;
@@ -28,23 +28,23 @@ ipSig = ipSig./sqrt(mean(ipSig.^2));
 ipSig = ipSig * 20e-6 * 10 ^ (levelSPL/20);
 
 paramChanges = {};
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb = 0.010;';%DEFAULT = 0.005;  % strength of MOC
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 40;';%DEFAULT = 70;
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb = 0.015;';%DEFAULT = 0.005;  % strength of MOC
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 70;';%DEFAULT = 70;
 paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau =0.35;' ;%DEFAULT = 20k in new params file
 
-paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0.04;';%DEFAULT = 0.01;
-paramChanges{numel(paramChanges)+1} = 'OMEParams.ARtau=.12;';
-paramChanges{numel(paramChanges)+1} = 'OMEParams.ARrateThreshold=10;';
+paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0.02;';%DEFAULT = 0.01;
+paramChanges{numel(paramChanges)+1} = 'OMEParams.ARtau=.06;';
+paramChanges{numel(paramChanges)+1} = 'OMEParams.ARrateThreshold=20;';
 
 AN_spikesOrProbability = 'probability';
-MAP1_14(ipSig, sr, -1, 'NormalDIFF', AN_spikesOrProbability, paramChanges)
+MAP1_14(ipSig, sr, -1, 'NormalNICK', AN_spikesOrProbability, paramChanges)
 
 options.showEfferent=1;
 UTIL_showMAP(options)
 drawnow
 
 %%
-global MOCattenuation
+global MOCattenuation ANprobRateOutput
 size(MOCattenuation);
 
 % attFraction = sqrt(mean((MOCattenuation.^2),2));
