@@ -1,5 +1,5 @@
 % function Efferent_view
-%This script is a function now, just so I dont f**k up my path
+% This script is a function now, just so I dont f**k up my path
 
 obj.MAProot = fullfile('..');
 addpath(...fullfile(obj.MAProot, 'modules'),...
@@ -12,11 +12,11 @@ close all; clear all; clc;
 
 sr = 44100;
 dt = 1/sr;
-dur = 1;
+dur = 2;
 freq = 1000;
 
 nn=0;
-for levelSPL = 0:10:100;
+for levelSPL = 0:10:90;
 % levelSPL = 50;
 nn = nn+1;
 levelRec(nn) = levelSPL;
@@ -24,22 +24,39 @@ levelRec(nn) = levelSPL;
 tAxis = dt:dt:dur;
 
 ipSig = sin(2*pi*freq*tAxis);
-% ipSig = randn(size(tAxis));
+
+% pink noise code
+ipSig = randn(size(tAxis));
+num_taps = 1024;
+a = zeros(1,num_taps);
+a(1) = 1;
+for ii = 2:num_taps
+    a(ii) = (ii - 2.5) * a(ii-1) / (ii-1);
+end
+ipSig = filter(1,a,ipSig);
+% end of pink code
+
+
+% soundsc(ipSig,sr)
 
 ipSig = ipSig./sqrt(mean(ipSig.^2));
 ipSig = ipSig * 20e-6 * 10 ^ (levelSPL/20);
 
 paramChanges = {};
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb =  0.012;';%GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 60;';%GOOD=140 %DEFAULT = 70;
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb =  0.000;';%GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactor =  0.005;';
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 40;';%GOOD=140 %DEFAULT = 70;
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThreshold = 50;'
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau = 0.35;'; %DEFAULT = 0.1;
 
 paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0;';%DEFAULT = 0.01;
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.a=1e4;'; %DEFAULT = 5e4;
+paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactor = 0;';%DEFAULT = 0.01;
+% paramChanges{numel(paramChanges)+1} = 'DRNLParams.a=1e4;'; %DEFAULT = 5e4;
 
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau = 0.45;'; %DEFAULT = 0.1;
+
 
 AN_spikesOrProbability = 'probability';
-MAP1_14(ipSig, sr, -1, 'Normal', AN_spikesOrProbability, paramChanges)
+MAP1_14(ipSig, sr, [ 1000 ], 'NormalNICK', AN_spikesOrProbability, paramChanges)
 
 options.showEfferent=1;
 UTIL_showMAP(options)
@@ -55,7 +72,12 @@ attdB(nn) = -min( mean(20*log10(MOCattenuation), 2) )
 % end
 
 %%
-global ANprobRateOutput
+global ANprobRateOutput ANoutput
+% if strcmpi(AN_spikesOrProbability, 'spikes')
+% %     ANprobRateOutput = ANoutput;
+%     ANprobRateOutput = jobject.makeANsmooth(ANoutput, sr)*sr;
+% end
+
 nChans = size(ANprobRateOutput,1)/2;
 nSamples = size(ANprobRateOutput,2);
 LSR = ANprobRateOutput(1:nChans, : );

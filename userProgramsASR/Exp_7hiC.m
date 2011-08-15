@@ -7,7 +7,7 @@ function Exp_7hiC(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '7hiC_0';
+expName = '7hiC_1';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -36,8 +36,8 @@ xL.MAPopMSR = 0;
 xL.MAPopLSR = 0;
 
 
-xL.numCoeff = 14;
-xL.removeEnergyStatic = 0;
+xL.numCoeff = 15;
+xL.removeEnergyStatic = 1;
 
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440

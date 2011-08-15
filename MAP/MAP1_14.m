@@ -792,8 +792,11 @@ while segmentStartPTR<signalLength
                         MOCprobBoundary{idx});
                     smoothedRates=smoothedRates-MOCrateThresholdProb;
                     smoothedRates(smoothedRates<0)=0;
+                    x =  (1- smoothedRates* rateToAttenuationFactorProb);
+                    x = max(x,10^(-30/20));
                     MOCattenuation(idx,segmentStartPTR:segmentEndPTR)= ...
-                        (1- smoothedRates* rateToAttenuationFactorProb);
+                        x;
+                    
                 end
             end
             MOCattenuation(MOCattenuation<0)=0.001;
