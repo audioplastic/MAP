@@ -61,7 +61,7 @@ xL.noiseName = 'pink';
 % Sort out the testing (RECOGNITION) conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % xR=cell(size(nzLevel));
-% recConditions = numel(nzLevel);
+recConditions = numel(nzLevel);
 % for nn = 1:recConditions    
 %     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
 %     recFolder = fullfile(expFolder,['NONEfeatR_nz' num2str(nzLevel(nn))]);
