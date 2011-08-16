@@ -268,7 +268,7 @@ end
 % Nodes that are not the master node are only interested in the opFolder
 % member of the jobjects.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-worker(xL.opFolder);
+% worker(xL.opFolder);
 
 if ~isMasterNode %dont bother wasting master node effort on generating testing features (for now)
     for nn = 3:8*recConditions
@@ -280,18 +280,18 @@ end
 % Train and test the recogniser - a job for the master node only
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if isMasterNode    
-    while(~all(xL.todoStatus==2))        
-        disp('Waiting on straggler nodes to complete their jobs before HMM is trained . . .')
-        pause(30); %Wait for 30 seconds before looking again
-        xL.lockJobList;
-        xL = xL.loadSelf; %Reload incase changed
-        xL.unlockJobList;
-    end
+%     while(~all(xL.todoStatus==2))        
+%         disp('Waiting on straggler nodes to complete their jobs before HMM is trained . . .')
+%         pause(30); %Wait for 30 seconds before looking again
+%         xL.lockJobList;
+%         xL = xL.loadSelf; %Reload incase changed
+%         xL.unlockJobList;
+%     end
     y = HMMclass(hmmFolder);    
     y.numCoeff = 14*3;
-    y.createSCP(xL.opFolder)
-    y.createMLF(xL.opFolder)
-    y.train(xL.opFolder) %This node can be busy training, even if other jobs are being processed for testing
+%     y.createSCP(xL.opFolder)
+%     y.createMLF(xL.opFolder)
+%     y.train(xL.opFolder) %This node can be busy training, even if other jobs are being processed for testing
     
     % ALLOW MASTER NODE TO MUCK IN WITH GENERATING TESTING FEATURES ONCE
     % HMM HAS BEEN TRAINED
