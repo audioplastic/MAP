@@ -44,13 +44,13 @@ ipSig = ipSig * 20e-6 * 10 ^ (levelSPL/20);
 
 paramChanges = {};
 paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb =  0.025;';%GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactor =  0.005;';
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 57;';%GOOD=140 %DEFAULT = 70;
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThreshold = 50;'
+% paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactor =  0.005;';
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 100;';%GOOD=140 %DEFAULT = 70;
+% paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThreshold = 50;'
 paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau = 0.35;'; %DEFAULT = 0.1;
 
 paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0;';%DEFAULT = 0.01;
-paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactor = 0;';%DEFAULT = 0.01;
+% paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactor = 0;';%DEFAULT = 0.01;
 % paramChanges{numel(paramChanges)+1} = 'DRNLParams.a=1e4;'; %DEFAULT = 5e4;
 
 
