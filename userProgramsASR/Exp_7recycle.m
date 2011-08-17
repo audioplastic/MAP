@@ -42,7 +42,7 @@ xL.removeEnergyStatic = 0;
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
 testWavs = 358; %MAX = 358
-nzLevel = 45:5:60;
+nzLevel = 45:5:65;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 1;
@@ -82,7 +82,7 @@ recConditions = numel(nzLevel);
 % end
 
 tmpIdx=0;
-for nn = 9*recConditions+1:10*recConditions    
+for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
     recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
@@ -91,7 +91,7 @@ for nn = 9*recConditions+1:10*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.025;', 'DRNLParams.MOCrateThresholdProb =80;','DRNLParams.MOCtau =0.35;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.006;', 'DRNLParams.MOCrateThresholdProb =57;', 'DRNLParams.MOCtau =0.35;'};
     
     
     %Now just to wrap it up ready for processing
@@ -104,7 +104,7 @@ for nn = 9*recConditions+1:10*recConditions
 end
 
 tmpIdx=0;
-for nn = 10*recConditions+1:11*recConditions   
+for nn = 1*recConditions+1:2*recConditions   
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
     recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
@@ -113,7 +113,7 @@ for nn = 10*recConditions+1:11*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.025;', 'DRNLParams.MOCrateThresholdProb =100;','DRNLParams.MOCtau =0.35;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.007;', 'DRNLParams.MOCrateThresholdProb =57;', 'DRNLParams.MOCtau =0.35;'};
     
     
     %Now just to wrap it up ready for processing
@@ -126,7 +126,7 @@ for nn = 10*recConditions+1:11*recConditions
 end
 
 tmpIdx=0;
-for nn = 11*recConditions+1:12*recConditions    
+for nn = 2*recConditions+1:3*recConditions   
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
     recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
@@ -135,7 +135,7 @@ for nn = 11*recConditions+1:12*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.025;', 'DRNLParams.MOCrateThresholdProb =120;','DRNLParams.MOCtau =0.35;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.008;', 'DRNLParams.MOCrateThresholdProb =57;', 'DRNLParams.MOCtau =0.35;'};
     
     
     %Now just to wrap it up ready for processing
@@ -148,7 +148,7 @@ for nn = 11*recConditions+1:12*recConditions
 end
 
 tmpIdx=0;
-for nn = 12*recConditions+1:13*recConditions    
+for nn = 3*recConditions+1:4*recConditions   
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
     recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
@@ -157,7 +157,7 @@ for nn = 12*recConditions+1:13*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.030;', 'DRNLParams.MOCrateThresholdProb =100;','DRNLParams.MOCtau =0.35;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.009;', 'DRNLParams.MOCrateThresholdProb =57;', 'DRNLParams.MOCtau =0.35;'};
     
     
     %Now just to wrap it up ready for processing
@@ -170,7 +170,7 @@ for nn = 12*recConditions+1:13*recConditions
 end
 
 tmpIdx=0;
-for nn = 13*recConditions+1:14*recConditions    
+for nn = 4*recConditions+1:5*recConditions   
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
     recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
@@ -179,7 +179,7 @@ for nn = 13*recConditions+1:14*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.030;', 'DRNLParams.MOCrateThresholdProb =120;','DRNLParams.MOCtau =0.35;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =57;', 'DRNLParams.MOCtau =0.35;'};
     
     
     %Now just to wrap it up ready for processing
@@ -190,73 +190,72 @@ for nn = 13*recConditions+1:14*recConditions
         xR{nn}.storeSelf;
     end
 end
-% 
-% tmpIdx=0;
-% for nn = 4*recConditions+1:5*recConditions    
-%     tmpIdx=tmpIdx+1;
-%     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-%     recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
-%     xR{nn}.opFolder = recFolder;    
-%     
-%     %These are the interesting differences between training and testing
-%     xR{nn}.numWavs = testWavs; %MAX = 358
-%     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-%     xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.012;', 'DRNLParams.MOCrateThresholdProb =40;','DRNLParams.MOCtau =0.35;'};
-%     
-%     
-%     %Now just to wrap it up ready for processing
-%     if isMasterNode
-%         mkdir(xR{nn}.opFolder);
-%         xR{nn} = xR{nn}.assignWavPaths('R');
-%         xR{nn} = xR{nn}.assignFiles;
-%         xR{nn}.storeSelf;
-%     end
-% end
-% 
-% tmpIdx=0;
-% for nn = 5*recConditions+1:6*recConditions    
-%     tmpIdx=tmpIdx+1;
-%     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-%     recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
-%     xR{nn}.opFolder = recFolder;    
-%     
-%     %These are the interesting differences between training and testing
-%     xR{nn}.numWavs = testWavs; %MAX = 358
-%     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-%     xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.014;', 'DRNLParams.MOCrateThresholdProb =40;','DRNLParams.MOCtau =0.35;'};
-%     
-%     
-%     %Now just to wrap it up ready for processing
-%     if isMasterNode
-%         mkdir(xR{nn}.opFolder);
-%         xR{nn} = xR{nn}.assignWavPaths('R');
-%         xR{nn} = xR{nn}.assignFiles;
-%         xR{nn}.storeSelf;
-%     end
-% end
-% 
-% tmpIdx=0;
-% for nn = 6*recConditions+1:7*recConditions    
-%     tmpIdx=tmpIdx+1;
-%     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-%     recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
-%     xR{nn}.opFolder = recFolder;    
-%     
-%     %These are the interesting differences between training and testing
-%     xR{nn}.numWavs = testWavs; %MAX = 358
-%     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-%     xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.016;', 'DRNLParams.MOCrateThresholdProb =40;','DRNLParams.MOCtau =0.35;'};
-%     
-%     
-%     %Now just to wrap it up ready for processing
-%     if isMasterNode
-%         mkdir(xR{nn}.opFolder);
-%         xR{nn} = xR{nn}.assignWavPaths('R');
-%         xR{nn} = xR{nn}.assignFiles;
-%         xR{nn}.storeSelf;
-%     end
-% end
 
+tmpIdx=0;
+for nn = 5*recConditions+1:6*recConditions   
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = testWavs; %MAX = 358
+    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.011;', 'DRNLParams.MOCrateThresholdProb =57;', 'DRNLParams.MOCtau =0.35;'};
+    
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
+
+tmpIdx=0;
+for nn = 6*recConditions+1:7*recConditions   
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = testWavs; %MAX = 358
+    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.012;', 'DRNLParams.MOCrateThresholdProb =57;', 'DRNLParams.MOCtau =0.35;'};
+    
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
+
+tmpIdx=0;
+for nn = 7*recConditions+1:8*recConditions   
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['AUTOfeatR_cond' num2str(nn)]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = testWavs; %MAX = 358
+    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.013;', 'DRNLParams.MOCrateThresholdProb =57;', 'DRNLParams.MOCtau =0.35;'};
+    
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
 
 
 
@@ -271,7 +270,7 @@ end
 % worker(xL.opFolder);
 
 if ~isMasterNode %dont bother wasting master node effort on generating testing features (for now)
-    for nn = 9*recConditions+1:14*recConditions
+    for nn = 0*recConditions+1:8*recConditions
         worker(xR{nn}.opFolder);
     end
 end
@@ -295,7 +294,7 @@ if isMasterNode
     
     % ALLOW MASTER NODE TO MUCK IN WITH GENERATING TESTING FEATURES ONCE
     % HMM HAS BEEN TRAINED
-    for nn = 9*recConditions+1:14*recConditions
+    for nn = 0*recConditions+1:8*recConditions
         worker(xR{nn}.opFolder);
     end    
     
@@ -310,13 +309,13 @@ if isMasterNode
         xR{end}.unlockJobList;
     end
       
-    for nn = 9*recConditions+1:14*recConditions
+    for nn = 0*recConditions+1:8*recConditions
         y.createSCP(xR{nn}.opFolder);
         y.test(xR{nn}.opFolder);
     end
     
     %Show all of the scores in the command window at the end
-    for nn = 9*recConditions+1:14*recConditions
+    for nn = 0*recConditions+1:8*recConditions
         y.score(xR{nn}.opFolder);
     end
 end
