@@ -28,9 +28,10 @@ ipSig = ipSig./sqrt(mean(ipSig.^2));
 ipSig = ipSig * 20e-6 * 10 ^ (levelSPL/20);
 
 paramChanges = {};
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb = 0.02;';%DEFAULT = 0.005;  % strength of MOC
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb = 0.00;';%DEFAULT = 0.005;  % strength of MOC
 paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 40;';%DEFAULT = 70;
 paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau =0.05;' ;%DEFAULT = 20k in new params file
+% paramChanges{numel(paramChanges)+1} = 'DRNLParams.a = 1250;';
 
 paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0.00;';%DEFAULT = 0.01;
 paramChanges{numel(paramChanges)+1} = 'OMEParams.ARtau=.06;';
