@@ -23,6 +23,8 @@ classdef jobject
         
         wavList
         todoStatus
+        jobLockFid
+        jobLockTxtFile
         
         participant        = 'Normal';%'DEMO2_multiSpont';
         noiseName          = '8TalkerBabble';
@@ -120,8 +122,7 @@ classdef jobject
     %************************************************************
     properties(Access = protected)
                 
-        jobLockFid
-        jobLockTxtFile
+        
         
         %Nick C comment on this:
         %OK. The big-endian thing works because in the config file
