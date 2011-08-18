@@ -73,7 +73,7 @@ recConditions = numel(nzLevel);
 %     
 %             
 %     %Now just to wrap it up ready for processing
-%     if isMasterNode
+%     if isMasterNode && ~isdir(xR{nn}.opFolder)
 %         mkdir(xR{nn}.opFolder);
 %         xR{nn} = xR{nn}.assignWavPaths('R');
 %         xR{nn} = xR{nn}.assignFiles;
@@ -97,7 +97,7 @@ for nn = 12*recConditions+1:13*recConditions
     
     
     %Now just to wrap it up ready for processing
-    if isMasterNode
+    if isMasterNode && ~isdir(xR{nn}.opFolder)
         mkdir(xR{nn}.opFolder);
         xR{nn} = xR{nn}.assignWavPaths('R');
         xR{nn} = xR{nn}.assignFiles;
@@ -119,11 +119,13 @@ for nn = 13*recConditions+1:14*recConditions
     
     
     %Now just to wrap it up ready for processing
-    if isMasterNode
-        mkdir(xR{nn}.opFolder);
-        xR{nn} = xR{nn}.assignWavPaths('R');
-        xR{nn} = xR{nn}.assignFiles;
-        xR{nn}.storeSelf;
+    if isMasterNode && ~isdir(xR{nn}.opFolder)
+        if ~isdir(xR{nn}.opFolder);
+            mkdir(xR{nn}.opFolder);
+            xR{nn} = xR{nn}.assignWavPaths('R');
+            xR{nn} = xR{nn}.assignFiles;
+            xR{nn}.storeSelf;
+        end
     end
 end
 
