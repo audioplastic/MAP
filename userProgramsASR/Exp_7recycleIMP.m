@@ -83,7 +83,7 @@ recConditions = numel(nzLevel);
 
 
 tmpIdx=0;
-for nn = 4*recConditions+1:5*recConditions   
+for nn = 5*recConditions+1:6*recConditions   
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
     recFolder = fullfile(expFolder,['IMPfeatR_cond' num2str(nn)]);
@@ -92,7 +92,29 @@ for nn = 4*recConditions+1:5*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.a=0;','DRNLParams.rateToAttenuationFactorProb = 0.0;', 'DRNLParams.MOCrateThresholdProb =57;', 'DRNLParams.MOCtau =0.35;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.a=2500;','DRNLParams.rateToAttenuationFactorProb = 0.0;', 'DRNLParams.MOCrateThresholdProb =57;', 'DRNLParams.MOCtau =0.35;'};
+    
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
+
+tmpIdx=0;
+for nn = 6*recConditions+1:7*recConditions   
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['IMPfeatR_cond' num2str(nn)]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = testWavs; %MAX = 358
+    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
+    xR{nn}.MAPparamChanges= {'DRNLParams.a=5000;','DRNLParams.rateToAttenuationFactorProb = 0.0;', 'DRNLParams.MOCrateThresholdProb =57;', 'DRNLParams.MOCtau =0.35;'};
     
     
     %Now just to wrap it up ready for processing
@@ -113,7 +135,7 @@ end
 % worker(xL.opFolder);
 
 if ~isMasterNode %dont bother wasting master node effort on generating testing features (for now)
-    for nn = 4*recConditions+1:5*recConditions
+    for nn = 5*recConditions+1:7*recConditions
         worker(xR{nn}.opFolder);
     end
 end
@@ -137,7 +159,7 @@ if isMasterNode
     
     % ALLOW MASTER NODE TO MUCK IN WITH GENERATING TESTING FEATURES ONCE
     % HMM HAS BEEN TRAINED
-    for nn = 4*recConditions+1:5*recConditions
+    for nn = 5*recConditions+1:7*recConditions
         worker(xR{nn}.opFolder);
     end    
     
@@ -152,13 +174,13 @@ if isMasterNode
         xR{end}.unlockJobList;
     end
       
-    for nn = 4*recConditions+1:5*recConditions
+    for nn = 5*recConditions+1:7*recConditions
         y.createSCP(xR{nn}.opFolder);
         y.test(xR{nn}.opFolder);
     end
     
     %Show all of the scores in the command window at the end
-    for nn = 4*recConditions+1:5*recConditions
+    for nn = 5*recConditions+1:7*recConditions
         y.score(xR{nn}.opFolder);
     end
 end
