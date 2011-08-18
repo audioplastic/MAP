@@ -23,8 +23,7 @@ classdef jobject
         
         wavList
         todoStatus
-        jobLockFid
-        jobLockTxtFile
+        
         
         participant        = 'Normal';%'DEMO2_multiSpont';
         noiseName          = '8TalkerBabble';
@@ -121,8 +120,7 @@ classdef jobject
     % Protected properties - inter/ra class communication
     %************************************************************
     properties(Access = protected)
-                
-        
+        jobLockFid               
         
         %Nick C comment on this:
         %OK. The big-endian thing works because in the config file
@@ -130,6 +128,9 @@ classdef jobject
         %FALSE and thus appears to override x86 standard
         %little-endian. Endianess has **!nothing!** to do with win vs *nix
         byteOrder = 'le';  % byte order is big endian
+    end
+    properties(Dependent = true)
+        jobLockTxtFile
     end
     
     %%  *********************************************************
@@ -169,8 +170,7 @@ classdef jobject
 %             mkdir(obj.opFolder);
             obj = obj.initMAP;
             
-            %Name the MUTEX file here
-            obj.jobLockTxtFile = [fullfile(obj.opFolder, 'jobLock') '.txt'];
+            
         end % ------ OF CONSTRUCTOR
         
         %% **********************************************************
@@ -297,6 +297,14 @@ classdef jobject
         %                                          | |             __/ |
         %                                          |_|            |___/
         %************************************************************
+        
+        %% **********************************************************
+        % get method for dependtent var jobLockTxtFile
+        %************************************************************        
+        function value = get.jobLockTxtFile(obj)
+            %Name the MUTEX file here
+            value = [fullfile(obj.opFolder, 'jobLock') '.txt'];
+        end
         
         %% **********************************************************
         % checkStatus - see how much of the current job is complete
