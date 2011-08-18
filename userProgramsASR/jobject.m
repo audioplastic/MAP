@@ -167,6 +167,9 @@ classdef jobject
             obj = obj.assignWavPaths(LearnOrRecWavs);
 %             mkdir(obj.opFolder);
             obj = obj.initMAP;
+            
+            %Name the MUTEX file here
+            obj.jobLockTxtFile = [fullfile(obj.opFolder, 'jobLock') '.txt'];
         end % ------ OF CONSTRUCTOR
         
         %% **********************************************************
@@ -350,8 +353,7 @@ classdef jobject
             %0=open, 1=processing, 2=done
             obj.todoStatus = zeros(numel(obj.wavList), 1); 
             
-            %Name the MUTEX file here
-            obj.jobLockTxtFile = [fullfile(obj.opFolder, 'jobLock') '.txt'];
+            
         end % ------ OF ASSIGN FILES
         
         %% **********************************************************
