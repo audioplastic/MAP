@@ -199,8 +199,8 @@ MOCattSegment=zeros(nBFs,reducedSegmentLength);
 MOCattenuation=ones(nBFs,signalLength);
 
 if DRNLParams.a>0
-    DRNLcompressionThreshold=10^((1/(1-DRNLParams.c))* ...
-    log10(DRNLParams.b/DRNLParams.a));
+    DRNLcompressionThreshold=4.2546e-012;% FIXED DISP for a = 10k --> 
+%     DRNLcompressionThreshold=10^((1/(1-DRNLParams.c))* log10(DRNLParams.b/DRNLParams.a));
 else
     DRNLcompressionThreshold=inf;
 end
@@ -784,7 +784,7 @@ while segmentStartPTR<signalLength
             if rateToAttenuationFactorProb<0
                 % negative factor implies a fixed attenuation
                 MOCattenuation(:,segmentStartPTR:segmentEndPTR)= ...
-                    ones(size(rates))* -rateToAttenuationFactorProb;
+                    ones(size(rates))* -rateToAttenuationFactorProb;                
             else
                 for idx=1:nBFs
                     [smoothedRates, MOCprobBoundary{idx}] = ...
