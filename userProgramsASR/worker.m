@@ -32,7 +32,12 @@ while(any(x.todoStatus==0))
         
     % ---  DO WORK  ---
     for tt=1:numel(todoNow)
-        x.genFeat(x.wavList(todoNow(tt)).name);
+        if ~numel(dir(fullfile(x.opFolder,strrep(x.wavList(todoNow(tt)).name, '.wav','.map'))));
+            x.genFeat(x.wavList(todoNow(tt)).name);
+        else
+            disp(['File ' x.wavList(todoNow(tt)).name ' already processed'])
+        end
+        
     end
     % --- END OF WORK ---
     

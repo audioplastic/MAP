@@ -51,8 +51,10 @@ xL.truncateDur  = 0.9; %Dr. RF used 0.550
 
 xL.noiseName = 'pink';
 
-if isMasterNode
-    mkdir(xL.opFolder);
+if isMasterNode && ~isdir(xL.opFolder)
+    mkdir(xL.opFolder);        
+end
+if isMasterNode && ~numel(dir(fullfile(xL.opFolder, 'jobObject.mat')))
     xL = xL.assignFiles;
     xL.storeSelf;
 end
@@ -75,6 +77,8 @@ for nn = 1:recConditions
     %Now just to wrap it up ready for processing
     if isMasterNode && ~isdir(xR{nn}.opFolder)
         mkdir(xR{nn}.opFolder);
+    end
+    if isMasterNode && ~numel(dir(fullfile(xR{nn}.opFolder, 'jobObject.mat')))
         xR{nn} = xR{nn}.assignWavPaths('R');
         xR{nn} = xR{nn}.assignFiles;
         xR{nn}.storeSelf;
@@ -97,6 +101,8 @@ for nn = recConditions+1:2*recConditions
     %Now just to wrap it up ready for processing
     if isMasterNode && ~isdir(xR{nn}.opFolder)
         mkdir(xR{nn}.opFolder);
+    end
+    if isMasterNode && ~numel(dir(fullfile(xR{nn}.opFolder, 'jobObject.mat')))
         xR{nn} = xR{nn}.assignWavPaths('R');
         xR{nn} = xR{nn}.assignFiles;
         xR{nn}.storeSelf;
@@ -119,6 +125,8 @@ for nn = 2*recConditions+1:3*recConditions
     %Now just to wrap it up ready for processing
     if isMasterNode && ~isdir(xR{nn}.opFolder)
         mkdir(xR{nn}.opFolder);
+    end
+    if isMasterNode && ~numel(dir(fullfile(xR{nn}.opFolder, 'jobObject.mat')))
         xR{nn} = xR{nn}.assignWavPaths('R');
         xR{nn} = xR{nn}.assignFiles;
         xR{nn}.storeSelf;
