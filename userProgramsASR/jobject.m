@@ -368,7 +368,7 @@ classdef jobject
         %% **********************************************************
         % generate  feature
         %************************************************************
-        function obj = genFeat(obj, currentWav)
+        function obj = genFeat(obj, currentWav)                        
             fprintf(1,'Processing: %s \n', currentWav);
             if strcmpi(obj.speechDist,'Gaussian')
                 tempSpeechLev = obj.speechLevToUse + obj.speechLevStd*randn;
