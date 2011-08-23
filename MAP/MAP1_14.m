@@ -200,8 +200,8 @@ MOCattenuation=ones(nBFs,signalLength);
 
 if DRNLParams.a>0
 %     DRNLcompressionThreshold=4.2546e-012;% FIXED DISP for a=10k,b=8e-6,c=0.2 
-%     DRNLcompressionThreshold=10^((1/(1-DRNLParams.c))* log10(DRNLParams.b/DRNLParams.a)); THIS IS WRONG!!!!!
-    DRNLcompressionThreshold = ((DRNLParams.b^5)/DRNLParams.a)^0.25; %This is valid only for DRNLc = 0.2
+    DRNLcompressionThreshold=10^((1/(1-DRNLParams.c))* log10(DRNLParams.b/DRNLParams.a)); %THIS (I once thought was) WRONG!!!!!
+%     DRNLcompressionThreshold = ((DRNLParams.b^5)/DRNLParams.a)^0.25; %This is valid only for DRNLc = 0.2
 else
     DRNLcompressionThreshold=inf;
 end
@@ -210,11 +210,11 @@ DRNLlinearOrder= DRNLParams.linOrder;
 DRNLnonlinearOrder= DRNLParams.nonlinOrder;
 
 DRNLa=DRNLParams.a;
-% DRNLb=DRNLParams.b;
+DRNLb=DRNLParams.b;
 DRNLc=DRNLParams.c;
 
 % Nick: now calculate b from compression threshold
-DRNLb = DRNLcompressionThreshold / ((DRNLcompressionThreshold/DRNLa)^DRNLc);
+% DRNLb = DRNLcompressionThreshold / ((DRNLcompressionThreshold/DRNLa)^DRNLc);
 
 linGAIN=DRNLParams.g;
 %
