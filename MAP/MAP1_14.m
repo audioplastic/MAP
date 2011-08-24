@@ -642,7 +642,7 @@ while segmentStartPTR<signalLength
 %         end
 
         x = nonlinOutput;
-        CtBM = 4.2546e-008; % using [a * 10^((1/(1-c))* log10(b/a))] where a = 10k, b=8e-6, c=0.2
+        CtBM = 1e-8 * 10^(DRNLParams.CtBMdB/20);%4.2546e-008; % using [a * 10^((1/(1-c))* log10(b/a))] where a = 10k, b=8e-6, c=0.2
                 
         CtS  = CtBM/DRNLa;      %Compression threshold in units of stapes disp
         y = zeros(size(x));
