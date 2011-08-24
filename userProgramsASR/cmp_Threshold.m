@@ -1,18 +1,17 @@
 close all; clear all; clc
 
-a = 1000;
+a = 10000;
 b = 8e-6;
 c = 0.2;
 
-cmpA = 10^((1/(1-c))* log10(b/a)) %THIS IS WRONG!!!!!
-cmpB = ((b^5)/a)^0.25 %This is valid only for DRNLc = 0.2
-cmpC = a * 10^((1/(1-c))* log10(b/a)) %THIS IS CORRECT!!!!!
+cmpA = 10^((1/(1-c))* log10(b/a)) %THIS IS CORRECT ON THE INPUT AXIS (Stapes vel)
+cmpC = a * 10^((1/(1-c))* log10(b/a)) %THIS IS CORRECT on the output axis (BM displacement)
 
 
 % OK, so the previous version of MAP was missing the factor a in the
 % calculation of the compression threshold.
 
-att = 1;
+att = 1/10;
 xOrig = 0:1e-14:100e-12;
 
 x = xOrig*att;
@@ -34,3 +33,23 @@ nonlinOutput=y;
 
 figure; plot(xOrig*1e12,nonlinOutput*1e12); ylim([0 10e4])
 set(gca,'XScale', 'log', 'YScale', 'log')
+
+
+
+
+CtBM = 4.2546e-008; %Compression threshold in units of basilar membrane disp
+CtS  = CtBM/a;      %Compression threshold in units of stapes disp
+
+y = zeros(size(x));
+abs_x = abs(x);
+y(abs_x<CtS)   = a * x(abs_x<CtS);
+y(abs_x>=CtS)  = sign(x(abs_x>=CtS)) * a * CtS .* exp(   c * log(  abs_x(abs_x>=CtS)/CtS  )   );
+
+
+
+figure;  plot(xOrig*1e12, y*1e12); ylim([0 10e4])
+hold on; plot(xOrig([1 end])*1e12, [CtBM CtBM]*1e12, ':r')
+hold on; plot(xOrig([1 end])*1e12, [CtBM CtBM]*1e12/4, ':k')
+xlabel('Stapes Displacement (nm)'); ylabel('BM Displacement (nm)')
+
+
