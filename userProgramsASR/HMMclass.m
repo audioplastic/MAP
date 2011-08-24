@@ -76,6 +76,13 @@ classdef HMMclass
         end % ------ OF GENPROTO
         
         %% **********************************************************
+        % istrained
+        %************************************************************
+        function boolans = istrained(obj)
+            boolans = numel(dir(fullfile(obj.hmmFolder,'hmm36','models')));
+        end
+        
+        %% **********************************************************
         % Train
         %************************************************************
         function train(obj, trainFeatureFolder)

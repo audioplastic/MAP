@@ -282,7 +282,9 @@ if isMasterNode
     y.numCoeff = 14*3;
     y.createSCP(xL.opFolder)
     y.createMLF(xL.opFolder)
-    y.train(xL.opFolder) %This node can be busy training, even if other jobs are being processed for testing
+    if ~istrained(y)
+        y.train(xL.opFolder) %This node can be busy training, even if other jobs are being processed for testing
+    end
     
     % ALLOW MASTER NODE TO MUCK IN WITH GENERATING TESTING FEATURES ONCE
     % HMM HAS BEEN TRAINED
