@@ -7,7 +7,7 @@ function Exp_7hiC(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '7hiC_3';
+expName = '7hiC_4';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
