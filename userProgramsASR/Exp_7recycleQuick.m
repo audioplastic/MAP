@@ -67,13 +67,13 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['NEW_CMP19featR_cond' num2str(nn)]);
+    recFolder = fullfile(expFolder,['NEW_CMP18sfeatR_cond' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =57;', 'DRNLParams.MOCtau =0.35;', 'DRNLParams.CtBMdB = 19.5669'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.013;', 'DRNLParams.MOCrateThresholdProb =70;', 'DRNLParams.MOCtau =0.35;', 'DRNLParams.CtBMdB = 18;'};
     
     
     %Now just to wrap it up ready for processing
