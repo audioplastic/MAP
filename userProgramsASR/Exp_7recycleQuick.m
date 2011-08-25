@@ -61,6 +61,7 @@ xL.noiseName = 'pink';
 % Sort out the testing (RECOGNITION) conditions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % xR=cell(size(nzLevel));
+recConditions = numel(nzLevel);
 
 tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
