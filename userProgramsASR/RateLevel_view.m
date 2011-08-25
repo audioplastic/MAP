@@ -12,11 +12,11 @@ close all; clear all; clc;
 
 sr = 44100;
 dt = 1/sr;
-dur = 0.5;
+dur = 1.5;
 freq = 1000;
 
 nn=0;
-for levelSPL = 0:10:90;
+for levelSPL = 40:10:70;
 % levelSPL = 50;
 nn = nn+1;
 levelRec(nn) = levelSPL;
@@ -43,13 +43,13 @@ ipSig = ipSig./sqrt(mean(ipSig.^2));
 ipSig = ipSig * 20e-6 * 10 ^ (levelSPL/20);
 
 paramChanges = {};
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb =  0.010;';%GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb =  0.020;';%GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
 % paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactor =  0.005;';
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 57;';%GOOD=140 %DEFAULT = 70;
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 100;';%GOOD=140 %DEFAULT = 70;
 % paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThreshold = 50;'
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau = 0.05;'; %DEFAULT = 0.1;
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.a = 10000;';
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.CtBMdB = 18.0618';
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau = 0.35;'; %DEFAULT = 0.1;
+% paramChanges{numel(paramChanges)+1} = 'DRNLParams.a = 10000;';
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.CtBMdB = 18.0618;';
 
 
 paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0;';%DEFAULT = 0.01;
@@ -98,4 +98,7 @@ figure(33)
 subplot(3,1,1); plot(levelRec, attdB); title('MOC attenuation')
 subplot(3,1,2); plot(levelRec, rateLSR); title('LSR rate')
 subplot(3,1,3); plot(levelRec, rateHSR); title('HSR rate')
+
+figure(44)
+plot(levelRec, attdB); title('MOC attenuation'); ylim([0 35])
 
