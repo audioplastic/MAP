@@ -241,7 +241,7 @@ if showMapOptions.showEfferent
     plotInstructions.yValues= savedBFlist;
     plotInstructions.yLabel= 'BF';
     plotInstructions.title= ['MOC strength'];
-    plotInstructions.zValuesRange=[ -25 0];
+    plotInstructions.zValuesRange=[ -45 0];
     subplot(2,1,2)
     % imagesc(MOCattenuation)
     UTIL_plotMatrix(20*log10(MOCattenuation), plotInstructions);

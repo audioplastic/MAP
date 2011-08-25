@@ -16,7 +16,8 @@ dur = 1.5;
 freq = 1000;
 
 nn=0;
-for levelSPL = 40:10:70;
+% for levelSPL = 40:10:70;
+for levelSPL = [55 60]
 % levelSPL = 50;
 nn = nn+1;
 levelRec(nn) = levelSPL;
@@ -26,16 +27,18 @@ tAxis = dt:dt:dur;
 ipSig = sin(2*pi*freq*tAxis);
 
 % pink noise code
-ipSig = randn(size(tAxis));
-num_taps = 1024;
-a = zeros(1,num_taps);
-a(1) = 1;
-for ii = 2:num_taps
-    a(ii) = (ii - 2.5) * a(ii-1) / (ii-1);
-end
-ipSig = filter(1,a,ipSig);
+% ipSig = randn(size(tAxis));
+% num_taps = 1024;
+% a = zeros(1,num_taps);
+% a(1) = 1;
+% for ii = 2:num_taps
+%     a(ii) = (ii - 2.5) * a(ii-1) / (ii-1);
+% end
+% ipSig = filter(1,a,ipSig);
 % end of pink code
 
+ipSig = wavread(fullfile('demo_wavs','noises', 'pink.wav'));
+ipSig = ipSig(1:numel(tAxis));
 
 % soundsc(ipSig,sr)
 
@@ -43,9 +46,9 @@ ipSig = ipSig./sqrt(mean(ipSig.^2));
 ipSig = ipSig * 20e-6 * 10 ^ (levelSPL/20);
 
 paramChanges = {};
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb =  0.020;';%GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb =  0.010;';%GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
 % paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactor =  0.005;';
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 100;';%GOOD=140 %DEFAULT = 70;
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 57;';%GOOD=140 %DEFAULT = 70;
 % paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThreshold = 50;'
 paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau = 0.35;'; %DEFAULT = 0.1;
 % paramChanges{numel(paramChanges)+1} = 'DRNLParams.a = 10000;';
@@ -70,7 +73,8 @@ global MOCattenuation
 size(MOCattenuation);
 
 % attFraction = sqrt(mean((MOCattenuation.^2),2));
-attdB(nn) = -min( mean(20*log10(MOCattenuation), 2) )
+% attdB(nn) = -min( mean(20*log10(MOCattenuation), 2) )
+attdB(nn) = -min( mean(20*log10(MOCattenuation(:, ceil(numel(tAxis)/2):end )), 2) )
 
 % end
 
@@ -100,5 +104,5 @@ subplot(3,1,2); plot(levelRec, rateLSR); title('LSR rate')
 subplot(3,1,3); plot(levelRec, rateHSR); title('HSR rate')
 
 figure(44)
-plot(levelRec, attdB); title('MOC attenuation'); ylim([0 35])
+plot(levelRec, attdB); title('MOC attenuation'); ylim([0 45])
 

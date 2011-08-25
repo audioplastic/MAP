@@ -73,7 +73,7 @@ for nn = 0*recConditions+1:1*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.020;', 'DRNLParams.MOCrateThresholdProb =80;', 'DRNLParams.MOCtau =0.35;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.007;', 'DRNLParams.MOCrateThresholdProb =57;', 'DRNLParams.MOCtau =0.35;'};
     
     
     %Now just to wrap it up ready for processing
