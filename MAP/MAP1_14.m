@@ -632,24 +632,25 @@ while segmentStartPTR<signalLength
                 filter(GTnonlin_b(BFno,:), GTnonlin_a(BFno,:), ...
                 nonlinOutput, GTnonlinBdry1{BFno,order});
         end
-%         %       broken stick instantaneous compression
-%         y= nonlinOutput.* DRNLa;  % linear section.
-%         % compress parts of the signal above the compression threshold
-%         abs_x = abs(nonlinOutput);
-%         idx=find(abs_x>DRNLcompressionThreshold);
-%         if ~isempty(idx)>0
-%             y(idx)=sign(y(idx)).* (DRNLb*abs_x(idx).^DRNLc);
-%         end
+        %       broken stick instantaneous compression
+        y= nonlinOutput.* DRNLa;  % linear section.
+        % compress parts of the signal above the compression threshold
+        abs_x = abs(nonlinOutput);
+        idx=find(abs_x>DRNLcompressionThreshold);
+        if ~isempty(idx)>0
+            y(idx)=sign(y(idx)).* (DRNLb*abs_x(idx).^DRNLc);
+        end
+        nonlinOutput = y;
 
-        x = nonlinOutput;
-        CtBM = 1e-8 * 10^(DRNLParams.CtBMdB/20);%4.2546e-008; % using [a * 10^((1/(1-c))* log10(b/a))] where a = 10k, b=8e-6, c=0.2
-                
-        CtS  = CtBM/DRNLa;      %Compression threshold in units of stapes disp
-        y = zeros(size(x));
-        abs_x = abs(x);
-        y(abs_x<CtS)   = DRNLa * x(abs_x<CtS);
-        y(abs_x>=CtS)  = sign(x(abs_x>=CtS)) * DRNLa * CtS .* exp(   DRNLc * log(  abs_x(abs_x>=CtS)/CtS  )   );
-        nonlinOutput=y;
+%         x = nonlinOutput;
+%         CtBM = 1e-8 * 10^(DRNLParams.CtBMdB/20);%4.2546e-008; % using [a * 10^((1/(1-c))* log10(b/a))] where a = 10k, b=8e-6, c=0.2
+%                 
+%         CtS  = CtBM/DRNLa;      %Compression threshold in units of stapes disp
+%         y = zeros(size(x));
+%         abs_x = abs(x);
+%         y(abs_x<CtS)   = DRNLa * x(abs_x<CtS);
+%         y(abs_x>=CtS)  = sign(x(abs_x>=CtS)) * DRNLa * CtS .* exp(   DRNLc * log(  abs_x(abs_x>=CtS)/CtS  )   );
+%         nonlinOutput=y;
 
         %       second filter removes distortion products
         for order = 1 : GTnonlinOrder
