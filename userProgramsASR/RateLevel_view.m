@@ -43,12 +43,13 @@ ipSig = ipSig./sqrt(mean(ipSig.^2));
 ipSig = ipSig * 20e-6 * 10 ^ (levelSPL/20);
 
 paramChanges = {};
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb =  -0.08;';%GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb =  0.010;';%GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
 % paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactor =  0.005;';
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 1000000;';%GOOD=140 %DEFAULT = 70;
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 57;';%GOOD=140 %DEFAULT = 70;
 % paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThreshold = 50;'
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau = 0.35;'; %DEFAULT = 0.1;
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau = 0.05;'; %DEFAULT = 0.1;
 paramChanges{numel(paramChanges)+1} = 'DRNLParams.a = 10000;';
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.CtBMdB = 18.0618';
 
 
 paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0;';%DEFAULT = 0.01;
@@ -58,7 +59,7 @@ paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0
 
 
 AN_spikesOrProbability = 'probability';
-MAP1_14(ipSig, sr, [ 1000 ], 'NormalNICK', AN_spikesOrProbability, paramChanges)
+MAP1_14(ipSig, sr, [ 1000 ], 'NormalDIFF', AN_spikesOrProbability, paramChanges)
 
 options.showEfferent=1;
 UTIL_showMAP(options)

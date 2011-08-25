@@ -26,7 +26,7 @@ learnFolder = fullfile(expFolder,'featL');
 xL = jobject('L', learnFolder);
 
 xL.participant = 'NormalDIFF';%'NormalDIFF';
-xL.MAPparamChanges= {' DRNLParams.rateToAttenuationFactorProb = 0;', 'OMEParams.rateToAttenuationFactorProb=0;, DRNLParams.CtBMdB = 18.0618'};
+xL.MAPparamChanges= {' DRNLParams.rateToAttenuationFactorProb = 0;', 'OMEParams.rateToAttenuationFactorProb=0;' , 'DRNLParams.CtBMdB = 18.0618'};
 
 xL.noiseLevToUse   =  -200;
 xL.speechLevToUse  =  60;
