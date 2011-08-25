@@ -42,7 +42,7 @@ xL.removeEnergyStatic = 0;
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
 testWavs = 358; %MAX = 358
-nzLevel = 55:5:60;
+nzLevel = 60;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 1;
@@ -67,13 +67,13 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['NEW_CMP18sfeatR_cond' num2str(nn)]);
+    recFolder = fullfile(expFolder,['REMAKEfeatR_cond' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0.013;', 'DRNLParams.MOCrateThresholdProb =70;', 'DRNLParams.MOCtau =0.35;', 'DRNLParams.CtBMdB = 18;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = -0.08;', 'DRNLParams.MOCrateThresholdProb =70;', 'DRNLParams.MOCtau =0.35;', 'DRNLParams.CtBMdB = 18.0618;'};
     
     
     %Now just to wrap it up ready for processing
