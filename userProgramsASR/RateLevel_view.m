@@ -12,12 +12,12 @@ close all; clear all; clc;
 
 sr = 44100;
 dt = 1/sr;
-dur = 1.5;
+dur = 0.2;
 freq = 1000;
 
 nn=0;
 % for levelSPL = 40:10:70;
-for levelSPL = [55 60 65]
+for levelSPL = [20:10:90]
 % levelSPL = 50;
 nn = nn+1;
 levelRec(nn) = levelSPL;
@@ -46,13 +46,13 @@ ipSig = ipSig./sqrt(mean(ipSig.^2));
 ipSig = ipSig * 20e-6 * 10 ^ (levelSPL/20);
 
 paramChanges = {};
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb =  0.013;';%GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb =  0;';%GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
 % paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactor =  0.005;';
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 70;';%GOOD=140 %DEFAULT = 70;
+% paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 70;';%GOOD=140 %DEFAULT = 70;
 % paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThreshold = 50;'
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau = 0.35;'; %DEFAULT = 0.1;
-% paramChanges{numel(paramChanges)+1} = 'DRNLParams.a = 10000;';
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.CtBMdB = 18;';% 18.0618;';
+% paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau = 0.35;'; %DEFAULT = 0.1;
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.a = 800;';
+% paramChanges{numel(paramChanges)+1} = 'DRNLParams.CtBMdB = 18;';% 18.0618;';
 
 
 paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0;';%DEFAULT = 0.01;

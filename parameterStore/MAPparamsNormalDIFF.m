@@ -110,7 +110,7 @@ DRNLParams.MOCrateThresholdProb =60;                % spikes/s probability only
 
 DRNLParams.MOCtau =0.45;                         % smoothing for MOC
 
-DRNLParams.CtBMdB = 18.0618; % 18 gives old a=800; old val was 12.5772 fo a=10k
+DRNLParams.CtBM = 8e-8;%18.0618; % 18 gives old a=800; old val was 12.5772 fo a=10k
 
 %% #4 IHC_cilia_RPParams
 

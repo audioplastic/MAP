@@ -16,7 +16,7 @@ dur = 1;
 freq = 1000;
 
 nn=0;
-for levelSPL = 10:10:90;
+for levelSPL = 60;
 nn = nn+1;
 
 tAxis = dt:dt:dur;
@@ -30,7 +30,7 @@ ipSig = ipSig./sqrt(mean(ipSig.^2));
 ipSig = ipSig * 20e-6 * 10 ^ (levelSPL/20);
 
 paramChanges = {};
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb = 0.010;';%DEFAULT = 0.005;  % strength of MOC
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb = 0.012;';%DEFAULT = 0.005;  % strength of MOC
 paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 57;';%DEFAULT = 70;
 paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau =0.35;' ;%DEFAULT = 20k in new params file
 % paramChanges{numel(paramChanges)+1} = 'DRNLParams.a = 1250;';
@@ -39,7 +39,7 @@ paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0
 paramChanges{numel(paramChanges)+1} = 'OMEParams.ARtau=.06;';
 paramChanges{numel(paramChanges)+1} = 'OMEParams.ARrateThreshold=20;';
 
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.CtBMdB = 18.0618;';
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.CtBM = 8e-8;';
 
 AN_spikesOrProbability = 'probability';
 MAP1_14(ipSig, sr, -1, 'NormalDIFF', AN_spikesOrProbability, paramChanges)

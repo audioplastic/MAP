@@ -1412,7 +1412,8 @@ testOME(experiment.name, paramChanges);
 function pushbuttonBM_Callback(hObject, eventdata, handles)
 global  stimulusParameters experiment paramChanges
 aReadAndCheckParameterBoxes(handles);
-relativeFrequencies=[0.25    .5   .75  1  1.25 1.5    2];
+% relativeFrequencies=[0.25    .5   .75  1  1.25 1.5    2];
+relativeFrequencies=1;
 AN_spikesOrProbability='probability';
 testBM(stimulusParameters.targetFrequency, ...
     experiment.name,relativeFrequencies, AN_spikesOrProbability, ...
@@ -1426,7 +1427,7 @@ showPSTHs=0;
 targetFrequency=stimulusParameters.targetFrequency(1);
 BFlist=targetFrequency;
 
-testAN(targetFrequency,BFlist,-10:10:90,experiment.name, paramChanges);
+testANprob(targetFrequency,BFlist,-10:10:90,experiment.name, paramChanges);
 
 function pushbuttonPhLk_Callback(hObject, eventdata, handles)
 global experiment
