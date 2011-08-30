@@ -813,8 +813,7 @@ classdef jobject
             end
             
             if obj.doCMN
-                m = mean(finalFeatures,2);
-                disp(size(m))                
+                m = mean(finalFeatures,2);                
                 finalFeatures = finalFeatures - repmat(m,1,size(finalFeatures,2));
             end
             
