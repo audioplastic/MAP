@@ -66,7 +66,9 @@ mkdir(xL.opFolder);
 xL = xL.assignFiles;
 xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_2841A.wav'));
 
-xL.removeEnergyStatic = 0;
+xL.removeEnergyStatic = 1;
+xL.doCMN = 1;
+
 xL.useSpectrogram = 0;
 xL.numCoeff = 14;
 

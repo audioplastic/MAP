@@ -316,10 +316,10 @@ classdef HMMclass
             if (obj.numCoeff == 27) && strcmpi(obj.paramType, 'USER_D_A')
                 value  = fullfile(pwd, 'def', 'proto_RobANonly_9'); %probability/HSR/LSR only
             elseif (obj.numCoeff == 54) && strcmpi(obj.paramType, 'USER_D_A')
-                value  = fullfile(pwd, 'def', 'proto_RobANonly_18'); %probability both HSR AND LSR
-                %             elseif (obj.numCoeff == 27) && strcmpi(obj.paramType, 'USER')
-                %                 value  = fullfile(pwd, 'def', 'proto_NickManualANonly_9'); %probability both HSR AND LSR
-            elseif (obj.numCoeff == 26) && strcmpi(obj.paramType, 'USER_D_A')
+                value  = fullfile(pwd, 'def', 'proto_Nick18'); 
+            elseif (obj.numCoeff == 57) && strcmpi(obj.paramType, 'USER_D_A')
+                value  = fullfile(pwd, 'def', 'proto_Nick19'); 
+              elseif (obj.numCoeff == 26) && strcmpi(obj.paramType, 'USER_D_A')
                 value  = fullfile(pwd, 'def', 'proto_NickManualANonly_9noEng'); %probability both HSR AND LSR
             elseif (obj.numCoeff == 26) && strcmpi(obj.paramType, 'USER_E_D_A_N')
                 value  = fullfile(pwd, 'def', 'proto_NickManualANonly_9noEng'); %probability both HSR AND LSR

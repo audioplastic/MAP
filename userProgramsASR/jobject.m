@@ -94,6 +94,7 @@ classdef jobject
         paramKind               = 9;        % HTK USER format for user-defined features (p73 of HTK book)
         
         removeEnergyStatic      = false;
+        doCMN                   = false; % Cepstral mean normalisation
         
         %************************************************************
         % Portable EssexAid params
@@ -810,6 +811,14 @@ classdef jobject
                 finalFeatures = finalFeatures(2:end,:);
                 % disp(size(finalFeatures))
             end
+            
+            if obj.doCMN
+                m = mean(finalFeatures,2);
+                disp(size(m))                
+                finalFeatures = finalFeatures - repmat(m,1,size(finalFeatures,2));
+            end
+            
+            
             
             % OPTIONAL PLOTTING
             if ~isempty(obj.featHaxes)
