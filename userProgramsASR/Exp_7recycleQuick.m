@@ -41,7 +41,7 @@ xL.removeEnergyStatic = 0;
 
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
-testWavs = 358; %MAX = 358
+testWavs = 150; %MAX = 358
 nzLevel = [40:10:60];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
