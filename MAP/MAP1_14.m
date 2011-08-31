@@ -802,19 +802,29 @@ while segmentStartPTR<signalLength
                     ones(size(rates))* -rateToAttenuationFactorProb;                
             else
                 for idx=1:nBFs
-                    [smoothedRates, MOCprobBoundary{idx}] = ...
-                        filter(MOCfilt_b, MOCfilt_a, rates(idx,:), ...
+%                     [smoothedRates, MOCprobBoundary{idx}] = ...
+%                         filter(MOCfilt_b, MOCfilt_a, rates(idx,:), ...
+%                         MOCprobBoundary{idx});
+%                     smoothedRates=smoothedRates-MOCrateThresholdProb;
+%                     smoothedRates(smoothedRates<0)=0;
+%                     x =  (1- smoothedRates* rateToAttenuationFactorProb); %ORIGINAL 
+
+                    %NEW !!!
+                    x = -20*log10(  max(rates(idx,:)/MOCrateThresholdProb,1)  )*rateToAttenuationFactorProb; %dB attenuation
+                    x = 10.^(x/20);
+                    x = max(x,10^(-35/20));    
+%                     %ALSO - filter at the end - this will stop rapid attack
+%                     %and slow decay
+                    [x, MOCprobBoundary{idx}] = ...
+                        filter(MOCfilt_b, MOCfilt_a, x, ...
                         MOCprobBoundary{idx});
-                    smoothedRates=smoothedRates-MOCrateThresholdProb;
-                    smoothedRates(smoothedRates<0)=0;
-                    x =  (1- smoothedRates* rateToAttenuationFactorProb);
-                    x = max(x,10^(-35/20));
-                    MOCattenuation(idx,segmentStartPTR:segmentEndPTR)= ...
-                        x;
                     
+                                        
+                    MOCattenuation(idx,segmentStartPTR:segmentEndPTR)= ...
+                        x;                                                            
                 end
             end
-            MOCattenuation(MOCattenuation<0)=0.001;
+%             MOCattenuation(MOCattenuation<0)=0.001;REDUNDANT
 
             %             plot(MOCattenuation)
 
