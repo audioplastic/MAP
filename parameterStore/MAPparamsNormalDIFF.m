@@ -68,7 +68,7 @@ OMEParams.rateToAttenuationFactorProb=0.00;% * N(all ANrates)
 OMEParams.ARtau=.05; % AR smoothing function
 % delay must be longer than the segment length
 OMEParams.ARdelay=efferentDelay;  %Moss gives 8.5 ms latency
-OMEParams.ARrateThreshold=0;
+OMEParams.ARrateThreshold=10;
 
 %%  #3 DRNL
 DRNLParams=[];  % clear the structure first
