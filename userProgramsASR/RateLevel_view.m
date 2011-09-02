@@ -37,8 +37,8 @@ ipSig = sin(2*pi*freq*tAxis);
 % ipSig = filter(1,a,ipSig);
 % end of pink code
 
-% ipSig = wavread(fullfile('demo_wavs','noises', 'pink.wav'));
-ipSig = wavread(fullfile('D:\ASRexperiments\Stimuli\noises', '20TalkerBabble.wav'));
+ipSig = wavread(fullfile('demo_wavs','noises', 'pink.wav'));
+% ipSig = wavread(fullfile('D:\ASRexperiments\Stimuli\noises', '20TalkerBabble.wav'));
 ipSig = ipSig(1:numel(tAxis));
 
 % soundsc(ipSig,sr)
@@ -55,7 +55,7 @@ paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau = 0.3;'; %DEFAULT = 0.1
 
 
 
-% paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0.05;';%DEFAULT = 0.01;
+paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0.05;';%DEFAULT = 0.01;
 % paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactor = 0;';%DEFAULT = 0.01;
 % paramChanges{numel(paramChanges)+1} = 'DRNLParams.a=1e4;'; %DEFAULT = 5e4;
 
@@ -75,7 +75,7 @@ size(MOCattenuation);
 % attFraction = sqrt(mean((MOCattenuation.^2),2));
 % attdB(nn) = -min( mean(20*log10(MOCattenuation), 2) )
 attdB(nn) = -min( mean(20*log10(MOCattenuation(:, ceil(numel(tAxis)/2):end )), 2) )
-ARattdB(nn) = mean(20*log10(ARattenuation( ceil(numel(tAxis)/2):end ))) 
+ARattdB(nn) = -mean(20*log10(ARattenuation( ceil(numel(tAxis)/2):end ))) 
 % end
 
 %%
