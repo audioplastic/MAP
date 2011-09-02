@@ -1,4 +1,4 @@
-function Exp_7recycleQuick(isMasterNode)
+function Exp_7recycleQuickIMP(isMasterNode)
 % This experiment tests a recogniser on 3 different training sets with
 % different efferent conditions.
 % This is now using paramChanges and the hearing aid to correct an OHC
