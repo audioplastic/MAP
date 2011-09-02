@@ -753,11 +753,13 @@ classdef jobject
             % OPTIONAL PLOTTING SMOOTHED
             if ~isempty(obj.probHaxesSM)
                 axes(obj.probHaxesSM); %#ok<MAXES>
-                imagesc([],1:size(ANprobabilityResponse,1),flipud(obj.makeANsmooth(ANprobabilityResponse, 1/dt)));
+                anSM=flipud(obj.makeANsmooth(ANprobabilityResponse, 1/dt));
+                imagesc((1:size(anSM,2))./100,1:size(ANprobabilityResponse,1),anSM);
                 set(obj.probHaxesSM, 'YTick', YTickIdx);
                 set(obj.probHaxesSM, 'YTickLabel', num2str(    myBFlist(YTickIdxRev)'     ));
                 shading(obj.probHaxesSM, 'flat'); colorbar('peer', obj.probHaxesSM)
-                ylabel('cf in Hz')
+                ylabel('cf (Hz)')
+                xlabel('Time (s)')
             end
          
             

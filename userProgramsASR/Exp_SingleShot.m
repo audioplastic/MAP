@@ -47,7 +47,7 @@ xL.sacfHaxesSM = gca;
 % xL.participant = 'NormalNOEFF';
 xL.participant = 'NormalDIFF';
 
-xL.noiseLevToUse   = -500;
+xL.noiseLevToUse   = 50;
 xL.speechLevToUse  = 60;
 
 xL.MAPopHSR = 1;
@@ -65,6 +65,7 @@ xL.SACFnBins = 128;
 mkdir(xL.opFolder);
 xL = xL.assignFiles;
 xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_2841A.wav'));
+xL.noiseName = '20TalkerBabble';
 
 xL.removeEnergyStatic = 1;
 xL.doCMN = 1;
@@ -72,16 +73,18 @@ xL.doCMN = 1;
 xL.useSpectrogram = 0;
 xL.numCoeff = 14;
 
-xL.noisePreDur = 1;
+xL.noisePreDur = 6;
 xL.noisePostDur = 0.1;
-xL.truncateDur  = 0.9; %Dr. RF used 0.550
+xL.truncateDur  = 5.9; %Dr. RF used 0.550
+
+
+
+
+xL.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = -10^(-15/20);','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 1;', 'OMEParams.rateToAttenuationFactorProb=0;'};
+% xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =40;','DRNLParams.MOCtau =0.35;'};
 
 
 xL.storeSelf;
-
-xL.MAPparamChanges= {' DRNLParams.rateToAttenuationFactorProb = 0;', 'OMEParams.rateToAttenuationFactorProb=0;'};
-% xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =40;','DRNLParams.MOCtau =0.35;'};
-
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ** Generate features **
 % This is the time consuming, processing intensive portion of the program.
@@ -154,3 +157,34 @@ figure(23); set(gca, 'CLim', [60 160] )
 % subplot(2,1,2)
 % imagesc(reduced_iih)
 % colorbar
+
+%%
+figure(23)
+set(gcf, 'Position', [913-200   544   553   169])
+
+%%
+figure(99)
+startP = round(xL.truncateDur*(1/dt));
+endP = size(MOCattenuation,2);
+
+durS =endP-startP+1;
+tAxis = dt:dt:durS*dt;
+
+set(gcf, 'Position', [913   544   553   169])
+% imagesc(-20*log10(flipud(MOCattenuation(:, startP:end))), [0 25])
+
+
+
+
+myBFlist = savedBFlist;
+YTickIdx = 1:floor(numel(myBFlist)/6):numel(myBFlist);
+YTickIdxRev = numel(myBFlist)+1-YTickIdx;
+
+imagesc(tAxis, [],-20*log10(flipud(MOCattenuation(:, startP:end))), [0 25])
+set(gca, 'YTick', YTickIdx);
+set(gca, 'YTickLabel', num2str(    myBFlist(YTickIdxRev)'     ));
+ylabel('cf (Hz)')
+xlabel('Time (s)')
+xlim([0 durS*dt])
+colorbar
+
