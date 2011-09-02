@@ -41,13 +41,13 @@ xL.removeEnergyStatic = 0;
 
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
-testWavs = 150; %MAX = 358
-nzLevel = 50:5:60;%[-200 40:5:70];
+testWavs = 358; %MAX = 358
+nzLevel = [-200 40:5:70];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-xL.noisePreDur = 8;
+xL.noisePreDur = 4;
 xL.noisePostDur = 0.1;
-xL.truncateDur  = 7.9; %Dr. RF used 0.550
+xL.truncateDur  = 3.9; %Dr. RF used 0.550
 
 xL.noiseName = '20TalkerBabble';
 
@@ -67,13 +67,13 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['TC150_l8_featR_cond' num2str(nn)]);
+    recFolder = fullfile(expFolder,['TC2000_pre4_r2a700_featR_cond' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 7;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 0.15;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 7;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;'};
     
     
     %Now just to wrap it up ready for processing

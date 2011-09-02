@@ -23,7 +23,7 @@ end
 savePath=path;
 addpath (['..' filesep 'utilities'],['..' filesep 'MAP'])
 
-levels=-10:10:90;   nLevels=length(levels);
+levels=-10:5:120;   nLevels=length(levels);
 % levels= 50;   nLevels=length(levels);
 
 % refBMdisplacement is the displacement of the BM at threshold
