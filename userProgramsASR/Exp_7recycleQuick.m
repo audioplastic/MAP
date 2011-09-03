@@ -67,13 +67,21 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['TC2000_pre4_r2a700_AR_featR_cond' num2str(nn)]);
+    recFolder = fullfile(expFolder,['imp_aid_gain' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 7;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;', 'OMEParams.rateToAttenuationFactorProb = 7;', 'OMEParams.ARrateThreshold = 25;', 'OMEParams.ARtau=2;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.a=400;'};
+    
+    
+    xR{nn}.mainGain = [27.2013;   26.0797;   26.0939;   26.7997;   26.0520];     % gain in linear units
+    xR{nn}.TCdBO    = [4000;   4000;   4000;   4000;   4000];      %Compression thresholds (in dB OUTPUT from 2nd filt)
+    xR{nn}.TMdBO    = [1000;   1000;   1000;   1000;   1000];      %MOC thresholds (in dB OUTPUT from 2nd filt)
+    xR{nn}.ARthresholddB = 850;       % dB SPL (input signal level) =>200 to disable
+
+    xR{nn}.useAid = 1;
     
     
     %Now just to wrap it up ready for processing

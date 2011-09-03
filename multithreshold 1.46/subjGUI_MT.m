@@ -1295,7 +1295,7 @@ if betweenRuns.runNumber==length(betweenRuns.var1Sequence)
     [y,fs,nbits]=wavread('TADA.wav');
     musicGain=10^(stimulusParameters.musicLeveldB/20);
     y=y*musicGain;
-    wavplay(y/100,fs, 'async')
+%     wavplay(y/100,fs, 'async')
 
     % update experimenter GUI
     addToMsg('Experiment completed.',1)
@@ -1333,7 +1333,7 @@ else
     [y,fs,nbits]=wavread('CHIMES.wav');
     musicGain=10^(stimulusParameters.musicLeveldB/20);
     y=y*musicGain;
-    wavplay(y/100,fs,'async')
+%     wavplay(y/100,fs,'async')
 end
 
 % -----------------------------------------------------MAPmodelRunsGUI
