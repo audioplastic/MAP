@@ -26,7 +26,7 @@ learnFolder = fullfile(expFolder,'featL');
 xL = jobject('L', learnFolder);
 
 xL.participant = 'NormalDIFF';%'NormalDIFF';
-xL.MAPparamChanges= {' DRNLParams.rateToAttenuationFactorProb = 0;', 'OMEParams.rateToAttenuationFactorProb=0;' , 'OMEParams.ARrateThreshold = 25;', 'OMEParams.ARtau=2;'};
+xL.MAPparamChanges= {' DRNLParams.rateToAttenuationFactorProb = 0;', 'OMEParams.rateToAttenuationFactorProb=0;' , 'OMEParams.ARrateThreshold = 25;', 'OMEParams.ARtau=0.05;'};
 
 xL.noiseLevToUse   =  -200;
 xL.speechLevToUse  =  75;
@@ -42,7 +42,7 @@ xL.removeEnergyStatic = 0;
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
 testWavs = 358; %MAX = 358
-nzLevel = [-200 40:5:70]+15;
+nzLevel = [-200 40:5:50]+15;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 4;
@@ -64,55 +64,12 @@ xL.noiseName = '20TalkerBabble';
 recConditions = numel(nzLevel);
 
 
+
 tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['ARcond' num2str(nn)]);
-    xR{nn}.opFolder = recFolder;    
-    
-    %These are the interesting differences between training and testing
-    xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {};
-    
-    
-    %Now just to wrap it up ready for processing
-    if isMasterNode && ~isdir(xR{nn}.opFolder)
-        mkdir(xR{nn}.opFolder);
-        xR{nn} = xR{nn}.assignWavPaths('R');
-        xR{nn} = xR{nn}.assignFiles;
-        xR{nn}.storeSelf;
-    end
-end
-
-tmpIdx=0;
-for nn = 1*recConditions+1:2*recConditions    
-    tmpIdx=tmpIdx+1;
-    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['ARcond' num2str(nn)]);
-    xR{nn}.opFolder = recFolder;    
-    
-    %These are the interesting differences between training and testing
-    xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 7;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;'};
-    
-    
-    %Now just to wrap it up ready for processing
-    if isMasterNode && ~isdir(xR{nn}.opFolder)
-        mkdir(xR{nn}.opFolder);
-        xR{nn} = xR{nn}.assignWavPaths('R');
-        xR{nn} = xR{nn}.assignFiles;
-        xR{nn}.storeSelf;
-    end
-end
-
-tmpIdx=0;
-for nn = 2*recConditions+1:3*recConditions    
-    tmpIdx=tmpIdx+1;
-    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['ARcond' num2str(nn)]);
+    recFolder = fullfile(expFolder,['ARQcond' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -131,10 +88,10 @@ for nn = 2*recConditions+1:3*recConditions
 end
 
 tmpIdx=0;
-for nn = 3*recConditions+1:4*recConditions    
+for nn = 1*recConditions+1:2*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['ARcond' num2str(nn)]);
+    recFolder = fullfile(expFolder,['ARQcond' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -152,49 +109,7 @@ for nn = 3*recConditions+1:4*recConditions
     end
 end
 
-tmpIdx=0;
-for nn = 4*recConditions+1:5*recConditions    
-    tmpIdx=tmpIdx+1;
-    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['ARcond' num2str(nn)]);
-    xR{nn}.opFolder = recFolder;    
-    
-    %These are the interesting differences between training and testing
-    xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 7;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;', 'OMEParams.rateToAttenuationFactorProb = 8;'};
-    
-    
-    %Now just to wrap it up ready for processing
-    if isMasterNode && ~isdir(xR{nn}.opFolder)
-        mkdir(xR{nn}.opFolder);
-        xR{nn} = xR{nn}.assignWavPaths('R');
-        xR{nn} = xR{nn}.assignFiles;
-        xR{nn}.storeSelf;
-    end
-end
 
-tmpIdx=0;
-for nn = 5*recConditions+1:6*recConditions    
-    tmpIdx=tmpIdx+1;
-    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['ARcond' num2str(nn)]);
-    xR{nn}.opFolder = recFolder;    
-    
-    %These are the interesting differences between training and testing
-    xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 7;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;', 'OMEParams.rateToAttenuationFactorProb = 9;'};
-    
-    
-    %Now just to wrap it up ready for processing
-    if isMasterNode && ~isdir(xR{nn}.opFolder)
-        mkdir(xR{nn}.opFolder);
-        xR{nn} = xR{nn}.assignWavPaths('R');
-        xR{nn} = xR{nn}.assignFiles;
-        xR{nn}.storeSelf;
-    end
-end
 
 
 
@@ -208,7 +123,7 @@ end
 % worker(xL.opFolder);
 
 if ~isMasterNode %dont bother wasting master node effort on generating testing features (for now)
-    for nn = 0*recConditions+1:6*recConditions
+    for nn = 0*recConditions+1:2*recConditions
         worker(xR{nn}.opFolder);
     end
 end
@@ -232,7 +147,7 @@ if isMasterNode
     
     % ALLOW MASTER NODE TO MUCK IN WITH GENERATING TESTING FEATURES ONCE
     % HMM HAS BEEN TRAINED
-    for nn = 0*recConditions+1:6*recConditions
+    for nn = 0*recConditions+1:2*recConditions
         worker(xR{nn}.opFolder);
     end    
     
@@ -247,13 +162,13 @@ if isMasterNode
         xR{end}.unlockJobList;
     end
       
-    for nn = 0*recConditions+1:6*recConditions
+    for nn = 0*recConditions+1:2*recConditions
         y.createSCP(xR{nn}.opFolder);
         y.test(xR{nn}.opFolder);
     end
     
     %Show all of the scores in the command window at the end
-    for nn = 0*recConditions+1:6*recConditions
+    for nn = 0*recConditions+1:2*recConditions
         y.score(xR{nn}.opFolder);
     end
 end
