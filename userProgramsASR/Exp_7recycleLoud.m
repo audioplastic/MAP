@@ -26,7 +26,7 @@ learnFolder = fullfile(expFolder,'featL');
 xL = jobject('L', learnFolder);
 
 xL.participant = 'NormalDIFF';%'NormalDIFF';
-xL.MAPparamChanges= {' DRNLParams.rateToAttenuationFactorProb = 0;', 'OMEParams.rateToAttenuationFactorProb=0;' , 'OMEParams.ARrateThreshold = 40;', 'OMEParams.ARtau=0.1;'};
+xL.MAPparamChanges= {' DRNLParams.rateToAttenuationFactorProb = 0;', 'OMEParams.rateToAttenuationFactorProb=0;' , 'OMEParams.ARrateThreshold = 80;', 'OMEParams.ARtau=0.1;'};
 
 xL.noiseLevToUse   =  -200;
 xL.speechLevToUse  =  80;
@@ -69,7 +69,7 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['ARQhcond' num2str(nn)]);
+    recFolder = fullfile(expFolder,['ARQh2cond' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
