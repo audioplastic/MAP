@@ -75,7 +75,7 @@ for nn = 0*recConditions+1:1*recConditions
     xR{nn}.noiseLevToUse  = nzLevel(tmpIdx);
     xR{nn}.speechLevToUse = nzLevel(tmpIdx)+10;
     
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 7;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;'};
     
     
     %Now just to wrap it up ready for processing
