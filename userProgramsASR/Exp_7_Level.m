@@ -67,7 +67,7 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['Lev_ALLbig10dB' num2str(nn)]);
+    recFolder = fullfile(expFolder,['Lev_NONEbig10dB' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -75,8 +75,8 @@ for nn = 0*recConditions+1:1*recConditions
     xR{nn}.noiseLevToUse  = nzLevel(tmpIdx);
     xR{nn}.speechLevToUse = nzLevel(tmpIdx)+10;
     
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 7;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;',...
-                             'OMEParams.rateToAttenuationFactorProb = 20;', 'OMEParams.ARrateThreshold = 50;', 'OMEParams.ARtau=0.05;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;',...
+                             'OMEParams.rateToAttenuationFactorProb = 0;', 'OMEParams.ARrateThreshold = 50;', 'OMEParams.ARtau=0.05;'};
     
     
     %Now just to wrap it up ready for processing
