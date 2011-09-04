@@ -41,8 +41,8 @@ xL.removeEnergyStatic = 0;
 
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
-testWavs = 150; %MAX = 358
-nzLevel = [70];
+testWavs = 358; %MAX = 358
+nzLevel = 20:10:80;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 4;
@@ -67,7 +67,7 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['Lev_ALLd10dB' num2str(nn)]);
+    recFolder = fullfile(expFolder,['Lev_ALLbig10dB' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -76,7 +76,7 @@ for nn = 0*recConditions+1:1*recConditions
     xR{nn}.speechLevToUse = nzLevel(tmpIdx)+10;
     
     xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 7;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;',...
-                             'OMEParams.rateToAttenuationFactorProb = 35;', 'OMEParams.ARrateThreshold = 54;', 'OMEParams.ARtau=0.05;'};
+                             'OMEParams.rateToAttenuationFactorProb = 20;', 'OMEParams.ARrateThreshold = 50;', 'OMEParams.ARtau=0.05;'};
     
     
     %Now just to wrap it up ready for processing
