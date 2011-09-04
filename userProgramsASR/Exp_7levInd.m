@@ -76,7 +76,7 @@ for nn = 0*recConditions+1:1*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.speechLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 7;', 'OMEParams.rateToAttenuationFactorProb = 0;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 7;', 'OMEParams.rateToAttenuationFactorProb = 15;'};
     
     
     %Now just to wrap it up ready for processing
