@@ -12,7 +12,7 @@ close all; clear all; clc;
 
 sr = 44100;
 dt = 1/sr;
-dur = 1.25;
+dur = 0.25;
 freq = 520;
 
 nn=0;
