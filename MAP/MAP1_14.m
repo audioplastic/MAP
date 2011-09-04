@@ -785,15 +785,10 @@ while segmentStartPTR<signalLength
                 % smooth
                 [ARAttSeg, ARboundaryProb] = ...
                     filter(ARfilt_b, ARfilt_a, ARAttSeg, ARboundaryProb);
-%                 ARAttSeg=ARAttSeg-ARrateThreshold;
-%                 ARAttSeg(ARAttSeg<0)=0;   % prevent negative strengths
-%                 ARattenuation(segmentStartPTR:segmentEndPTR)=...
-%                     (1-ARrateToAttenuationFactorProb.* ARAttSeg);
-                
-                x = -20*log10(  max(ARAttSeg/ARrateThreshold,1)  )*ARrateToAttenuationFactorProb; %dB attenuation
-                    x = 10.^(x/20);
-%                     x = max(x,10^(-35/20)); 
-                    ARattenuation(segmentStartPTR:segmentEndPTR)=x;
+                ARAttSeg=ARAttSeg-ARrateThreshold;
+                ARAttSeg(ARAttSeg<0)=0;   % prevent negative strengths
+                ARattenuation(segmentStartPTR:segmentEndPTR)=...
+                    (1-ARrateToAttenuationFactorProb.* ARAttSeg);
             end
             %             plot(ARattenuation)
 
