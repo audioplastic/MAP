@@ -55,9 +55,9 @@ paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau = 0.5;'; %DEFAULT = 0.1
 
 
 
-paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 8;';%DEFAULT = 0.01;
-paramChanges{numel(paramChanges)+1} = 'OMEParams.ARrateThreshold = 80;';%DEFAULT = 0.01;
-paramChanges{numel(paramChanges)+1} = 'OMEParams.ARtau=0.1;';
+paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 11;';%DEFAULT = 0.01;
+paramChanges{numel(paramChanges)+1} = 'OMEParams.ARrateThreshold = 30;';%DEFAULT = 0.01;
+paramChanges{numel(paramChanges)+1} = 'OMEParams.ARtau=0.7;';
 % paramChanges{numel(paramChanges)+1} = 'DRNLParams.a=1e4;'; %DEFAULT = 5e4;
 
 
@@ -105,5 +105,5 @@ subplot(3,1,2); plot(levelRec, rateLSR); title('LSR rate')
 subplot(3,1,3); plot(levelRec, rateHSR); title('HSR rate')
 
 figure(44)
-plot(levelRec, attdB); title('MOC attenuation'); ylim([0 45])
+plot(levelRec, attdB, levelRec, ARattdB); title('MOC attenuation'); ylim([0 45])
 

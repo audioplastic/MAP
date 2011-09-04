@@ -67,7 +67,7 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['imp_aid_cmp19' num2str(nn)]);
+    recFolder = fullfile(expFolder,['imp_aid_cmp19_m10' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -78,8 +78,9 @@ for nn = 0*recConditions+1:1*recConditions
     
     xR{nn}.mainGain = [27.2013;   26.0797;   26.0939;   26.7997;   26.0520];     % gain in linear units
     xR{nn}.TCdBO    = [19;   19;   19;   19;   19];      %Compression thresholds (in dB OUTPUT from 2nd filt)
-    xR{nn}.TMdBO    = [1000;   1000;   1000;   1000;   1000];      %MOC thresholds (in dB OUTPUT from 2nd filt)
+    xR{nn}.TMdBO    = [10;   10;   10;   10;   10];      %MOC thresholds (in dB OUTPUT from 2nd filt)
     xR{nn}.ARthresholddB = 850;       % dB SPL (input signal level) =>200 to disable
+    xR{nn}.MOCtau = 1;
 
     xR{nn}.useAid = 1;
     
