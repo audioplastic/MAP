@@ -29,7 +29,7 @@ xL.participant = 'NormalDIFF';%'NormalDIFF';
 xL.MAPparamChanges= {' DRNLParams.rateToAttenuationFactorProb = 0;', 'OMEParams.rateToAttenuationFactorProb=0;' };
 
 xL.noiseLevToUse   =  -200;
-xL.speechLevToUse  =  30;
+xL.speechLevToUse  =  45;
 
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
@@ -42,7 +42,7 @@ xL.removeEnergyStatic = 0;
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
 testWavs = 100; %MAX = 358
-nzLevel = [-200 40:5:70]-30;
+nzLevel = [-200 40:5:70]-15;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 4;
@@ -63,42 +63,42 @@ xL.noiseName = '20TalkerBabble';
 % xR=cell(size(nzLevel));
 recConditions = numel(nzLevel);
 
-tmpIdx=0;
-for nn = 0*recConditions+1:1*recConditions    
-    tmpIdx=tmpIdx+1;
-    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['impQ_none' num2str(nn)]);
-    xR{nn}.opFolder = recFolder;    
-    
-    %These are the interesting differences between training and testing
-    xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.a=400;'};
-    
-    
-    xR{nn}.mainGain = [27.2013;   26.0797;   26.0939;   26.7997;   26.0520];     % gain in linear units
-    xR{nn}.TCdBO    = [190;   190;   190;   190;   190];      %Compression thresholds (in dB OUTPUT from 2nd filt)
-    xR{nn}.TMdBO    = [100;   100;   100;   100;   100];      %MOC thresholds (in dB OUTPUT from 2nd filt)
-    xR{nn}.ARthresholddB = 850;       % dB SPL (input signal level) =>200 to disable
-    xR{nn}.MOCtau = 1;
-
-    xR{nn}.useAid = 0;
-    
-    
-    %Now just to wrap it up ready for processing
-    if isMasterNode && ~isdir(xR{nn}.opFolder)
-        mkdir(xR{nn}.opFolder);
-        xR{nn} = xR{nn}.assignWavPaths('R');
-        xR{nn} = xR{nn}.assignFiles;
-        xR{nn}.storeSelf;
-    end
-end
+% tmpIdx=0;
+% for nn = 0*recConditions+1:1*recConditions    
+%     tmpIdx=tmpIdx+1;
+%     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+%     recFolder = fullfile(expFolder,['impQ_none' num2str(nn)]);
+%     xR{nn}.opFolder = recFolder;    
+%     
+%     %These are the interesting differences between training and testing
+%     xR{nn}.numWavs = testWavs; %MAX = 358
+%     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
+%     xR{nn}.MAPparamChanges= {'DRNLParams.a=400;'};
+%     
+%     
+%     xR{nn}.mainGain = [27.2013;   26.0797;   26.0939;   26.7997;   26.0520];     % gain in linear units
+%     xR{nn}.TCdBO    = [190;   190;   190;   190;   190];      %Compression thresholds (in dB OUTPUT from 2nd filt)
+%     xR{nn}.TMdBO    = [100;   100;   100;   100;   100];      %MOC thresholds (in dB OUTPUT from 2nd filt)
+%     xR{nn}.ARthresholddB = 850;       % dB SPL (input signal level) =>200 to disable
+%     xR{nn}.MOCtau = 1;
+% 
+%     xR{nn}.useAid = 0;
+%     
+%     
+%     %Now just to wrap it up ready for processing
+%     if isMasterNode && ~isdir(xR{nn}.opFolder)
+%         mkdir(xR{nn}.opFolder);
+%         xR{nn} = xR{nn}.assignWavPaths('R');
+%         xR{nn} = xR{nn}.assignFiles;
+%         xR{nn}.storeSelf;
+%     end
+% end
 
 tmpIdx=0;
 for nn = 1*recConditions+1:2*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['impq_aidg' num2str(nn)]);
+    recFolder = fullfile(expFolder,['impq2_aidg' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -129,7 +129,7 @@ tmpIdx=0;
 for nn = 2*recConditions+1:3*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['impq_aid_cmp18' num2str(nn)]);
+    recFolder = fullfile(expFolder,['impq2_aid_cmp18' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -160,7 +160,7 @@ tmpIdx=0;
 for nn = 3*recConditions+1:4*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['impq_aid_cmp18_m10' num2str(nn)]);
+    recFolder = fullfile(expFolder,['impq2_aid_cmp18_m10' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -199,7 +199,7 @@ end
 % worker(xL.opFolder);
 
 if ~isMasterNode %dont bother wasting master node effort on generating testing features (for now)
-    for nn = 0*recConditions+1:4*recConditions
+    for nn = 1*recConditions+1:4*recConditions
         worker(xR{nn}.opFolder);
     end
 end
@@ -223,7 +223,7 @@ if isMasterNode
     
     % ALLOW MASTER NODE TO MUCK IN WITH GENERATING TESTING FEATURES ONCE
     % HMM HAS BEEN TRAINED
-    for nn = 0*recConditions+1:4*recConditions
+    for nn = 1*recConditions+1:4*recConditions
         worker(xR{nn}.opFolder);
     end    
     
@@ -238,13 +238,13 @@ if isMasterNode
         xR{end}.unlockJobList;
     end
       
-    for nn = 0*recConditions+1:4*recConditions
+    for nn = 1*recConditions+1:4*recConditions
         y.createSCP(xR{nn}.opFolder);
         y.test(xR{nn}.opFolder);
     end
     
     %Show all of the scores in the command window at the end
-    for nn = 0*recConditions+1:4*recConditions
+    for nn = 1*recConditions+1:4*recConditions
         y.score(xR{nn}.opFolder);
     end
 end
