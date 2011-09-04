@@ -785,6 +785,7 @@ while segmentStartPTR<signalLength
                 % smooth
                 [ARAttSeg, ARboundaryProb] = ...
                     filter(ARfilt_b, ARfilt_a, ARAttSeg, ARboundaryProb);
+%                 disp(ARAttSeg(end))
 %                 ARAttSeg=ARAttSeg-ARrateThreshold;
 %                 ARAttSeg(ARAttSeg<0)=0;   % prevent negative strengths
 %                 ARattenuation(segmentStartPTR:segmentEndPTR)=...

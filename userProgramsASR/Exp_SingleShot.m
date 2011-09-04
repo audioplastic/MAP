@@ -47,8 +47,8 @@ xL.sacfHaxesSM = gca;
 % xL.participant = 'NormalNOEFF';
 xL.participant = 'NormalDIFF';
 
-xL.noiseLevToUse   = 70;
-xL.speechLevToUse  = 80;
+xL.noiseLevToUse   = -70;
+xL.speechLevToUse  = -80;
 
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
