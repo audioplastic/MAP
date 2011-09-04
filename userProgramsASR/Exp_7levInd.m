@@ -1,4 +1,4 @@
-function Exp_7recycleLoud(isMasterNode)
+function Exp_7levInd(isMasterNode)
 % This experiment tests a recogniser on 3 different training sets with
 % different efferent conditions.
 % This is now using paramChanges and the hearing aid to correct an OHC
@@ -42,8 +42,8 @@ xL.removeEnergyStatic = 0;
 
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
-testWavs = 150; %MAX = 358
-nzLevel = 40:20:80;
+testWavs = 358; %MAX = 358
+nzLevel = 60;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 4;
@@ -64,13 +64,13 @@ xL.noiseName = '20TalkerBabble';
 % xR=cell(size(nzLevel));
 recConditions = numel(nzLevel);
 
-
+ 
 
 tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['levIndNZ_MOCcond' num2str(nn)]);
+    recFolder = fullfile(expFolder,['levIndsanity_MOCcond' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
