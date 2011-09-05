@@ -26,7 +26,7 @@ learnFolder = fullfile(expFolder,'featL');
 xL = jobject('L', learnFolder);
 
 xL.participant = 'NormalDIFF';%'NormalDIFF';
-xL.MAPparamChanges= {' DRNLParams.rateToAttenuationFactorProb = 0;', 'OMEParams.rateToAttenuationFactorProb=0;' };
+xL.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;', 'OMEParams.rateToAttenuationFactorProb=0;' };
 
 xL.noiseLevToUse   =  -200;
 xL.speechLevToUse  =  60;
@@ -75,8 +75,8 @@ for nn = 0*recConditions+1:1*recConditions
     xR{nn}.noiseLevToUse  = nzLevel(tmpIdx)-10;
     xR{nn}.speechLevToUse = nzLevel(tmpIdx);
     
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 7;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;',...
-                             'OMEParams.rateToAttenuationFactorProb = 8;', 'OMEParams.ARrateThreshold = 35;', 'OMEParams.ARtau=0.1;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=7;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;',...
+                             'OMEParams.rateToAttenuationFactorProb=8;', 'OMEParams.ARrateThreshold=35;', 'OMEParams.ARtau=0.1;'};
     
     
     %Now just to wrap it up ready for processing
