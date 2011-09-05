@@ -51,7 +51,7 @@ paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb=7;
 paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb=85;';%GOOD=140 %DEFAULT = 70;
 paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau=2;'; %DEFAULT = 0.1;
 
-paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb=9;';
+paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb=15;';
 paramChanges{numel(paramChanges)+1} = 'OMEParams.ARrateThreshold=35;';
 paramChanges{numel(paramChanges)+1} = 'OMEParams.ARtau=1;';
 
