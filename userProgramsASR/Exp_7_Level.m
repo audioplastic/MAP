@@ -1,4 +1,4 @@
-function Exp_7recycleQuick(isMasterNode)
+function Exp_7_Level(isMasterNode)
 % This experiment tests a recogniser on 3 different training sets with
 % different efferent conditions.
 % This is now using paramChanges and the hearing aid to correct an OHC
@@ -42,7 +42,7 @@ xL.removeEnergyStatic = 0;
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
 testWavs = 358; %MAX = 358
-nzLevel = 20:10:80;
+nzLevel = 30:10:90;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 4;
@@ -67,13 +67,13 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['Lev_longstrongARbig10dB' num2str(nn)]);
+    recFolder = fullfile(expFolder,['Lev_silARbig10dB' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.noiseLevToUse  = nzLevel(tmpIdx);
-    xR{nn}.speechLevToUse = nzLevel(tmpIdx)+10;
+    xR{nn}.noiseLevToUse  = -200;
+    xR{nn}.speechLevToUse = nzLevel(tmpIdx);
     
     xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 7;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;',...
                              'OMEParams.rateToAttenuationFactorProb = 30;', 'OMEParams.ARrateThreshold = 50;', 'OMEParams.ARtau=0.5;'};
@@ -88,7 +88,55 @@ for nn = 0*recConditions+1:1*recConditions
     end
 end
 
+tmpIdx=0;
+for nn = 1*recConditions+1:2*recConditions    
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['Lev_silMOCbig10dB' num2str(nn)]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = testWavs; %MAX = 358
+    xR{nn}.noiseLevToUse  = -200;
+    xR{nn}.speechLevToUse = nzLevel(tmpIdx);
+    
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 7;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;',...
+                             'OMEParams.rateToAttenuationFactorProb = 0;', 'OMEParams.ARrateThreshold = 50;', 'OMEParams.ARtau=0.5;'};
+    
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode && ~isdir(xR{nn}.opFolder)
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
 
+tmpIdx=0;
+for nn = 2*recConditions+1:3*recConditions    
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['Lev_silNONEbig10dB' num2str(nn)]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = testWavs; %MAX = 358
+    xR{nn}.noiseLevToUse  = -200;
+    xR{nn}.speechLevToUse = nzLevel(tmpIdx);
+    
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;',...
+                             'OMEParams.rateToAttenuationFactorProb = 0;', 'OMEParams.ARrateThreshold = 50;', 'OMEParams.ARtau=0.5;'};
+    
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode && ~isdir(xR{nn}.opFolder)
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
 
 
 
@@ -102,7 +150,7 @@ end
 % worker(xL.opFolder);
 
 if ~isMasterNode %dont bother wasting master node effort on generating testing features (for now)
-    for nn = 0*recConditions+1:1*recConditions
+    for nn = 0*recConditions+1:3*recConditions
         worker(xR{nn}.opFolder);
     end
 end
@@ -126,7 +174,7 @@ if isMasterNode
     
     % ALLOW MASTER NODE TO MUCK IN WITH GENERATING TESTING FEATURES ONCE
     % HMM HAS BEEN TRAINED
-    for nn = 0*recConditions+1:1*recConditions
+    for nn = 0*recConditions+1:3*recConditions
         worker(xR{nn}.opFolder);
     end    
     
@@ -141,13 +189,13 @@ if isMasterNode
         xR{end}.unlockJobList;
     end
       
-    for nn = 0*recConditions+1:1*recConditions
+    for nn = 0*recConditions+1:3*recConditions
         y.createSCP(xR{nn}.opFolder);
         y.test(xR{nn}.opFolder);
     end
     
     %Show all of the scores in the command window at the end
-    for nn = 0*recConditions+1:1*recConditions
+    for nn = 0*recConditions+1:3*recConditions
         y.score(xR{nn}.opFolder);
     end
 end
