@@ -109,7 +109,7 @@ end
 % worker(xL.opFolder);
 
 if ~isMasterNode %dont bother wasting master node effort on generating testing features (for now)
-    for nn = 0*recConditions+1:6*recConditions
+    for nn = 0*recConditions+1:1*recConditions
         worker(xR{nn}.opFolder);
     end
 end
@@ -133,7 +133,7 @@ if isMasterNode
     
     % ALLOW MASTER NODE TO MUCK IN WITH GENERATING TESTING FEATURES ONCE
     % HMM HAS BEEN TRAINED
-    for nn = 0*recConditions+1:6*recConditions
+    for nn = 0*recConditions+1:1*recConditions
         worker(xR{nn}.opFolder);
     end    
     
@@ -148,13 +148,13 @@ if isMasterNode
         xR{end}.unlockJobList;
     end
       
-    for nn = 0*recConditions+1:6*recConditions
+    for nn = 0*recConditions+1:1*recConditions
         y.createSCP(xR{nn}.opFolder);
         y.test(xR{nn}.opFolder);
     end
     
     %Show all of the scores in the command window at the end
-    for nn = 0*recConditions+1:6*recConditions
+    for nn = 0*recConditions+1:1*recConditions
         y.score(xR{nn}.opFolder);
     end
 end
