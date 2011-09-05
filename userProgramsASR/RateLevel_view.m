@@ -51,13 +51,13 @@ paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb=7;
 paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb=85;';%GOOD=140 %DEFAULT = 70;
 paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau=2;'; %DEFAULT = 0.1;
 
-paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb=7;';
+paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb=9;';
 paramChanges{numel(paramChanges)+1} = 'OMEParams.ARrateThreshold=35;';
-paramChanges{numel(paramChanges)+1} = 'OMEParams.ARtau=0.1;';
+paramChanges{numel(paramChanges)+1} = 'OMEParams.ARtau=1;';
 
 
 AN_spikesOrProbability = 'probability';
-MAP1_14(ipSig, sr, [ freq ], 'NormalDIFF', AN_spikesOrProbability, paramChanges)
+MAP1_14(ipSig, sr, -1, 'NormalDIFF', AN_spikesOrProbability, paramChanges)
 
 options.showEfferent=1;
 UTIL_showMAP(options)

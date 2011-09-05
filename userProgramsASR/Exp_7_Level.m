@@ -42,7 +42,7 @@ xL.removeEnergyStatic = 0;
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
 testWavs = 100; %MAX = 358
-nzLevel = 50:10:90;
+nzLevel = 60:10:90;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 4;
@@ -76,7 +76,7 @@ for nn = 0*recConditions+1:1*recConditions
     xR{nn}.speechLevToUse = nzLevel(tmpIdx);
     
     xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=7;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;',...
-                             'OMEParams.rateToAttenuationFactorProb=8;', 'OMEParams.ARrateThreshold=35;', 'OMEParams.ARtau=0.1;'};
+                             'OMEParams.rateToAttenuationFactorProb=9;', 'OMEParams.ARrateThreshold=35;', 'OMEParams.ARtau=1;'};
     
     
     %Now just to wrap it up ready for processing
