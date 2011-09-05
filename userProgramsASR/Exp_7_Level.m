@@ -41,8 +41,8 @@ xL.removeEnergyStatic = 0;
 
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
-testWavs = 358; %MAX = 358
-nzLevel = 30:10:90;
+testWavs = 100; %MAX = 358
+nzLevel = 50:10:90;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 4;
@@ -67,16 +67,16 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['Lev_silARbig10dB' num2str(nn)]);
+    recFolder = fullfile(expFolder,['Lev_moreARbig10dB' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.noiseLevToUse  = -200;
+    xR{nn}.noiseLevToUse  = nzLevel(tmpIdx)-10;
     xR{nn}.speechLevToUse = nzLevel(tmpIdx);
     
     xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 7;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;',...
-                             'OMEParams.rateToAttenuationFactorProb = 30;', 'OMEParams.ARrateThreshold = 50;', 'OMEParams.ARtau=0.5;'};
+                             'OMEParams.rateToAttenuationFactorProb = 8;', 'OMEParams.ARrateThreshold = 35;', 'OMEParams.ARtau=0.1;'};
     
     
     %Now just to wrap it up ready for processing
@@ -88,55 +88,55 @@ for nn = 0*recConditions+1:1*recConditions
     end
 end
 
-tmpIdx=0;
-for nn = 1*recConditions+1:2*recConditions    
-    tmpIdx=tmpIdx+1;
-    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['Lev_silMOCbig10dB' num2str(nn)]);
-    xR{nn}.opFolder = recFolder;    
-    
-    %These are the interesting differences between training and testing
-    xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.noiseLevToUse  = -200;
-    xR{nn}.speechLevToUse = nzLevel(tmpIdx);
-    
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 7;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;',...
-                             'OMEParams.rateToAttenuationFactorProb = 0;', 'OMEParams.ARrateThreshold = 50;', 'OMEParams.ARtau=0.5;'};
-    
-    
-    %Now just to wrap it up ready for processing
-    if isMasterNode && ~isdir(xR{nn}.opFolder)
-        mkdir(xR{nn}.opFolder);
-        xR{nn} = xR{nn}.assignWavPaths('R');
-        xR{nn} = xR{nn}.assignFiles;
-        xR{nn}.storeSelf;
-    end
-end
-
-tmpIdx=0;
-for nn = 2*recConditions+1:3*recConditions    
-    tmpIdx=tmpIdx+1;
-    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['Lev_silNONEbig10dB' num2str(nn)]);
-    xR{nn}.opFolder = recFolder;    
-    
-    %These are the interesting differences between training and testing
-    xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.noiseLevToUse  = -200;
-    xR{nn}.speechLevToUse = nzLevel(tmpIdx);
-    
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;',...
-                             'OMEParams.rateToAttenuationFactorProb = 0;', 'OMEParams.ARrateThreshold = 50;', 'OMEParams.ARtau=0.5;'};
-    
-    
-    %Now just to wrap it up ready for processing
-    if isMasterNode && ~isdir(xR{nn}.opFolder)
-        mkdir(xR{nn}.opFolder);
-        xR{nn} = xR{nn}.assignWavPaths('R');
-        xR{nn} = xR{nn}.assignFiles;
-        xR{nn}.storeSelf;
-    end
-end
+% tmpIdx=0;
+% for nn = 1*recConditions+1:2*recConditions    
+%     tmpIdx=tmpIdx+1;
+%     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+%     recFolder = fullfile(expFolder,['Lev_silMOCbig10dB' num2str(nn)]);
+%     xR{nn}.opFolder = recFolder;    
+%     
+%     %These are the interesting differences between training and testing
+%     xR{nn}.numWavs = testWavs; %MAX = 358
+%     xR{nn}.noiseLevToUse  = -200;
+%     xR{nn}.speechLevToUse = nzLevel(tmpIdx);
+%     
+%     xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 7;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;',...
+%                              'OMEParams.rateToAttenuationFactorProb = 0;', 'OMEParams.ARrateThreshold = 50;', 'OMEParams.ARtau=0.5;'};
+%     
+%     
+%     %Now just to wrap it up ready for processing
+%     if isMasterNode && ~isdir(xR{nn}.opFolder)
+%         mkdir(xR{nn}.opFolder);
+%         xR{nn} = xR{nn}.assignWavPaths('R');
+%         xR{nn} = xR{nn}.assignFiles;
+%         xR{nn}.storeSelf;
+%     end
+% end
+% 
+% tmpIdx=0;
+% for nn = 2*recConditions+1:3*recConditions    
+%     tmpIdx=tmpIdx+1;
+%     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+%     recFolder = fullfile(expFolder,['Lev_silNONEbig10dB' num2str(nn)]);
+%     xR{nn}.opFolder = recFolder;    
+%     
+%     %These are the interesting differences between training and testing
+%     xR{nn}.numWavs = testWavs; %MAX = 358
+%     xR{nn}.noiseLevToUse  = -200;
+%     xR{nn}.speechLevToUse = nzLevel(tmpIdx);
+%     
+%     xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb = 0;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;',...
+%                              'OMEParams.rateToAttenuationFactorProb = 0;', 'OMEParams.ARrateThreshold = 50;', 'OMEParams.ARtau=0.5;'};
+%     
+%     
+%     %Now just to wrap it up ready for processing
+%     if isMasterNode && ~isdir(xR{nn}.opFolder)
+%         mkdir(xR{nn}.opFolder);
+%         xR{nn} = xR{nn}.assignWavPaths('R');
+%         xR{nn} = xR{nn}.assignFiles;
+%         xR{nn}.storeSelf;
+%     end
+% end
 
 
 

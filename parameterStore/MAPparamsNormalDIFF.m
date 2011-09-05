@@ -267,11 +267,38 @@ end
 %% now accept last minute parameter changes required by the calling program
 % paramChanges
 if nargin>3 && ~isempty(paramChanges)
+    if ~iscellstr(paramChanges)
+        error(['paramChanges error: paramChanges not a cell array'])
+    end
+    
     nChanges=length(paramChanges);
     for idx=1:nChanges
+        x=paramChanges{idx};
+        x=deblank(x);
+        if ~isempty(x)
+            if ~strcmp(x(end),';')
+                error(['paramChanges error (terminate with semicolon) ' x])
+            end
+            st=x(1:strfind(x,'.')-1);
+            fld=x(strfind(x,'.')+1:strfind(x,'=')-1);
+            value=x(strfind(x,'=')+1:end);
+            if isempty(st) || isempty(fld) || isempty(value)
+                error(['paramChanges error:' x])
+            end
+            
+            x1=eval(['isstruct(' st ')']);
+            x2=eval(['isfield(' st ',''' fld ''')']);
+            if ~(x1*x2)
+                error(['paramChanges error:' x])
+            end
+        end
+        
+        % no problems so go ahead
         eval(paramChanges{idx})
     end
 end
+
+
 
 
 %% write all parameters to the command window
