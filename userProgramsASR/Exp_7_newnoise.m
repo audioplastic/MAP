@@ -67,13 +67,13 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['subwayAUTO' num2str(nn)]);
+    recFolder = fullfile(expFolder,['subway10FIX' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=7;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=-10^(-10/20);','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
     
     
     %Now just to wrap it up ready for processing
