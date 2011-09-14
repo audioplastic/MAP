@@ -47,8 +47,8 @@ xL.sacfHaxesSM = gca;
 % xL.participant = 'NormalNOEFF';
 xL.participant = 'NormalDIFF';
 
-xL.noiseLevToUse   = 70;
-xL.speechLevToUse  = 80;
+xL.noiseLevToUse   = 60;
+xL.speechLevToUse  = -60;
 
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
@@ -65,7 +65,7 @@ xL.SACFnBins = 128;
 mkdir(xL.opFolder);
 xL = xL.assignFiles;
 xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_2841A.wav'));
-xL.noiseName = 'pink';
+xL.noiseName = 'babble';
 
 xL.removeEnergyStatic = 1;
 xL.doCMN = 1;
@@ -81,7 +81,7 @@ xL.truncateDur  = 3.9; %Dr. RF used 0.550
 
 
 xL.MAPparamChanges=         {'DRNLParams.rateToAttenuationFactorProb=7;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;',...
-                             'OMEParams.rateToAttenuationFactorProb=9;', 'OMEParams.ARrateThreshold=35;', 'OMEParams.ARtau=1;'};% xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =40;','DRNLParams.MOCtau =0.35;'};
+                             'OMEParams.rateToAttenuationFactorProb=0;', 'OMEParams.ARrateThreshold=35;', 'OMEParams.ARtau=1;'};% xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =40;','DRNLParams.MOCtau =0.35;'};
 
 
 xL.storeSelf;

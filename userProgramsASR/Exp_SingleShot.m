@@ -80,8 +80,8 @@ xL.truncateDur  = 0.9; %Dr. RF used 0.550
 xL.storeSelf;
 
 % xL.MAPparamChanges= {' DRNLParams.rateToAttenuationFactorProb=0;', 'OMEParams.rateToAttenuationFactorProb=0;'};
-xL.MAPparamChanges=         {'DRNLParams.rateToAttenuationFactorProb = 7;','DRNLParams.MOCrateThresholdProb = 85;', 'DRNLParams.MOCtau = 2;',...
-                             'OMEParams.rateToAttenuationFactorProb = 20;', 'OMEParams.ARrateThreshold = 50;', 'OMEParams.ARtau=0.5;'};
+xL.MAPparamChanges=         {'DRNLParams.rateToAttenuationFactorProb=7;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;',...
+                             'OMEParams.rateToAttenuationFactorProb=0;', 'OMEParams.ARrateThreshold=50;', 'OMEParams.ARtau=0.5;'};
 % xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =40;','DRNLParams.MOCtau =0.35;'};
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
