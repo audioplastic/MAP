@@ -49,7 +49,7 @@ xL.noisePreDur = 4;
 xL.noisePostDur = 0.1;
 xL.truncateDur  = 3.9; %Dr. RF used 0.550
 
-xL.noiseName = 'subway';
+xL.noiseName = '20TalkerBabble';
 
 % if isMasterNode
 %     mkdir(xL.opFolder);
@@ -67,7 +67,7 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['subOFF2' num2str(nn)]);
+    recFolder = fullfile(expFolder,['babOFF' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -90,7 +90,7 @@ tmpIdx=0;
 for nn = 1*recConditions+1:2*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['subON2' num2str(nn)]);
+    recFolder = fullfile(expFolder,['babON' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
