@@ -49,7 +49,7 @@ xL.noisePreDur = 4;
 xL.noisePostDur = 0.1;
 xL.truncateDur  = 3.9; %Dr. RF used 0.550
 
-xL.noiseName = 'subway';
+xL.noiseName = 'subwayLPF';
 
 % if isMasterNode
 %     mkdir(xL.opFolder);
@@ -117,7 +117,7 @@ for nn = 2*recConditions+1:3*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=-10^(-15/20);','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=-10^(-10/20);','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
     
     
     %Now just to wrap it up ready for processing
@@ -139,7 +139,7 @@ for nn = 3*recConditions+1:4*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=-10^(-20/20);','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=-10^(-15/20);','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
     
     
     %Now just to wrap it up ready for processing
@@ -161,7 +161,7 @@ for nn = 4*recConditions+1:5*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=-10^(-25/20);','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=-10^(-20/20);','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
     
     
     %Now just to wrap it up ready for processing
@@ -183,6 +183,28 @@ for nn = 5*recConditions+1:6*recConditions
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=-10^(-25/20);','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+    
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode && ~isdir(xR{nn}.opFolder)
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
+
+tmpIdx=0;
+for nn = 7*recConditions+1:8*recConditions    
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['pinkFIXm' num2str(nn)]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = testWavs; %MAX = 358
+    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
     xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=-10^(-30/20);','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
     
     
@@ -195,7 +217,27 @@ for nn = 5*recConditions+1:6*recConditions
     end
 end
 
-
+tmpIdx=0;
+for nn = 8*recConditions+1:9*recConditions    
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['pinkFIXm' num2str(nn)]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = testWavs; %MAX = 358
+    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
+    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=7;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+    
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode && ~isdir(xR{nn}.opFolder)
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ** Generate features **

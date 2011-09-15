@@ -65,7 +65,7 @@ xL.SACFnBins = 128;
 mkdir(xL.opFolder);
 xL = xL.assignFiles;
 xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_2841A.wav'));
-xL.noiseName = 'babble';
+xL.noiseName = 'subway';
 
 xL.removeEnergyStatic = 1;
 xL.doCMN = 1;
@@ -164,6 +164,7 @@ set(gcf, 'Position', [913-200   544   553   169])
 
 %%
 figure(99)
+% dt=ANdt
 startP = round(xL.truncateDur*(1/dt));
 endP = size(MOCattenuation,2);
 

@@ -32,8 +32,8 @@ for i=1:length(files),
 %     soundsc(x(1:fs*4),fs);
 %     pause
 
-    x = x./max(abs(x));
-    fName = strrep(filename, '.raw', '.wav');
-    wavwrite(x,fs,fName);
+%     x = x./max(abs(x));
+%     fName = strrep(filename, '.raw', '.wav');
+%     wavwrite(x,fs,fName);
 end
 
