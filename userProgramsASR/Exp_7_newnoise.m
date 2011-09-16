@@ -196,7 +196,7 @@ for nn = 5*recConditions+1:6*recConditions
 end
 
 tmpIdx=0;
-for nn = 7*recConditions+1:8*recConditions    
+for nn = 6*recConditions+1:7*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
     recFolder = fullfile(expFolder,['subLPFall' num2str(nn)]);
@@ -218,7 +218,7 @@ for nn = 7*recConditions+1:8*recConditions
 end
 
 tmpIdx=0;
-for nn = 8*recConditions+1:9*recConditions    
+for nn = 7*recConditions+1:8*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
     recFolder = fullfile(expFolder,['subLPFall' num2str(nn)]);
