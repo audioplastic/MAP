@@ -29,24 +29,7 @@ ylim([-20 0])
 xlabel('Frequency (Hz)');
 ylabel('Normalised dB re 1');
 
-figure; semilogx(  fAxis, 10*log10(m)  );
-xlim([100 4000])
-ylim([-20 0])
-% axis tight; box on;
-% title(filename);
-xlabel('Frequency (Hz)');
-ylabel('Normalised dB re 1');
-
-% delays = [2191 2971 3253  3307];
-delays = round([fs/20])
-y = schroeder(x,delays,10,fs);
-
-soundsc(y(1:(5*fs)), fs)
-
-frames = enframe(y,win);
-h = abs(fft(frames,[],2));
-m = mean(h);
-m = m/max(m);
+disp([fAxis(fAxis>=200 & fAxis<=4000)'  10*log10(m(fAxis>=200 & fAxis<=4000))'])
 
 figure; semilogx(  fAxis, 10*log10(m)  );
 xlim([100 4000])
@@ -55,6 +38,25 @@ ylim([-20 0])
 % title(filename);
 xlabel('Frequency (Hz)');
 ylabel('Normalised dB re 1');
+
+% % % % delays = [2191 2971 3253  3307];
+% % % delays = round([fs/20])
+% % % y = schroeder(x,delays,10,fs);
+% % % 
+% % % soundsc(y(1:(5*fs)), fs)
+% % % 
+% % % frames = enframe(y,win);
+% % % h = abs(fft(frames,[],2));
+% % % m = mean(h);
+% % % m = m/max(m);
+% % % 
+% % % figure; semilogx(  fAxis, 10*log10(m)  );
+% % % xlim([100 4000])
+% % % ylim([-20 0])
+% % % % axis tight; box on;
+% % % % title(filename);
+% % % xlabel('Frequency (Hz)');
+% % % ylabel('Normalised dB re 1');
 
 function f=enframe(x,win,inc)
 nx=length(x(:));

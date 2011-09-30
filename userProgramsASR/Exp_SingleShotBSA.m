@@ -65,7 +65,7 @@ xL.SACFnBins = 128;
 mkdir(xL.opFolder);
 xL = xL.assignFiles;
 xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_2841A.wav'));
-xL.noiseName = 'subway';
+xL.noiseName = 'subwayLPF';
 
 xL.removeEnergyStatic = 1;
 xL.doCMN = 1;
