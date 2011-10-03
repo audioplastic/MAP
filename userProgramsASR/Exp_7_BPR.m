@@ -49,7 +49,7 @@ xL.removeEnergyStatic = 0;
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
 testWavs = 358; %MAX = 358
-nzLevel = [-200 40:5:70];
+nzLevel = [-200 40:10:70];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 4;
@@ -74,13 +74,13 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.useAid = 0;    
     
@@ -97,13 +97,13 @@ tmpIdx=0;
 for nn = 1*recConditions+1:2*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 0*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 10*[1;   1;   1;   1;   1];
@@ -121,13 +121,13 @@ tmpIdx=0;
 for nn = 2*recConditions+1:3*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 0*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 20*[1;   1;   1;   1;   1];
@@ -145,13 +145,13 @@ tmpIdx=0;
 for nn = 3*recConditions+1:4*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 0*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 30*[1;   1;   1;   1;   1];
@@ -169,13 +169,13 @@ tmpIdx=0;
 for nn = 4*recConditions+1:5*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 0*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 40*[1;   1;   1;   1;   1];
@@ -193,13 +193,13 @@ tmpIdx=0;
 for nn = 5*recConditions+1:6*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 5*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 10*[1;   1;   1;   1;   1];
@@ -217,13 +217,13 @@ tmpIdx=0;
 for nn = 6*recConditions+1:7*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 5*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 20*[1;   1;   1;   1;   1];
@@ -241,13 +241,13 @@ tmpIdx=0;
 for nn = 7*recConditions+1:8*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 5*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 30*[1;   1;   1;   1;   1];
@@ -265,13 +265,13 @@ tmpIdx=0;
 for nn = 8*recConditions+1:9*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 5*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 40*[1;   1;   1;   1;   1];
@@ -289,13 +289,13 @@ tmpIdx=0;
 for nn = 9*recConditions+1:10*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 10*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 10*[1;   1;   1;   1;   1];
@@ -313,13 +313,13 @@ tmpIdx=0;
 for nn = 10*recConditions+1:11*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 10*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 20*[1;   1;   1;   1;   1];
@@ -337,13 +337,13 @@ tmpIdx=0;
 for nn = 11*recConditions+1:12*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 10*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 30*[1;   1;   1;   1;   1];
@@ -361,13 +361,13 @@ tmpIdx=0;
 for nn = 12*recConditions+1:13*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 10*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 40*[1;   1;   1;   1;   1];
@@ -385,13 +385,13 @@ tmpIdx=0;
 for nn = 13*recConditions+1:14*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 15*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 10*[1;   1;   1;   1;   1];
@@ -409,13 +409,13 @@ tmpIdx=0;
 for nn = 14*recConditions+1:15*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 15*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 20*[1;   1;   1;   1;   1];
@@ -433,13 +433,13 @@ tmpIdx=0;
 for nn = 15*recConditions+1:16*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 15*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 30*[1;   1;   1;   1;   1];
@@ -457,13 +457,13 @@ tmpIdx=0;
 for nn = 16*recConditions+1:17*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 15*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 40*[1;   1;   1;   1;   1];
@@ -481,13 +481,13 @@ tmpIdx=0;
 for nn = 17*recConditions+1:18*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 20*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 10*[1;   1;   1;   1;   1];
@@ -505,13 +505,13 @@ tmpIdx=0;
 for nn = 18*recConditions+1:19*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 20*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 20*[1;   1;   1;   1;   1];
@@ -529,13 +529,13 @@ tmpIdx=0;
 for nn = 19*recConditions+1:20*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 20*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 30*[1;   1;   1;   1;   1];
@@ -553,13 +553,13 @@ tmpIdx=0;
 for nn = 20*recConditions+1:21*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['BPRb' num2str(nn)]);
+    recFolder = fullfile(expFolder,['BPRc' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;'};
+     
     
     xR{nn}.TMdBO    = 20*[1;   1;   1;   1;   1];
     xR{nn}.TCdBO    = 40*[1;   1;   1;   1;   1];
