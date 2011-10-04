@@ -3,9 +3,9 @@ close all; clear all; clc
 
 nfft = 2048;
 
-[x, fs] = wavread(fullfile('demo_wavs','noises','subwayLPF.wav'));
+% [x, fs] = wavread(fullfile('demo_wavs','noises','subwayLPF.wav'));
 % [x, fs] = wavread(fullfile('demo_wavs','noises','20TalkerBabble.wav'));
-% [x, fs] = wavread(fullfile('demo_wavs','noises','pink.wav'));
+[x, fs] = wavread(fullfile('demo_wavs','noises','pinkBP.wav'));
 % [x, fs] = wavread(fullfile('demo_wavs','noises','f16.wav'));
 
 
