@@ -191,9 +191,16 @@ MOCrateThresholdProb=DRNLParams.MOCrateThresholdProb;
 a1=dt/DRNLParams.MOCtau-1; a0=1;
 b0=1+ a1;
 MOCfilt_b=b0; MOCfilt_a=[a0 a1];
+
+%%% NEW %%%
+MOCfilt_aR = dt/DRNLParams.MOCtauR - 1; % R = Rising edge
+MOCfilt_bR = 1.0 + MOCfilt_aR;
+MOCfilt_aF = dt/DRNLParams.MOCtauF - 1; % F = Falling edge
+MOCfilt_bF = 1.0 + MOCfilt_aF;
+
 % figure(9), freqz(stapesDisp_b, stapesDisp_a)
 MOCboundary=cell(nBFs,1);
-MOCprobBoundary=cell(nBFs,1);
+MOCprobBoundary=num2cell(zeros(nBFs,1));
 
 MOCattSegment=zeros(nBFs,reducedSegmentLength);
 MOCattenuation=ones(nBFs,signalLength);
@@ -807,14 +814,24 @@ while segmentStartPTR<signalLength
                     ones(size(rates))* -rateToAttenuationFactorProb;                
             else
                 for idx=1:nBFs
-                    [smoothedRates, MOCprobBoundary{idx}] = ...
-                        filter(MOCfilt_b, MOCfilt_a, rates(idx,:), ...
-                        MOCprobBoundary{idx});
+%                     [smoothedRates, MOCprobBoundary{idx}] = ...
+%                         filter(MOCfilt_b, MOCfilt_a, rates(idx,:), ...
+%                         MOCprobBoundary{idx});
 %                     smoothedRates=smoothedRates-MOCrateThresholdProb;
 %                     smoothedRates(smoothedRates<0)=0;
 %                     x =  (1- smoothedRates* rateToAttenuationFactorProb); %ORIGINAL 
 
                     %NEW !!!
+                    smoothedRates = zeros(1,c);
+                    for nn = 1:c
+                        if rates(idx,nn) < MOCprobBoundary{idx} %// - This is line to make smoothing only apply to release
+                            smoothedRates(nn) = MOCfilt_bF*rates(idx,nn) - MOCfilt_aF*MOCprobBoundary{idx};% // difference eqn for one-pole lpf
+                        else
+                            smoothedRates(nn) = MOCfilt_bR*rates(idx,nn) - MOCfilt_aR*MOCprobBoundary{idx};% // difference eqn for one-pole lpf
+                        end
+                        MOCprobBoundary{idx} = rates(idx,nn);
+                    end
+                    
                     x = -20*log10(  max(smoothedRates/MOCrateThresholdProb,1)  )*rateToAttenuationFactorProb; %dB attenuation
                     x = 10.^(x/20);
                     x = max(x,10^(-35/20));    

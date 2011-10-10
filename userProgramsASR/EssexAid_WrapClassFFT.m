@@ -1,4 +1,4 @@
-classdef EssexAid_WrapClass
+classdef EssexAid_WrapClassFFT
     %ESSEXAID_WRAPCLASS Wrapper for the EssexAid - Nick Clark July 2011
     %   This class wraps up the EssexAid algorithm function that processes
     %   each block of samples. This wrapper closely emulates the GUI used
@@ -24,7 +24,9 @@ classdef EssexAid_WrapClass
     properties(Access = public)
         sr         = 48e3;
         numSamples = 1024; %MAX=6912, LAB_USE=48
-        stimulusUSER                   
+        stimulusUSER
+        
+        nfft    = 2048;
         
         %------------------------------------------------------------------
         % Params for audiometric freqs 250, 500, 1000, 2000, 4000, 8000 Hz
@@ -146,7 +148,7 @@ classdef EssexAid_WrapClass
         %% **********************************************************
         % Constructor
         %************************************************************
-        function obj = EssexAid_WrapClass(sr, stimulus)          
+        function obj = EssexAid_WrapClassFFT(sr, stimulus)          
             
             if nargin > 0
                 obj.sr = sr;
@@ -278,20 +280,20 @@ classdef EssexAid_WrapClass
                 %** The aid output will ALWAYS be a 2xN array **
                 %The fist job is to remove trailing zeros that may have been
                 %introduced by the framing process
-                aidOPtruncated = obj.aidOP(:, 1:max([nRows nCols]));
+                aidOPtruncated = obj.aidOP(1:max([nRows nCols]), :);
                 
                 %The next task is to arrange the op like the ip
                 if nChans == 2
                     if I == 1
-                        value = aidOPtruncated;
-                    else
                         value = aidOPtruncated';
+                    else
+                        value = aidOPtruncated;
                     end
                 elseif nChans == 1 %Just to be explicit
                     if I == 1
-                        value = aidOPtruncated(1,:);
+                        value = aidOPtruncated(:,1)';
                     else
-                        value = aidOPtruncated(1,:)';
+                        value = aidOPtruncated(:,1);
                     end
                 end
             else % ---- of if isempty statement
@@ -498,9 +500,9 @@ classdef EssexAid_WrapClass
             nFrames = size(frameBufferL,2);
             
             pad = zeros(1,biggestNumSamples-obj.numSamples);
-            ARampL=ones(1,biggestNumSamples);
+            ARampL=ones(biggestNumSamples,1);
             ARampR = ARampL;
-            MOCcontrol = ones(obj.numChannels, biggestNumSamples);
+            MOCcontrol = ones(biggestNumSamples, obj.numChannels);
             
             peakIPL = zeros(5,1);
             peakOPL = peakIPL;
@@ -514,14 +516,25 @@ classdef EssexAid_WrapClass
             
             MOCend = zeros(obj.numChannels,1);
             
+            load('imps')
+            imps = imps(:,1:obj.nfft/2); %#ok<NODEF>
+            imps = [imps zeros(size(imps))];
+            plot(imps')
+            H = fft(imps',obj.nfft);
+            FILO_iL = zeros(obj.nfft,obj.numChannels);
+            FILO_iR = FILO_iL;
+            FILO_oL = FILO_iL;
+            FILO_oR = FILO_iL;
+            
             op = [];
             moc= [];
             for nn = 1:nFrames
-                frameBufferPadL = [frameBufferL(:,nn)' pad];
-                frameBufferPadR = [frameBufferR(:,nn)' pad];
+                frameBufferPadL = [frameBufferL(:,nn); pad'];
+                frameBufferPadR = [frameBufferR(:,nn); pad'];
                 
-                [ outBufferL, outBufferR, filterStatesL, filterStatesR,  ARampL, ARampR, MOCend, peakIPL, peakOPL, rmsIPL, rmsOPL, peakIPR, peakOPR, rmsIPR, rmsOPR, MOCcontrol ] =...
-                    EssexAidProcessVFrameSwitchable( ...
+                
+                [ outBufferL, outBufferR, filterStatesL, filterStatesR,  ARampL, ARampR, MOCend, peakIPL, peakOPL, rmsIPL, rmsOPL, peakIPR, peakOPR, rmsIPR, rmsOPR, MOCcontrol, FILO_iL, FILO_iR, FILO_oL, FILO_oR ] =...
+                    EssexAidProcessVFrameFFT( ...
                     frameBufferPadL,...
                     frameBufferPadR,...
                     filterStatesL,...
@@ -532,7 +545,6 @@ classdef EssexAid_WrapClass
                     ARampL,...
                     ARampR,...
                     obj.ARthresholdPa,...
-                    obj.filterOrder,...
                     obj.DRNLb_INTERP,...
                     obj.DRNLc_INTERP,...
                     obj.TM_dBO_INTERP,...
@@ -548,16 +560,23 @@ classdef EssexAid_WrapClass
                     MOCend,...
                     MOCcontrol,...
                     obj.mainGain_INTERP,...
-                    obj.useGTF);
+                    obj.nfft,...
+                    H,...
+                    FILO_iL,...
+                    FILO_iR,...
+                    FILO_oL,...
+                    FILO_oR);
                                 
+               
                 
-                outBuffer = ( [outBufferL(:, 1:obj.numSamples); outBufferR(:, 1:obj.numSamples)] );                
-                op = [op outBuffer]; %#ok<AGROW>   
-                moc= [moc MOCcontrol]; %#ok<AGROW>
+                outBuffer = ( [outBufferL(1:obj.numSamples) outBufferR(1:obj.numSamples)] );
+                op = [op; outBuffer]; %#ok<AGROW>   
+%                 moc= [moc; MOCcontrol]; %#ok<AGROW>
                 
             end %End of frame processing emulation loop
             obj.aidOP = op;
             obj.MOCrecord=moc;
+%             disp(op)
             
             %This variable is reserved for C code generation
             obj.emlc_z={ ...
@@ -571,7 +590,6 @@ classdef EssexAid_WrapClass
                     ARampL,...
                     ARampR,...
                     obj.ARthresholdPa,...
-                    obj.filterOrder,...
                     obj.DRNLb_INTERP,...
                     obj.DRNLc_INTERP,...
                     obj.TM_dBO_INTERP,...
@@ -587,7 +605,12 @@ classdef EssexAid_WrapClass
                     MOCend,...
                     MOCcontrol,...
                     obj.mainGain_INTERP,...
-                    obj.useGTF};
+                    obj.nfft,...
+                    H,...
+                    FILO_iL,...
+                    FILO_iR,...
+                    FILO_oL,...
+                    FILO_oR};
             
         end %End of process stim method  
         
@@ -601,22 +624,27 @@ classdef EssexAid_WrapClass
             % buffer size is max (6912)
             % Older instructions are now obsolete
             
-            if obj.numSamples ~= 6912 || isempty(obj.aidOP)
-                tmpSamples = obj.numSamples;
-                obj.numSamples = 6912;
-                obj = obj.processStim; %need to update z parameter
-                obj.numSamples = tmpSamples;
-            end
+%             if obj.numSamples ~= 6912 || isempty(obj.aidOP)
+%                 tmpSamples = obj.numSamples;
+%                 obj.numSamples = 6912;
+%                 obj = obj.processStim; %need to update z parameter
+%                 obj.numSamples = tmpSamples;
+%             end
             
             rtw_config = emlcoder.RTWConfig;
             % rtw_config.TargetFunctionLibrary = 'C89/C90 (ANSI)'; %DO NOT USE prevents having to declare all the "extern" crap in C++
             rtw_config.FilePartitionMethod = 'SingleFile';
             rtw_config.GenCodeOnly = true;
             
+            
+            
             z = obj.emlc_z; %#ok<NASGU>
             
             % % % USE THE FOLLOWING TO COMPILE LIB
-            emlc EssexAidProcessVFrameSwitchable -eg z -launchreport -T rtw -s rtw_config
+            emlc EssexAidProcessVFrameFFT -eg z -launchreport -T rtw -s rtw_config
+            
+            % % % THIS DOES THE MEX
+            emlc EssexAidProcessVFrameFFT -eg z -report
 
         end% ---- of generateC
         

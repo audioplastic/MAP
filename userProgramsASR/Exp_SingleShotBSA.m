@@ -47,8 +47,8 @@ xL.sacfHaxesSM = gca;
 % xL.participant = 'NormalNOEFF';
 xL.participant = 'NormalDIFF';
 
-xL.noiseLevToUse   = 60;
-xL.speechLevToUse  = -60;
+xL.noiseLevToUse   = -200;
+xL.speechLevToUse  = 60;
 
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
@@ -91,7 +91,7 @@ xL.storeSelf;
 % Nodes that are not the master node are only interested in the opFolder
 % member of the jobjects.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-worker(xL.opFolder);
+
 
 options.showEfferent=1;
 % UTIL_showMAP(options)
@@ -101,6 +101,8 @@ global dt ANdt saveAN_spikesOrProbability savedBFlist saveMAPparamsName...
     DRNLoutput IHC_cilia_output IHCrestingCiliaCond IHCrestingV...
     IHCoutput ANprobRateOutput ANoutput savePavailable tauCas  ...
     CNoutput  ICoutput ICmembraneOutput ICfiberTypeRates MOCattenuation 
+
+worker(xL.opFolder);
 
 %%
 % clims = ;

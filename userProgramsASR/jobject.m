@@ -62,8 +62,7 @@ classdef jobject
         %************************************************************
         % SACF params
         %************************************************************
-        useSACF             = false;
-        
+        useSACF             = false;        
         
         SACFacfTau          = 2; % > 1 = Wiegrebe mode
         SACFnBins           = 128;
@@ -75,8 +74,6 @@ classdef jobject
         % MAP params
         %************************************************************
         MAProot                 = fullfile('..');
-%         mapVer                  = 'MAP1_12_experimental';
-%         MAPuseEfferent          = 1;
         MAPplotGraphs           = 0;
         MAPDRNLSave             = 0;
         

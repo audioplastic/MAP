@@ -109,6 +109,8 @@ DRNLParams.rateToAttenuationFactorProb = 0.012;  % strength of MOC
 DRNLParams.MOCrateThresholdProb =60;                % spikes/s probability only
 
 DRNLParams.MOCtau =0.45;                         % smoothing for MOC
+DRNLParams.MOCtauR =0.400; 
+DRNLParams.MOCtauF =0.100; 
 
 DRNLParams.CtBM = 8e-8;%18.0618; % 18 gives old a=800; old val was 12.5772 fo a=10k
 
