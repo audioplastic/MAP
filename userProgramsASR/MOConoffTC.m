@@ -2,8 +2,8 @@ close all; clear all; clc
 
 sr = 48e3;
 
-onTC = 400e-3;
-offTC = 100e-3;
+onTC = 500e-3;
+offTC = 50e-3;
 
 durTA = 5;
 durTP = 3;

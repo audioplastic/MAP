@@ -813,6 +813,8 @@ while segmentStartPTR<signalLength
                 MOCattenuation(:,segmentStartPTR:segmentEndPTR)= ...
                     ones(size(rates))* -rateToAttenuationFactorProb;                
             else
+                
+                smoothedRates = zeros(1,c);
                 for idx=1:nBFs
 %                     [smoothedRates, MOCprobBoundary{idx}] = ...
 %                         filter(MOCfilt_b, MOCfilt_a, rates(idx,:), ...
@@ -822,14 +824,14 @@ while segmentStartPTR<signalLength
 %                     x =  (1- smoothedRates* rateToAttenuationFactorProb); %ORIGINAL 
 
                     %NEW !!!
-                    smoothedRates = zeros(1,c);
+                    
                     for nn = 1:c
                         if rates(idx,nn) < MOCprobBoundary{idx} %// - This is line to make smoothing only apply to release
                             smoothedRates(nn) = MOCfilt_bF*rates(idx,nn) - MOCfilt_aF*MOCprobBoundary{idx};% // difference eqn for one-pole lpf
                         else
                             smoothedRates(nn) = MOCfilt_bR*rates(idx,nn) - MOCfilt_aR*MOCprobBoundary{idx};% // difference eqn for one-pole lpf
                         end
-                        MOCprobBoundary{idx} = rates(idx,nn);
+                        MOCprobBoundary{idx} = smoothedRates(nn);
                     end
                     
                     x = -20*log10(  max(smoothedRates/MOCrateThresholdProb,1)  )*rateToAttenuationFactorProb; %dB attenuation

@@ -28,26 +28,26 @@ learnFolder = fullfile(expFolder,'featL');
 
 xL = jobject('L', learnFolder);
 
-figure(11);
-xL.featHaxes = gca;
+% figure(11);
+% xL.featHaxes = gca;
+% 
+% figure(12);
+% xL.reconHaxes = gca;
 
-figure(12);
-xL.reconHaxes = gca;
-
-figure(22);
-xL.probHaxes = gca;
+% figure(22);
+% xL.probHaxes = gca;
 figure(23);
 xL.probHaxesSM = gca;
 
-figure(33);
-xL.sacfHaxes = gca;
-figure(34);
-xL.sacfHaxesSM = gca;
+% figure(33);
+% xL.sacfHaxes = gca;
+% figure(34);
+% xL.sacfHaxesSM = gca;
 
 % xL.participant = 'NormalNOEFF';
 xL.participant = 'NormalDIFF';
 
-xL.noiseLevToUse   = -200;
+xL.noiseLevToUse   = 50;
 xL.speechLevToUse  = 60;
 
 xL.MAPopHSR = 1;
@@ -65,7 +65,7 @@ xL.SACFnBins = 128;
 mkdir(xL.opFolder);
 xL = xL.assignFiles;
 xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_2841A.wav'));
-xL.noiseName = 'subwayLPF';
+xL.noiseName = '20TalkerBabble';
 
 xL.removeEnergyStatic = 1;
 xL.doCMN = 1;
@@ -73,15 +73,16 @@ xL.doCMN = 1;
 xL.useSpectrogram = 0;
 xL.numCoeff = 14;
 
-xL.noisePreDur = 4;
+xL.noisePreDur = 6;
 xL.noisePostDur = 0.1;
-xL.truncateDur  = 3.9; %Dr. RF used 0.550
+xL.truncateDur  = xL.noisePreDur-0.1; %Dr. RF used 0.550
 
 
 
 
 xL.MAPparamChanges=         {'DRNLParams.rateToAttenuationFactorProb=7;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;',...
-                             'OMEParams.rateToAttenuationFactorProb=0;', 'OMEParams.ARrateThreshold=35;', 'OMEParams.ARtau=1;'};% xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =40;','DRNLParams.MOCtau =0.35;'};
+                             'OMEParams.rateToAttenuationFactorProb=0;',...
+                             'DRNLParams.MOCtauR=.4;', 'DRNLParams.MOCtauF=.1;'};% xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =40;','DRNLParams.MOCtau =0.35;'};
 
 
 xL.storeSelf;
@@ -107,7 +108,7 @@ worker(xL.opFolder);
 %%
 % clims = ;
 
-figure(12); set(gca, 'CLim', [30 80] ); colorbar
+% figure(12); set(gca, 'CLim', [30 80] ); colorbar
 figure(23); set(gca, 'CLim', [60 160] )
 
 %% Look at the SACF
@@ -193,16 +194,16 @@ xlim([0 durS*dt])
 colorbar
 
 %%
-figure(101)
-set(gcf, 'Position', [513   544   553   169])
-
-AR2D = repmat(ARattenuation(startP:end), size(MOClim,1),1);
-
-
-imagesc(tAxis, [],-20*log10(flipud(AR2D)), [0 25])
-set(gca, 'YTick', YTickIdx);
-set(gca, 'YTickLabel', num2str(    myBFlist(YTickIdxRev)'     ));
-ylabel('cf (Hz)')
-xlabel('Time (s)')
-xlim([0 durS*dt])
-colorbar
+% figure(101)
+% set(gcf, 'Position', [513   544   553   169])
+% 
+% AR2D = repmat(ARattenuation(startP:end), size(MOClim,1),1);
+% 
+% 
+% imagesc(tAxis, [],-20*log10(flipud(AR2D)), [0 25])
+% set(gca, 'YTick', YTickIdx);
+% set(gca, 'YTickLabel', num2str(    myBFlist(YTickIdxRev)'     ));
+% ylabel('cf (Hz)')
+% xlabel('Time (s)')
+% xlim([0 durS*dt])
+% colorbar
