@@ -90,24 +90,24 @@ frameBufferR(1:numSamples) = zeros(size(frameBufferL(1:numSamples)));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % find  rms of smoothed ip signal
 %  this will be used to trigger the AR reflex
-[yL,  filterStatesL(enumS_AR+1)] = filter(filterCoeffs(enumC_ARb+1:enumC_ARb+2), filterCoeffs(enumC_ARa+1:enumC_ARa+2) , stapesVelL.^2, filterStatesL(enumS_AR+1));
-[yR,  filterStatesR(enumS_AR+1)] = filter(filterCoeffs(enumC_ARb+1:enumC_ARb+2), filterCoeffs(enumC_ARa+1:enumC_ARa+2) , stapesVelR.^2, filterStatesR(enumS_AR+1));
-
-% restore Pa scale
-smoothedARrmsL = sqrt(yL);  %confusing name for parameter - it is a short term RMS.
-smoothedARrmsR = sqrt(yR);  %confusing name for parameter - it is a short term RMS.
+% % % [yL,  filterStatesL(enumS_AR+1)] = filter(filterCoeffs(enumC_ARb+1:enumC_ARb+2), filterCoeffs(enumC_ARa+1:enumC_ARa+2) , stapesVelL.^2, filterStatesL(enumS_AR+1));
+% % % [yR,  filterStatesR(enumS_AR+1)] = filter(filterCoeffs(enumC_ARb+1:enumC_ARb+2), filterCoeffs(enumC_ARa+1:enumC_ARa+2) , stapesVelR.^2, filterStatesR(enumS_AR+1));
+% % % 
+% % % % restore Pa scale
+% % % smoothedARrmsL = sqrt(yL);  %confusing name for parameter - it is a short term RMS.
+% % % smoothedARrmsR = sqrt(yR);  %confusing name for parameter - it is a short term RMS.
 
 % attenuate input (NB cross product used)
 stapesVelL = stapesVelL./ARampL(1:numSamples);
 stapesVelR = stapesVelR./ARampR(1:numSamples);
 
-%CALC ARamp FOR NEXT FRAME
-% compare levels in the previous segment with AR threshold
-ARampL(1:numSamples) = smoothedARrmsL/ARthresholdPa;
-ARampR(1:numSamples) = smoothedARrmsR/ARthresholdPa;
-% all sub-treshold values are set to 1
-ARampL(ARampL(1:numSamples)<1)=1;
-ARampR(ARampR(1:numSamples)<1)=1;
+% % % %CALC ARamp FOR NEXT FRAME
+% % % % compare levels in the previous segment with AR threshold
+% % % ARampL(1:numSamples) = smoothedARrmsL/ARthresholdPa;
+% % % ARampR(1:numSamples) = smoothedARrmsR/ARthresholdPa;
+% % % % all sub-treshold values are set to 1
+% % % ARampL(ARampL(1:numSamples)<1)=1;
+% % % ARampR(ARampR(1:numSamples)<1)=1;
 
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -204,6 +204,29 @@ for filterCount=1:numChannels
     frameBufferR(1:numSamples) = frameBufferR(1:numSamples) + yR*mainGain(filterCount);
 end  % BF channel
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ACOUSTIC REFLEX
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% find  rms of smoothed ip signal
+%  this will be used to trigger the AR reflex
+[yL,  filterStatesL(enumS_AR+1)] = filter(filterCoeffs(enumC_ARb+1:enumC_ARb+2), filterCoeffs(enumC_ARa+1:enumC_ARa+2) , frameBufferL(1:numSamples).^2, filterStatesL(enumS_AR+1));
+[yR,  filterStatesR(enumS_AR+1)] = filter(filterCoeffs(enumC_ARb+1:enumC_ARb+2), filterCoeffs(enumC_ARa+1:enumC_ARa+2) , frameBufferR(1:numSamples).^2, filterStatesR(enumS_AR+1));
+
+% restore Pa scale
+smoothedARrmsL = sqrt(yL);  %confusing name for parameter - it is a short term RMS.
+smoothedARrmsR = sqrt(yR);  %confusing name for parameter - it is a short term RMS.
+
+% % % % attenuate input (NB cross product used)
+% % % stapesVelL = stapesVelL./ARampL(1:numSamples);
+% % % stapesVelR = stapesVelR./ARampR(1:numSamples);
+
+%CALC ARamp FOR NEXT FRAME
+% compare levels in the previous segment with AR threshold
+ARampL(1:numSamples) = smoothedARrmsL/ARthresholdPa;
+ARampR(1:numSamples) = smoothedARrmsR/ARthresholdPa;
+% all sub-treshold values are set to 1
+ARampL(ARampL(1:numSamples)<1)=1;
+ARampR(ARampR(1:numSamples)<1)=1;
 
 end
 
