@@ -6,11 +6,16 @@ function worker(workFolder)
 
 
 %main script
-
-if numel(dir(fullfile(workFolder,'jobLock.txt'))) %Check to see if lock already in place
-    assert(false,'Failed due to job lock')
-else
-    load(fullfile(workFolder,'jobObject.mat'))
+isloaded = 0;
+while ~isloaded
+    if numel(dir(fullfile(workFolder,'jobLock.txt'))) %Check to see if lock already in place
+        pTime = randi(30);
+        disp(['Worker function locked out -> waiting for ' pTime ' seconds until next retry']);
+        pause(pTime);
+    else
+        load(fullfile(workFolder,'jobObject.mat'))
+        isloaded = 1;
+    end
 end
 
 
