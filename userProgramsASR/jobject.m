@@ -512,6 +512,7 @@ classdef jobject
             else
                 idx = ceil(rand*(noiseLength-stimLength));
             end
+%             disp(idx)
             noise = noise(idx:idx+stimLength-1);
             
             stimulus = speech+noise;
