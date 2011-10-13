@@ -477,9 +477,9 @@ classdef cHMM
                     ipStr = recResults(nn).fileName(end-8:end-6);
                     
                     for kk = 1:3
-                        inputDigits(nn,kk)  = HMMclass.htk_str2num(ipStr(kk)); %see local function @ bottom of script
+                        inputDigits(nn,kk)  = cHMM.htk_str2num(ipStr(kk)); %see local function @ bottom of script
                         opStr = recResults(nn).utterance(kk);
-                        outputDigits(nn,kk) = HMMclass.htk_str2num(opStr{:}); %bit of a hack to do cell2str as it were
+                        outputDigits(nn,kk) = cHMM.htk_str2num(opStr{:}); %bit of a hack to do cell2str as it were
                     end
                 end
                 
@@ -508,7 +508,7 @@ classdef cHMM
                 currentScoring = fullfile(folderToScore, dirInfo(nn).name);
                 disp('');
                 disp(currentScoring);
-                HMMclass.score(currentScoring);
+                cHMM.score(currentScoring);
             end
         end                        
         

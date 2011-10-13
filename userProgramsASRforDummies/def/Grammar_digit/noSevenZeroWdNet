@@ -1,0 +1,97 @@
+VERSION=1.0
+N=36   L=59   
+I=0    W=!NULL               
+I=1    W=!NULL               
+I=2    W=sil                 
+I=3    W=oh                  
+I=4    W=!NULL               
+I=5    W=one                 
+I=6    W=two                 
+I=7    W=three               
+I=8    W=four                
+I=9    W=five                
+I=10   W=six                 
+I=11   W=eight               
+I=12   W=nine                
+I=13   W=sp                  
+I=14   W=oh                  
+I=15   W=!NULL               
+I=16   W=one                 
+I=17   W=two                 
+I=18   W=three               
+I=19   W=four                
+I=20   W=five                
+I=21   W=six                 
+I=22   W=eight               
+I=23   W=nine                
+I=24   W=sp                  
+I=25   W=oh                  
+I=26   W=!NULL               
+I=27   W=one                 
+I=28   W=two                 
+I=29   W=three               
+I=30   W=four                
+I=31   W=five                
+I=32   W=six                 
+I=33   W=eight               
+I=34   W=nine                
+I=35   W=sil                 
+J=0     S=35   E=1    
+J=1     S=0    E=2    
+J=2     S=2    E=3    
+J=3     S=3    E=4    
+J=4     S=5    E=4    
+J=5     S=6    E=4    
+J=6     S=7    E=4    
+J=7     S=8    E=4    
+J=8     S=9    E=4    
+J=9     S=10   E=4    
+J=10    S=11   E=4    
+J=11    S=12   E=4    
+J=12    S=2    E=5    
+J=13    S=2    E=6    
+J=14    S=2    E=7    
+J=15    S=2    E=8    
+J=16    S=2    E=9    
+J=17    S=2    E=10   
+J=18    S=2    E=11   
+J=19    S=2    E=12   
+J=20    S=4    E=13   
+J=21    S=13   E=14   
+J=22    S=14   E=15   
+J=23    S=16   E=15   
+J=24    S=17   E=15   
+J=25    S=18   E=15   
+J=26    S=19   E=15   
+J=27    S=20   E=15   
+J=28    S=21   E=15   
+J=29    S=22   E=15   
+J=30    S=23   E=15   
+J=31    S=13   E=16   
+J=32    S=13   E=17   
+J=33    S=13   E=18   
+J=34    S=13   E=19   
+J=35    S=13   E=20   
+J=36    S=13   E=21   
+J=37    S=13   E=22   
+J=38    S=13   E=23   
+J=39    S=15   E=24   
+J=40    S=24   E=25   
+J=41    S=25   E=26   
+J=42    S=27   E=26   
+J=43    S=28   E=26   
+J=44    S=29   E=26   
+J=45    S=30   E=26   
+J=46    S=31   E=26   
+J=47    S=32   E=26   
+J=48    S=33   E=26   
+J=49    S=34   E=26   
+J=50    S=24   E=27   
+J=51    S=24   E=28   
+J=52    S=24   E=29   
+J=53    S=24   E=30   
+J=54    S=24   E=31   
+J=55    S=24   E=32   
+J=56    S=24   E=33   
+J=57    S=24   E=34   
+J=58    S=26   E=35   
