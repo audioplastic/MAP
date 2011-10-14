@@ -3,7 +3,7 @@ function Exp_Tutorial_1(isMasterNode)
 % Some description of the experiment goes here
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Set up the basic experiment parameters
+% Set up the basic folders
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 expName = 'Tutorial';
 dataFolderPrefix = 'hello_world';
