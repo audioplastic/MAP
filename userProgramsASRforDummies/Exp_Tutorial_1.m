@@ -24,7 +24,7 @@ learnFolder = fullfile(expFolder,'featL');
 
 xL = cJob('L', learnFolder);
 
-xL.participant = 'NormalDIFF';%'NormalDIFF';
+xL.participant = 'Normal';
 xL.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=0;', 'OMEParams.rateToAttenuationFactorProb=0;' };
 
 xL.noiseLevToUse   =  -200;
@@ -44,7 +44,7 @@ testWavs = 5; %MAX = 358
 nzLevel = [-200 40:10:70];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-xL.noisePreDur = 2;
+xL.noisePreDur = 1;
 xL.noisePostDur = 0.1;
 xL.truncateDur  = xL.noisePreDur-0.1; 
 xL.noiseName = 'factory1';

@@ -512,7 +512,16 @@ classdef HMMclass
             end
         end                        
         
-        %**************************************************************************
+        %% **********************************************************
+        % scoreIdx - make my life easier @ command line
+        %************************************************************
+        function scoreIdx(folderToScorePFX, idx)
+            for nn = 1:numel(idx);
+                HMMclass.score([folderToScorePFX idx(nn)])
+            end
+        end 
+        
+        %% *************************************************************************
         % htk_str2num - Convert strings to integers
         %**************************************************************************
         function opNum = htk_str2num(ipString)
