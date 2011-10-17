@@ -517,7 +517,7 @@ classdef HMMclass
         %************************************************************
         function scoreIdx(folderToScorePFX, idx)
             for nn = 1:numel(idx);
-                HMMclass.score([folderToScorePFX idx(nn)])
+                HMMclass.score([folderToScorePFX num2str(idx(nn))])
             end
         end 
         
