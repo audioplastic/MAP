@@ -47,8 +47,8 @@ xL.probHaxesSM = gca;
 % xL.participant = 'NormalNOEFF';
 xL.participant = 'NormalDIFF';
 
-xL.noiseLevToUse   = 50;
-xL.speechLevToUse  = 60;
+xL.noiseLevToUse   = 0;
+xL.speechLevToUse  = 100;
 
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
@@ -68,12 +68,12 @@ xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_2841A.wav'));
 xL.noiseName = '20TalkerBabble';
 
 xL.removeEnergyStatic = 1;
-xL.doCMN = 1;
+xL.doCMN = 0;
 
 xL.useSpectrogram = 0;
 xL.numCoeff = 14;
 
-xL.noisePreDur = 6;
+xL.noisePreDur = 1;
 xL.noisePostDur = 0.1;
 xL.truncateDur  = xL.noisePreDur-0.1; %Dr. RF used 0.550
 
@@ -81,7 +81,7 @@ xL.truncateDur  = xL.noisePreDur-0.1; %Dr. RF used 0.550
 
 
 xL.MAPparamChanges=         {'DRNLParams.rateToAttenuationFactorProb=7;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;',...
-                             'OMEParams.rateToAttenuationFactorProb=0;',...
+                             'OMEParams.rateToAttenuationFactorProb=0.00;',...
                              'DRNLParams.MOCtauR=.4;', 'DRNLParams.MOCtauF=.1;'};% xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =40;','DRNLParams.MOCtau =0.35;'};
 
 
@@ -194,16 +194,16 @@ xlim([0 durS*dt])
 colorbar
 
 %%
-% figure(101)
-% set(gcf, 'Position', [513   544   553   169])
-% 
-% AR2D = repmat(ARattenuation(startP:end), size(MOClim,1),1);
-% 
-% 
-% imagesc(tAxis, [],-20*log10(flipud(AR2D)), [0 25])
-% set(gca, 'YTick', YTickIdx);
-% set(gca, 'YTickLabel', num2str(    myBFlist(YTickIdxRev)'     ));
-% ylabel('cf (Hz)')
-% xlabel('Time (s)')
-% xlim([0 durS*dt])
-% colorbar
+figure(101)
+set(gcf, 'Position', [513   544   553   169])
+
+AR2D = repmat(ARattenuation(startP:end), size(MOClim,1),1);
+
+
+imagesc(tAxis, [],-20*log10(flipud(AR2D)), [0 25])
+set(gca, 'YTick', YTickIdx);
+set(gca, 'YTickLabel', num2str(    myBFlist(YTickIdxRev)'     ));
+ylabel('cf (Hz)')
+xlabel('Time (s)')
+xlim([0 durS*dt])
+colorbar
