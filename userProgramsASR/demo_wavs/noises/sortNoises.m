@@ -1,7 +1,7 @@
 clear all;
 clc
 
-wName = 'pink'
+wName = '16TalkerBabble'
 
 [x,fs] = wavread([wName '.wav']);
 
