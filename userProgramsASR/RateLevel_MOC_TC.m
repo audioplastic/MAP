@@ -45,16 +45,16 @@ for kk = [0.005 0.010 0.020]
     for jj = 0.05:0.05:0.5
         
         paramChanges = {};
-        paramChanges{numel(paramChanges)+1} = ['DRNLParams.rateToAttenuationFactorProb = ' num2str(kk) ';'];%FIX = -10^(-10/20); %GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
-        paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 60;';%GOOD=140 %DEFAULT = 70;
+        paramChanges{numel(paramChanges)+1} = ['DRNLParams.rateToAttenuationFactorProb=' num2str(kk) ';'];%FIX = -10^(-10/20); %GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
+        paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb=60;';%GOOD=140 %DEFAULT = 70;
         
-        paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0;';%DEFAULT = 0.01;
+        paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb=0;';%DEFAULT = 0.01;
         paramChanges{numel(paramChanges)+1} = 'DRNLParams.a=1e4;'; %DEFAULT = 5e4;
-        paramChanges{numel(paramChanges)+1} = ['DRNLParams.MOCtau =' num2str(jj) ';'];
+        paramChanges{numel(paramChanges)+1} = ['DRNLParams.MOCtauR=' num2str(jj) ';' 'DRNLParams.MOCtauF=' num2str(jj) ';'];
         
         
         AN_spikesOrProbability = 'probability';
-        MAP1_14(ipSig, sr, -1, 'Normal', AN_spikesOrProbability, paramChanges)
+        MAP1_14(ipSig, sr, -1, 'NormalDIFF', AN_spikesOrProbability, paramChanges)
         
         % options.showEfferent=1;
         % UTIL_showMAP(options)

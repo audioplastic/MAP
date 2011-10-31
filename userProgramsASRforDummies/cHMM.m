@@ -315,20 +315,14 @@ classdef cHMM
         function value = get.protoFile(obj)
             if (obj.numCoeff == 27) && strcmpi(obj.paramType, 'USER_D_A')
                 value  = fullfile(pwd, 'def', 'proto_RobANonly_9'); %probability/HSR/LSR only
-            elseif (obj.numCoeff == 54) && strcmpi(obj.paramType, 'USER_D_A')
-                value  = fullfile(pwd, 'def', 'proto_Nick18'); 
-            elseif (obj.numCoeff == 57) && strcmpi(obj.paramType, 'USER_D_A')
-                value  = fullfile(pwd, 'def', 'proto_Nick19'); 
-              elseif (obj.numCoeff == 26) && strcmpi(obj.paramType, 'USER_D_A')
-                value  = fullfile(pwd, 'def', 'proto_NickManualANonly_9noEng'); %probability both HSR AND LSR
             elseif (obj.numCoeff == 26) && strcmpi(obj.paramType, 'USER_E_D_A_N')
                 value  = fullfile(pwd, 'def', 'proto_NickManualANonly_9noEng'); %probability both HSR AND LSR
             elseif (obj.numCoeff == 24) && strcmpi(obj.paramType, 'USER_D_A')
-                value  = fullfile(pwd, 'def', 'proto_Nick8'); %probability both HSR AND LSR
+                value  = fullfile(pwd, 'def', 'proto_Nick8'); 
             elseif (obj.numCoeff == 60) && strcmpi(obj.paramType, 'USER_D_A')
-                value  = fullfile(pwd, 'def', 'proto_Nick20'); %probability both HSR AND LSR
+                value  = fullfile(pwd, 'def', 'proto_Nick20'); 
             elseif (obj.numCoeff == 14*3) && strcmpi(obj.paramType, 'USER_D_A')
-                value  = fullfile(pwd, 'def', 'proto_Nick14'); %probability both HSR AND LSR
+                value  = fullfile(pwd, 'def', 'proto_Nick14'); 
             else
                 error('No appropriate prototype')
             end
@@ -500,8 +494,12 @@ classdef cHMM
         %% **********************************************************
         % scoreWhole folder - make my life easier @ command line
         %************************************************************
-        function scoreWholeFolder(folderToScore)
-            dirInfo = dir(fullfile(folderToScore, '*featR*'));
+        function scoreWholeFolder(folderToScore, searchString)
+            if nargin < 2
+                searchString = '*featR*';
+            end
+            
+            dirInfo = dir(fullfile(folderToScore, searchString));
 %              dirInfo.name
             numFolders = numel(dirInfo);
             for nn = 1:numFolders;

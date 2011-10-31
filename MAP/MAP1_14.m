@@ -836,7 +836,7 @@ while segmentStartPTR<signalLength
                     
                     x = -20*log10(  max(smoothedRates/MOCrateThresholdProb,1)  )*rateToAttenuationFactorProb; %dB attenuation
                     x = 10.^(x/20);
-                    x = max(x,10^(-35/20));    
+                    %x = max(x,10^(-35/20));    
 %                     %ALSO - filter at the end - this will stop rapid attack
 %                     %and slow decay
 %                     [x, MOCprobBoundary{idx}] = ...

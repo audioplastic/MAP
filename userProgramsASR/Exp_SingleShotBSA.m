@@ -47,8 +47,8 @@ xL.probHaxesSM = gca;
 % xL.participant = 'NormalNOEFF';
 xL.participant = 'NormalDIFF';
 
-xL.noiseLevToUse   = 0;
-xL.speechLevToUse  = 100;
+xL.noiseLevToUse   = 70;
+xL.speechLevToUse  = -100;
 
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
@@ -73,16 +73,16 @@ xL.doCMN = 0;
 xL.useSpectrogram = 0;
 xL.numCoeff = 14;
 
-xL.noisePreDur = 1;
+xL.noisePreDur = 12;
 xL.noisePostDur = 0.1;
 xL.truncateDur  = xL.noisePreDur-0.1; %Dr. RF used 0.550
 
 
 
 
-xL.MAPparamChanges=         {'DRNLParams.rateToAttenuationFactorProb=7;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;',...
+xL.MAPparamChanges=         {'DRNLParams.rateToAttenuationFactorProb=40;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;',...
                              'OMEParams.rateToAttenuationFactorProb=0.00;',...
-                             'DRNLParams.MOCtauR=.4;', 'DRNLParams.MOCtauF=.1;'};% xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =40;','DRNLParams.MOCtau =0.35;'};
+                             'DRNLParams.MOCtauR=4;', 'DRNLParams.MOCtauF=DRNLParams.MOCtauR;'};% xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =40;','DRNLParams.MOCtau =0.35;'};
 
 
 xL.storeSelf;
@@ -185,7 +185,7 @@ YTickIdx = 1:floor(numel(myBFlist)/6):numel(myBFlist);
 YTickIdxRev = numel(myBFlist)+1-YTickIdx;
 
 MOClim = MOCattenuation(:, startP:end);
-imagesc(tAxis, [],-20*log10(flipud(MOClim)), [0 25])
+imagesc(tAxis, [],-20*log10(flipud(MOClim)), [0 35])
 set(gca, 'YTick', YTickIdx);
 set(gca, 'YTickLabel', num2str(    myBFlist(YTickIdxRev)'     ));
 ylabel('cf (Hz)')
@@ -207,3 +207,11 @@ ylabel('cf (Hz)')
 xlabel('Time (s)')
 xlim([0 durS*dt])
 colorbar
+
+%%
+meanATT = mean(20*log10(   MOCattenuation(MOCattenuation(:)<1)   ));
+disp(['Mean non-zero MOC attenuation = ' num2str(meanATT)]);
+
+minATT = min(20*log10(   MOCattenuation(MOCattenuation(:)<1)   ));
+disp(['Greatest MOC attenuation = ' num2str(minATT)]);
+
