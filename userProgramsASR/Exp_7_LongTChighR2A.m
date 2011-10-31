@@ -1,4 +1,4 @@
-function Exp_7_LongTC(isMasterNode)
+function Exp_7_LongTC(isMasterNode, r2a)
 % This experiment tests a recogniser on 3 different training sets with
 % different efferent conditions.
 % This is now using paramChanges and the hearing aid to correct an OHC
@@ -26,7 +26,7 @@ learnFolder = fullfile(expFolder,'featL');
 xL = jobject('L', learnFolder);
 
 xL.participant = 'NormalDIFF';%'NormalDIFF';
-xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb=40;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtauR=4;', 'DRNLParams.MOCtauF=4;'};
+xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', ['DRNLParams.rateToAttenuationFactorProb=' num2str(r2a) ';'],'DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtauR=4;', 'DRNLParams.MOCtauF=4;'};
 
 xL.noiseLevToUse   =  -200;
 xL.speechLevToUse  =  60;
@@ -67,7 +67,7 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['longTChighr2a' num2str(nn)]);
+    recFolder = fullfile(expFolder,['longTC_' num2str(r2a) '_r2a' num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
