@@ -314,6 +314,7 @@ classdef cHMM
     methods(Static)        
         %% **********************************************************
         % macroMat (matlab port of macro C code)
+        % ported by NC - Nov 2011
         %************************************************************
         function macroMat(VECSIZE, PARAMETER_TYPE, infile, outfile)
           % This function takes the vFloors file that is created after
@@ -338,6 +339,7 @@ classdef cHMM
         
         %% **********************************************************
         % spmodel_genMat (matlab port of spmodel_gen C code)
+        % ported by NC - Nov 2011
         %************************************************************
         function spmodel_genMat(infile, outfile)
           % This function copies the middle state (3) from the silence model
@@ -383,6 +385,7 @@ classdef cHMM
         
         %% **********************************************************
         % models_1mixsilMat (matlab port of models_1mixsil C code)
+        % ported by NC - Nov 2011
         %************************************************************
         function models_1mixsilMat(infile, outfile)
             % This function takes the hmmdef file and      
