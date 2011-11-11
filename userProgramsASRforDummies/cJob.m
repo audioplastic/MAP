@@ -62,7 +62,7 @@ classdef cJob
         %************************************************************
         % SACF params
         %************************************************************
-        useSACF             = false;                
+        useSACF             = false;
         SACFacfTau          = 2; % > 1 = Wiegrebe mode
         SACFnBins           = 128;
         SACFminLag          = 1 / 4000;
@@ -94,29 +94,29 @@ classdef cJob
         
         %************************************************************
         % Portable EssexAid params
-        %************************************************************             
+        %************************************************************
         bwOct = 1/1;
-        filterOrder  = 2;  
-                
+        filterOrder  = 2;
+        
         mainGain = [ 1;    1;    1;    1;    1];     % gain in linear units
         TCdBO    = [40;   40;   40;   40;   40];      %Compression thresholds (in dB OUTPUT from 2nd filt)
         TMdBO    = [10;   10;   10;   10;   10];      %MOC thresholds (in dB OUTPUT from 2nd filt)
         DRNLc    = [ 0.2;  0.2;  0.2;  0.2;  0.2;]
         
         ARtau  = 0.03;            % decay time constant
-        ARthresholddB = 85;       % dB SPL (input signal level) =>200 to disable        
+        ARthresholddB = 85;       % dB SPL (input signal level) =>200 to disable
         MOCtau = 0.3;
         MOCfactor = 0.5;   %dB per dB OUTPUT
-                      
-        numSamples = 1024; %MAX=6912        
+        
+        numSamples = 1024; %MAX=6912
         useAid = 0;
     end
-        
+    
     %%  *********************************************************
     % Protected properties - inter/ra class communication
     %************************************************************
     properties(Access = protected)
-        jobLockFid               
+        jobLockFid
         
         %Nick C comment on this:
         %OK. The big-endian thing works because in the config file
@@ -159,9 +159,9 @@ classdef cJob
                     end
                 else
                     obj.opFolder = 'D:\exps\_foo';
-                end                    
+                end
             end
-
+            
             obj = obj.assignWavPaths(LearnOrRecWavs);
             obj = obj.initMAP;
             
@@ -177,7 +177,7 @@ classdef cJob
                     lWAVpath = '~/ASR/reducedAURORA/TrainingData-Clean/';
                     rWAVpath  = '~/ASR/reducedAURORA/TripletTestData/';
                     obj.noiseFolder = '~/ASR/noises';
-                else                    
+                else
                     lWAVpath = '/scratch/nrclark/corpora/AURORA digits (wav)/TrainingData-Clean/';
                     rWAVpath  = '/scratch/nrclark/corpora/AURORA digits (wav)/TripletTestData/';
                     obj.noiseFolder = '/scratch/nrclark/corpora/noises';
@@ -292,7 +292,7 @@ classdef cJob
         
         %% **********************************************************
         % get method for dependtent var jobLockTxtFile
-        %************************************************************        
+        %************************************************************
         function value = get.jobLockTxtFile(obj)
             %Name the MUTEX file here
             value = [fullfile(obj.opFolder, 'jobLock') '.txt'];
@@ -331,8 +331,7 @@ classdef cJob
             addpath(...fullfile(obj.MAProot, 'modules'),...
                 fullfile(obj.MAProot, 'utilities'),...
                 fullfile(obj.MAProot, 'MAP'),...
-                fullfile(obj.MAProot, 'parameterStore'),...
-                fullfile('ASR files'));
+                fullfile(obj.MAProot, 'parameterStore'));
         end % ------ OF INIT MAP
         
         %% **********************************************************
@@ -352,14 +351,14 @@ classdef cJob
             %Starting from R2010b, Matlab should support enumerated types. For now we
             %use integers for compatibility.
             %0=open, 1=processing, 2=done
-            obj.todoStatus = zeros(numel(obj.wavList), 1);             
+            obj.todoStatus = zeros(numel(obj.wavList), 1);
             
         end % ------ OF ASSIGN FILES
         
         %% **********************************************************
         % generate  feature
         %************************************************************
-        function obj = genFeat(obj, currentWav)                        
+        function obj = genFeat(obj, currentWav)
             fprintf(1,'Processing: %s \n', currentWav);
             if strcmpi(obj.speechDist,'Gaussian')
                 tempSpeechLev = obj.speechLevToUse + obj.speechLevStd*randn;
@@ -385,8 +384,8 @@ classdef cJob
             
             obj.currentSpeechLevel = tempSpeechLev;
             obj.currentNoiseLevel = tempNoiseLev;
-            [finalFeatures, ~] = processWavs(obj, currentWav); %discard the output from ANprobabilityResponse and method using ~                                    
-            opForHTK(obj, currentWav, finalFeatures);                        
+            [finalFeatures, ~] = processWavs(obj, currentWav); %discard the output from ANprobabilityResponse and method using ~
+            opForHTK(obj, currentWav, finalFeatures);
         end % ------ OF GENFEAT
         
         %% **********************************************************
@@ -398,18 +397,14 @@ classdef cJob
             targetFilename = fullfile(obj.opFolder, featureName);
             
             % write in a format HTK compliant for the recogniser to use
-            writeHTK(...
+            obj.writeHTK(...
                 targetFilename,...
                 featureData,...
                 size(featureData,2),...
                 obj.frameshift*obj.sampPeriodFromMsFactor,...
                 size(featureData,1)*4,...
                 obj.paramKind,...
-                obj.byteOrder);
-            
-            % make lists of training data/files - SAVE FOR HMM STAGE
-            %             createSCP(obj, targetPath); % filename list (training)
-            %             createMLF(obj, targetPath); %, 0); % training data (without short pauses)
+                obj.byteOrder);            
         end % ------ OF opForHTK
         
         
@@ -446,7 +441,7 @@ classdef cJob
             % getStimulus.m
             %
             % Robert T. Ferry
-            % 13th May 2009            
+            % 13th May 2009
             
             % Set levels
             [speech speechSampleRate] = wavread(fullfile(obj.wavFolder, currentWav ));
@@ -552,22 +547,22 @@ classdef cJob
                 nfft = 1024;
                 hopSamples = 64;
                 noverlap = nfft - hopSamples;
-                dt = hopSamples/sampleRate;                
-                [~,~,~,P] = spectrogram(stimulus,nfft,noverlap,F,sampleRate);    
+                dt = hopSamples/sampleRate;
+                [~,~,~,P] = spectrogram(stimulus,nfft,noverlap,F,sampleRate);
                 
-                ANprobabilityResponse = 10*log10(  abs(P) /  ((20e-6)^2)  ); %now correct [(a^2)/(b^2) = (a/b)^2]                
+                ANprobabilityResponse = 10*log10(  abs(P) /  ((20e-6)^2)  ); %now correct [(a^2)/(b^2) = (a/b)^2]
                 
             else
                 [ANprobabilityResponse, dt, myBFlist] = MAPwrap(stimulus, sampleRate, -1, obj.participant, AN_spikesOrProbability, obj.MAPparamChanges);
             end
             nChannels = numel(myBFlist);
             
-                                   
+            
             time_ANresponse = dt:dt:dt*size(ANprobabilityResponse,2);
             idx = time_ANresponse > obj.truncateDur; %RTF had this @ 0.550
             ANprobabilityResponse = ANprobabilityResponse(:, idx);
             
-             
+            
             if ~obj.useSpectrogram
                 if obj.MAPopLSR && ~obj.MAPopHSR
                     ANprobabilityResponse = ANprobabilityResponse(1:nChannels, :); %use LSR
@@ -585,10 +580,10 @@ classdef cJob
             YTickIdxRev = numel(myBFlist)+1-YTickIdx;
             if ~isempty(obj.probHaxes)
                 axes(obj.probHaxes);  %#ok<MAXES>
-                imagesc(ANprobabilityResponse); colorbar('peer', obj.probHaxes)                
-                set(obj.probHaxes, 'YTick', YTickIdx);                
+                imagesc(ANprobabilityResponse); colorbar('peer', obj.probHaxes)
+                set(obj.probHaxes, 'YTick', YTickIdx);
                 set(obj.probHaxes, 'YTickLabel', num2str(    myBFlist(YTickIdxRev)'     ));
-                ylabel('cf in Hz')                
+                ylabel('cf in Hz')
             end
             
             % OPTIONAL PLOTTING SMOOTHED
@@ -602,16 +597,16 @@ classdef cJob
                 ylabel('cf (Hz)')
                 xlabel('Time (s)')
             end
-         
+            
             
             %**********************************************************
             % optional SACF stage
             %**********************************************************
             if obj.useSACF
                 
-                % A slightly ugly copying is needed      
+                % A slightly ugly copying is needed
                 SACFparams.lambda = obj.SACFlambda;
-                SACFparams.acfTau = obj.SACFacfTau;                
+                SACFparams.acfTau = obj.SACFacfTau;
                 SACFparams.lags = logspace(log10(obj.SACFminLag),log10(obj.SACFmaxLag),obj.SACFnBins);
                 SACFparams.lags = linspace(obj.SACFminLag, obj.SACFmaxLag,obj.SACFnBins );
                 
@@ -629,7 +624,7 @@ classdef cJob
                     imagesc(flipud(ANprobabilityResponse)); shading(obj.sacfHaxes, 'flat'); colorbar('peer', obj.sacfHaxes)
                     set(obj.sacfHaxes, 'YTick', YTickIdx);
                     set(obj.sacfHaxes, 'YTickLabel', num2str(    1./SACFparams.lags(YTickIdx)'    ,'%0.1f' ));
-                    ylabel('Pitch in Hz')                    
+                    ylabel('Pitch in Hz')
                 end
                 
                 % OPTIONAL PLOTTING SMOOTHED
@@ -638,14 +633,14 @@ classdef cJob
                     imagesc(flipud(obj.makeANsmooth(ANprobabilityResponse, 1/dt))); shading(obj.sacfHaxesSM, 'flat'); colorbar('peer', obj.sacfHaxesSM)
                     set(obj.sacfHaxesSM, 'YTick', YTickIdx);
                     set(obj.sacfHaxesSM, 'YTickLabel', num2str(    1./SACFparams.lags(YTickIdx)'    ,'%0.1f' ));
-                    ylabel('Pitch in Hz') 
+                    ylabel('Pitch in Hz')
                 end
                 
             end
             
-                
+            
             finalFeatures = obj.makeANfeatures(  ...
-                obj.makeANsmooth(ANprobabilityResponse, 1/dt), obj.numCoeff  );            
+                obj.makeANsmooth(ANprobabilityResponse, 1/dt), obj.numCoeff  );
             
             if obj.removeEnergyStatic
                 finalFeatures = finalFeatures(2:end,:);
@@ -653,22 +648,22 @@ classdef cJob
             end
             
             if obj.doCMN
-                m = mean(finalFeatures,2);                
+                m = mean(finalFeatures,2);
                 finalFeatures = finalFeatures - repmat(m,1,size(finalFeatures,2));
-            end            
-                        
+            end
+            
             % OPTIONAL PLOTTING
             if ~isempty(obj.featHaxes)
                 pcolor(obj.featHaxes, finalFeatures); shading(obj.featHaxes, 'flat'); colorbar('peer', obj.featHaxes)
             end
             if ~isempty(obj.reconHaxes)
-                 reconsData = idct(finalFeatures,obj.SACFnBins);
-                 axes(obj.reconHaxes);  %#ok<MAXES>
-                 imagesc(flipud( reconsData ));
+                reconsData = idct(finalFeatures,obj.SACFnBins);
+                axes(obj.reconHaxes);  %#ok<MAXES>
+                imagesc(flipud( reconsData ));
             end
             
             opForHTK(obj, currentWav, finalFeatures);
-        end % ------ OF PROCESSWAVS        
+        end % ------ OF PROCESSWAVS
         
     end % ------ OF METHODS
     
@@ -681,10 +676,10 @@ classdef cJob
     % |___/\__\__,_|\__|_|\___| |_| |_| |_|\___|\__|_| |_|\___/ \__,_|___/
     %************************************************************
     
-    methods(Static)        
+    methods(Static)
         %% ********************************************************
         % makeANsmooth - smooth the AN response into hanning windowed chunks
-        %**********************************************************        
+        %**********************************************************
         function ANsmooth = makeANsmooth(ANresponse, sampleRate, winSize, hopSize)
             if nargin < 3
                 winSize = 25; %default 25 ms window
@@ -697,23 +692,242 @@ classdef cJob
             hopSizeSamples = round(hopSize*sampleRate/1000);
             
             % smooth
-            hann = GJB_hanning(winSizeSamples);
+            hann = cJob.NRC_hanning(winSizeSamples);
             
             ANsmooth = [];%Cannot pre-allocate a size as it is unknown until the enframing
             for chan = 1:size(ANresponse,1)
-                f = enframe(ANresponse(chan,:), hann, hopSizeSamples);
+                f = cJob.enframe(ANresponse(chan,:), hann, hopSizeSamples);
                 ANsmooth(chan,:) = mean(f,2)'; %#ok<AGROW> see above comment
             end
         end% ------ OF makeANsmooth
         
         %% ********************************************************
         % makeANfeatures - dct wizardry
-        %********************************************************** 
+        %**********************************************************
         function ANfeatures = makeANfeatures(ANrate, numCoeff)
             % make feature vectors
-            features = GJB_dct(ANrate);
-            ANfeatures = features(1:numCoeff,:);            
+            features = cJob.GJB_dct(ANrate);
+            ANfeatures = features(1:numCoeff,:);
         end % ------ OF makeANfeatures
+        
+        %% ************************************************************************
+        % enframe - AVOID SIGNAL PROCESSING TOOLBOX buffer function
+        %**************************************************************************
+        function f=enframe(x,win,inc)
+            %ENFRAME split signal up into (overlapping) frames: one per row. F=(X,WIN,INC)
+            %
+            %	F = ENFRAME(X,LEN) splits the vector X(:) up into
+            %	frames. Each frame is of length LEN and occupies
+            %	one row of the output matrix. The last few frames of X
+            %	will be ignored if its length is not divisible by LEN.
+            %	It is an error if X is shorter than LEN.
+            %
+            %	F = ENFRAME(X,LEN,INC) has frames beginning at increments of INC
+            %	The centre of frame I is X((I-1)*INC+(LEN+1)/2) for I=1,2,...
+            %	The number of frames is fix((length(X)-LEN+INC)/INC)
+            %
+            %	F = ENFRAME(X,WINDOW) or ENFRAME(X,WINDOW,INC) multiplies
+            %	each frame by WINDOW(:)
+            
+            %	   Copyright (C) Mike Brookes 1997
+            %      Version: $Id: enframe.m,v 1.4 2006/06/22 19:07:50 dmb Exp $
+            %
+            %   VOICEBOX is a MATLAB toolbox for speech processing.
+            %   Home page: http://www.ee.ic.ac.uk/hp/staff/dmb/voicebox/voicebox.html
+            %
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %   This program is free software; you can redistribute it and/or modify
+            %   it under the terms of the GNU General Public License as published by
+            %   the Free Software Foundation; either version 2 of the License, or
+            %   (at your option) any later version.
+            %
+            %   This program is distributed in the hope that it will be useful,
+            %   but WITHOUT ANY WARRANTY; without even the implied warranty of
+            %   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+            %   GNU General Public License for more details.
+            %
+            %   You can obtain a copy of the GNU General Public License from
+            %   http://www.gnu.org/copyleft/gpl.html or by writing to
+            %   Free Software Foundation, Inc.,675 Mass Ave, Cambridge, MA 02139, USA.
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+            nx=length(x(:));
+            nwin=length(win);
+            if (nwin == 1)
+                len = win;
+            else
+                len = nwin;
+            end
+            if (nargin < 3)
+                inc = len;
+            end
+            nf = fix((nx-len+inc)/inc);
+            f=zeros(nf,len);
+            indf= inc*(0:(nf-1)).';
+            inds = (1:len);
+            f(:) = x(indf(:,ones(1,len))+inds(ones(nf,1),:));
+            if (nwin > 1)
+                w = win(:)';
+                f = f .* w(ones(nf,1),:);
+            end
+        end % ------ OF ENFRAME
+        
+        %% ************************************************************************
+        % GJB_dct - AVOID SIGNAL PROCESSING TOOLBOX
+        %**************************************************************************
+        function b=GJB_dct(a,n)
+            
+            if nargin == 0,
+                error('Not enough input arguments.');
+            end
+            
+            if isempty(a)
+                b = [];
+                return
+            end
+            
+            % If input is a vector, make it a column:
+            do_trans = (size(a,1) == 1);
+            if do_trans, a = a(:); end
+            
+            if nargin==1,
+                n = size(a,1);
+            end
+            m = size(a,2);
+            
+            % Pad or truncate input if necessary
+            if size(a,1)<n,
+                aa = zeros(n,m);
+                aa(1:size(a,1),:) = a;
+            else
+                aa = a(1:n,:);
+            end
+            
+            % Compute weights to multiply DFT coefficients
+            ww = (exp(-1i*(0:n-1)*pi/(2*n))/sqrt(2*n)).';
+            ww(1) = ww(1) / sqrt(2);
+            
+            if rem(n,2)==1 || ~isreal(a), % odd case
+                % Form intermediate even-symmetric matrix
+                y = zeros(2*n,m);
+                y(1:n,:) = aa;
+                y(n+1:2*n,:) = flipud(aa);
+                
+                % Compute the FFT and keep the appropriate portion:
+                yy = fft(y);
+                yy = yy(1:n,:);
+                
+            else % even case
+                % Re-order the elements of the columns of x
+                y = [ aa(1:2:n,:); aa(n:-2:2,:) ];
+                yy = fft(y);
+                ww = 2*ww;  % Double the weights for even-length case
+            end
+            
+            % Multiply FFT by weights:
+            b = ww(:,ones(1,m)) .* yy;
+            
+            if isreal(a), b = real(b); end
+            if do_trans, b = b.'; end
+        end % ----- of GJB_DCT
+        
+        %% ************************************************************************
+        % NRC_hanning - AVOID SIGNAL PROCESSING TOOLBOX
+        %**************************************************************************
+        function w=NRC_hanning(n)
+            calc_hanning = @(m,n)0.5*(1 - cos(2*pi*(1:m)'/(n+1))); %cheeky anonymous function - I <3 these
+            if ~rem(n,2)
+                % Even length window
+                half = n/2;
+                w = calc_hanning(half,n);
+                w = [w; w(end:-1:1)];
+            else
+                % Odd length window
+                half = (n+1)/2;
+                w = calc_hanning(half,n);
+                w = [w; w(end-1:-1:1)];
+            end
+        end % ------ of NRC_HANNING
+        
+        %% ************************************************************************
+        % writeHTK - something written by anonymous Sue
+        %**************************************************************************
+        function retcode = writeHTK(filename, htkdata, nFrames, sampPeriod, SampSize, ParamKind, byte_order)
+            % retcode = writehtk(filename, htkdata, nFrames, sampPeriod, SampSize, ParamKind, byte_order)
+            %
+            % Write an HTK format file.
+            %
+            % Input parameters:
+            %    filename		HTK data file
+            %    htkdata      HTK data read: an m x n matrix with
+            %                    m = no. of channels
+            %                    n = no. of frames
+            %  The following are from the HTK header (see HTK manual):
+            %    nFrames      no. of frames (samples)
+            %    sampPeriod   sample period (in 100 ns units?)
+            %    SampSize     sample size
+            %    ParamKind    parameter kind code
+            %
+            %    byteorder    'be' for big-endian (typical for Unix) (default)
+            %                 'le' for little-endian (typical for MSWindows)
+            %
+            % Output parameters:
+            %    retcode      0 if successful
+            
+            % Written by Sue 17/12/01
+            
+            retcode=-1;	% initialise in case of error
+            if nargin < 6
+                fprintf('Usage: %s(filename, htkdata, nFrames, sampPeriod, SampSize, ParamKind [, byte_order])', mfilename);
+            end;
+            
+            % Default to big-endian (HTK format)
+            if nargin < 7
+                byte_order = 'be';
+            end;
+            
+            fid = fopen (filename, 'w', sprintf('ieee-%s', byte_order));
+            if fid < 1
+                fprintf('%s: can''t open output file %s\n', mfilename, filename);
+                return
+            end
+            
+            % Write header
+            fwrite (fid, nFrames, 'int32'); %nSamples in HTK
+            fwrite (fid, sampPeriod, 'int32');
+            fwrite (fid, SampSize, 'int16');
+            fwrite (fid, ParamKind, 'int16');
+            
+            % Write actual data
+            fwrite(fid, htkdata, 'float32');
+            
+            fclose(fid);
+            
+            retcode=0;
+        end% ------ OF WRITEHTK
+        
+        %% ************************************************************************
+        % readHTK - just incase you ever want to go backwards
+        %**************************************************************************
+        function [htkdata,nframes,sampPeriod,sampSize,paramKind] = readHTK(filename,byte_order)
+            
+            if nargin<2
+                byte_order = 'be';
+            end
+            
+            fid = fopen(filename,'r',sprintf('ieee-%s',byte_order));
+            
+            nframes = fread(fid,1,'int32');
+            sampPeriod = fread(fid,1,'int32');
+            sampSize = fread(fid,1,'int16');
+            paramKind = fread(fid,1,'int16');
+            
+            % read the data
+            
+            htkdata = fread(fid,nframes*(sampSize/4),'float32');
+            htkdata = reshape(htkdata,sampSize/4,nframes);
+            fclose(fid);
+        end % ------ OF READHTK
         
     end % ------ OF STATIC METHODS
     

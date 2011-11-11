@@ -55,14 +55,14 @@ while(any(x.todoStatus==0))
         
     clc
     personalWork = personalWork+1;
-    disp( ['This process has completed ' num2str(personalWork) ' jobs'] )
+    disp( ['This process has completed ' num2str(personalWork) ' lists'] )
     x.checkStatus        
 end
 
 disp('-*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*-')
 disp( ' > COMPLETED CURRENT JOB' )
 disp( ['  In the folder ' workFolder '  .....'] )
-disp( ['  This process completed ' num2str(personalWork) ' jobs'] )
+disp( ['  This process completed ' num2str(personalWork) ' lists'] )
 disp('-*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*-')
 
 

@@ -12,12 +12,12 @@ close all; clear all; clc;
 
 sr = 44100;
 dt = 1/sr;
-dur = 4;
+dur = 3;
 freq = 520;
 
 nn=0;
 % for levelSPL = 40:10:70;
-for levelSPL = [50:10:100]
+for levelSPL = [0:10:100]
 % levelSPL = 50;
 nn = nn+1;
 levelRec(nn) = levelSPL;
@@ -37,7 +37,7 @@ ipSig = sin(2*pi*freq*tAxis);
 % ipSig = filter(1,a,ipSig);
 % end of pink code
 
-ipSig = wavread(fullfile('demo_wavs','noises', '20TalkerBabble.wav'));
+% ipSig = wavread(fullfile('demo_wavs','noises', '20TalkerBabble.wav'));
 % ipSig = wavread(fullfile('D:\ASRexperiments\Stimuli\noises', '20TalkerBabble.wav'));
 ipSig = ipSig(1:numel(tAxis));
 
@@ -47,11 +47,12 @@ ipSig = ipSig./sqrt(mean(ipSig.^2));
 ipSig = ipSig * 20e-6 * 10 ^ (levelSPL/20);
 
 paramChanges = {};
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb=7;';%GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb=9;';%GOOD = 0.012  %DEFAULT = 0.005;  % strength of MOC
 paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb=85;';%GOOD=140 %DEFAULT = 70;
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau=2;'; %DEFAULT = 0.1;
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtauR=1;'; %DEFAULT = 0.1;
+paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtauF=DRNLParams.MOCtauR;';
 
-paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb=15;';
+paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb=0;';
 paramChanges{numel(paramChanges)+1} = 'OMEParams.ARrateThreshold=35;';
 paramChanges{numel(paramChanges)+1} = 'OMEParams.ARtau=1;';
 
@@ -99,5 +100,5 @@ subplot(3,1,2); plot(levelRec, rateLSR); title('LSR rate')
 subplot(3,1,3); plot(levelRec, rateHSR); title('HSR rate')
 
 figure(44)
-plot(levelRec, attdB, levelRec, ARattdB); title('MOC/AR attenuation'); ylim([0 45])
+plot(levelRec, attdB, levelRec, ARattdB); title('MOC/AR attenuation'); ylim([0 40])
 
