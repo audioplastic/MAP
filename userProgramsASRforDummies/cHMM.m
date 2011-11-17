@@ -1,6 +1,23 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   This program is free software; you can redistribute it and/or modify
+%   it under the terms of the GNU General Public License as published by
+%   the Free Software Foundation; either version 2 of the License, or
+%   (at your option) any later version.
+%
+%   This program is distributed in the hope that it will be useful,
+%   but WITHOUT ANY WARRANTY; without even the implied warranty of
+%   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%   GNU General Public License for more details.
+%
+%   You can obtain a copy of the GNU General Public License from
+%   http://www.gnu.org/copyleft/gpl.html or by writing to
+%   Free Software Foundation, Inc.,675 Mass Ave, Cambridge, MA 02139, USA.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 classdef cHMM
     %HMMCLASS Handles all of the HTK related gubbins
-    %   Detailed explanation goes here
+    %   Please see the documentation located in a separate file for further
+    %   information.     
     
     %%  *********************************************************
     %  properties                      _   _
@@ -102,11 +119,8 @@ classdef cHMM
             labelssp        = labels; % for use in hmm4 onwards - UGLY HACK NOW SP ABANDONED
             hmm_dir         = obj.hmmFolder;
             
-%             trainSet        = trainFeatureFolder;
             FEAT_ROOT       = trainFeatureFolder;
             
-            % Now for the actual HMM training code
-            % Now for the actual HMM training code
             % Now for the actual HMM training code
             mkdir(hmm_dir)
             for I = 0:36
@@ -153,44 +167,23 @@ classdef cHMM
             disp('3 iterations complete');
             
             rmdir ([hmm_dir filesep 'hmm4'],'s')
-            copyfile ([hmm_dir filesep 'hmm3'], [hmm_dir filesep 'hmm4'])
-            
-            % From: http://www.voxforge.org/home/dev/acousticmodels/linux/create/htkjulius/tutorial/monophones/step-7
-            %  In the last step you created HMM models that did not include an "sp"
-            %  (short pause) silence model - which refers to the types of short pauses
-            %  that occur between words in normal speech.  However, you did create a
-            %  "sil" silence model - sil silence models are typically of longer
-            %  duration, and refer to the pauses occur at the end of a sentence.
-            %
-            % The HTK book says that the sp model needs to have its "emitting state
-            % tied to the centre state of the silence model".  What this means is that
-            % you need to create a new sp model in your hmmdefs, that it will use the
-            % centre state of sil, and then they both need to be 'tied' together.  For
-            % a bit of background on HMMs and states, see this example.
-            %
-            % This can be done by copying the centre state from the sil model in your
-            % hmmdefs file and adding it to the sp model, and then running a special
-            % tool called HHED to 'tie' the sp model to the sil model so that they
-            % share the same centre state.  The HTK book provides some background on
-            % what this means, but you need an understanding of the basics of Hidden
-            % Markov Modelling before tackling the HTK Book explanations (the
-            % University of Leeds HMM tutorial provides a very good tutorial on Hidden
-            % Markov Modelling).
-            
-            %cmd = [BINDIR filesep 'spmodel_gen' binExt ' ' hmm_dir filesep 'hmm3' filesep 'models ' hmm_dir filesep 'hmm4' filesep 'models'];
-            %system(cmd);
+            copyfile ([hmm_dir filesep 'hmm3'], [hmm_dir filesep 'hmm4'])                                                
             
             % The following command takes state 3 from the silence model
             % and appends it to the end of the model as state 2 of the
             % short pause model.
-            obj.spmodel_genMat(fullfile(hmm_dir,'hmm3','models'), fullfile(hmm_dir,'hmm4','models')); 
-                        
-            % after the spmodel_gen command - the word_list is changed to
-            % word_listSP. The sp model is just ignored in the Y/N task
+            % Original:
+            % cmd = [BINDIR filesep 'spmodel_gen' binExt ' ' hmm_dir filesep 'hmm3' filesep 'models ' hmm_dir filesep 'hmm4' filesep 'models'];
+            % system(cmd);
+            % New:
+            obj.spmodel_genMat(fullfile(hmm_dir,'hmm3','models'), fullfile(hmm_dir,'hmm4','models'));                                     
             
             cmd = ['HHEd  -T 2 -H ' hmm_dir filesep 'hmm4' filesep 'macros -H ' hmm_dir filesep 'hmm4' filesep 'models -M ' hmm_dir filesep 'hmm5 ' ED_CMDFILE1 ' ' word_listSP ];
             system(cmd);
             disp ('SP model fixed')
+            
+            % after the spmodel_gen command - the word_list is changed to
+            % word_listSP. The sp model is just ignored currently
             
             for I = 6:8
                 disp(I)
@@ -344,6 +337,26 @@ classdef cHMM
         function spmodel_genMat(infile, outfile)
           % This function copies the middle state (3) from the silence model
           % and makes a sp model out of it by copying it to state 2 of the sp model.
+          
+          % From: http://www.voxforge.org/home/dev/acousticmodels/linux/create/htkjulius/tutorial/monophones/step-7
+            %  In the last step you created HMM models that did not include an "sp"
+            %  (short pause) silence model - which refers to the types of short pauses
+            %  that occur between words in normal speech.  However, you did create a
+            %  "sil" silence model - sil silence models are typically of longer
+            %  duration, and refer to the pauses occur at the end of a sentence.
+            %
+            % The HTK book says that the sp model needs to have its "emitting state
+            % tied to the centre state of the silence model".  What this means is that
+            % you need to create a new sp model in your hmmdefs, that it will use the
+            % centre state of sil, and then they both need to be 'tied' together.  For
+            % a bit of background on HMMs and states, see this example.
+            %
+            % This can be done by copying the centre state from the sil model in your
+            % hmmdefs file and adding it to the sp model, and then running a special
+            % tool called HHED to 'tie' the sp model to the sil model so that they
+            % share the same centre state.  The HTK book provides some background on
+            % what this means, but you need an understanding of the basics of Hidden
+            % Markov Modelling before tackling the HTK Book explanations 
             
             ofp = fopen(outfile,'a+'); % we append this time
             

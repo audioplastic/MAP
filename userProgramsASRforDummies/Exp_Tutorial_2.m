@@ -6,7 +6,7 @@ function Exp_Tutorial_2(isMasterNode)
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 expName = 'Tutorial';
-dataFolderPrefix = 'hello_world_recycle';
+dataFolderPrefix = 'recycle_featR';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -39,15 +39,16 @@ xL.numCoeff = 14;
 xL.removeEnergyStatic = 0;
 
 %%%%% Group of params that will influence simulation run time %%%%%%%
-xL.numWavs = 10; %MAX=8440
-testWavs = 5; %MAX = 358
+xL.numWavs = 12; %MAX=8440
+testWavs = 6; %MAX = 358
 nzLevel = [-200 40:10:70];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 1;
 xL.noisePostDur = 0.1;
 xL.truncateDur  = xL.noisePreDur-0.1; 
-xL.noiseName = 'factory1';
+xL.noiseName = 'pink_demo';
+
 
 % if isMasterNode && ~isdir(xL.opFolder)
 %     mkdir(xL.opFolder);
@@ -137,7 +138,7 @@ if isMasterNode
 %         xL = xL.loadSelf; %Reload incase changed
 %         xL.unlockJobList;
 %     end
-    y = HMMclass(hmmFolder);    
+    y = cHMM(hmmFolder);    
     y.numCoeff = 14*3;
 %     y.createSCP(xL.opFolder)
 %     y.createMLF(xL.opFolder)

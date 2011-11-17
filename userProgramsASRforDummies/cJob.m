@@ -1,6 +1,23 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   This program is free software; you can redistribute it and/or modify
+%   it under the terms of the GNU General Public License as published by
+%   the Free Software Foundation; either version 2 of the License, or
+%   (at your option) any later version.
+%
+%   This program is distributed in the hope that it will be useful,
+%   but WITHOUT ANY WARRANTY; without even the implied warranty of
+%   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%   GNU General Public License for more details.
+%
+%   You can obtain a copy of the GNU General Public License from
+%   http://www.gnu.org/copyleft/gpl.html or by writing to
+%   Free Software Foundation, Inc.,675 Mass Ave, Cambridge, MA 02139, USA.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 classdef cJob
-    %JOBJECT Summary of this class goes here
-    %   Detailed explanation goes here
+    %CJOB Responsible for conversion of wav files into recogniser features
+    %   Please see the documentation located in a separate file for further
+    %   information.
     
     %%  *********************************************************
     %  properties                      _   _
@@ -26,7 +43,7 @@ classdef cJob
         
         
         participant        = 'Normal';%'DEMO2_multiSpont';
-        noiseName          = '8TalkerBabble';
+        noiseName          = 'pink_demo';
         numWavs            =  5;
         noiseLevToUse      = -200;
         speechLevToUse     =  50;
@@ -116,12 +133,12 @@ classdef cJob
     % Protected properties - inter/ra class communication
     %************************************************************
     properties(Access = protected)
-        jobLockFid
+        jobLockFid % File identifier for mutex
         
         %Nick C comment on this:
-        %OK. The big-endian thing works because in the config file
-        %'config_tr_zcpa12' there is a flag called NATURALREADORDER that is set to
-        %FALSE and thus appears to override x86 standard
+        %OK. The big-endian thing used to work because in the config file
+        %'config_tr_zcpa12' there was a flag called NATURALREADORDER that was set to
+        %FALSE and thus appeared to override x86 standard:
         %little-endian. Endianess has **!nothing!** to do with win vs *nix
         byteOrder = 'le';  % byte order is big endian
     end
@@ -136,8 +153,7 @@ classdef cJob
     %| '_ ` _ \ / _ \ __| '_ \ / _ \ / _` / __|
     %| | | | | |  __/ |_| | | | (_) | (_| \__ \
     %|_| |_| |_|\___|\__|_| |_|\___/ \__,_|___/
-    %************************************************************
-    
+    %************************************************************            
     methods
         %% **********************************************************
         % Constructor
@@ -151,20 +167,22 @@ classdef cJob
             if nargin > 1
                 obj.opFolder = jobFolder;
             else
-                if isunix
-                    if ismac
-                        obj.opFolder = '~/ASR/exps/_foo';
-                    else
-                        obj.opFolder = '/scratch/nrclark/exps/_foo';
-                    end
-                else
-                    obj.opFolder = 'D:\exps\_foo';
-                end
+                warning('job:opFolderNotSpecified',...
+                    'No output folder specified. Making a folder in the working directory but this is not the recommended way to work!');
+                obj.opFolder = fullfile(pwd,['outFolder' num2str(randi(1e5))]);
+            end
+            
+            % Seed the random number generator - there are two methods
+            % because the old one may be discontinued
+            try
+                mtstream = RandStream('mt19937ar', 'seed', sum(100*clock)); 
+                RandStream.setDefaultStream(mtstream);
+            catch %#ok<CTCH> Nothing useful to throw
+                rand('twister',sum(100*clock)); %#ok<RAND> For the users of antique varieties
             end
             
             obj = obj.assignWavPaths(LearnOrRecWavs);
-            obj = obj.initMAP;
-            
+            obj = obj.initMAP;           
             
         end % ------ OF CONSTRUCTOR
         
@@ -172,30 +190,61 @@ classdef cJob
         % Set Wav Paths
         %************************************************************
         function obj = assignWavPaths(obj, LearnOrRecWavs)
-            if isunix
-                if ismac
-                    lWAVpath = '~/ASR/reducedAURORA/TrainingData-Clean/';
-                    rWAVpath  = '~/ASR/reducedAURORA/TripletTestData/';
-                    obj.noiseFolder = '~/ASR/noises';
-                else
-                    lWAVpath = '/scratch/nrclark/corpora/AURORA digits (wav)/TrainingData-Clean/';
-                    rWAVpath  = '/scratch/nrclark/corpora/AURORA digits (wav)/TripletTestData/';
-                    obj.noiseFolder = '/scratch/nrclark/corpora/noises';
+            % On the surface, this seems like a really bad way to set the
+            % wav paths, but it makes the tutorial document easy :)
+            fp = fopen('wav_paths.cfg', 'r');
+            tline = fgetl(fp);
+            while ischar(tline)
+                try
+                    eval([tline ';']);
+                catch %#ok<CTCH>
+                    assert(0, 'Syntax error in config file');
                 end
-            else
-                lWAVpath = 'C:\corpora\AURORA digits (wav)\TrainingData-Clean';
-                rWAVpath = 'C:\corpora\AURORA digits (wav)\TripletTestData';
-                obj.noiseFolder = 'C:\corpora\noises';
+                tline = fgetl(fp);
             end
+            fclose(fp);
+            
+            obj.noiseFolder = noisePath;
             
             if strcmpi(LearnOrRecWavs, 'l')
-                obj.wavFolder = lWAVpath;
+                obj.wavFolder = learnPath;
             elseif strcmpi(LearnOrRecWavs, 'r')
-                obj.wavFolder = rWAVpath;
+                obj.wavFolder = recPath;
             else
                 error('First argument to constructor must be ''L'' or ''R''');
             end
         end
+        
+        %% *********************************************************
+        % Set methods check the user's inputs for validity
+        %           _                    _   _               _
+        %  ___  ___| |_   _ __ ___   ___| |_| |__   ___   __| |___
+        % / __|/ _ \ __| | '_ ` _ \ / _ \ __| '_ \ / _ \ / _` / __|
+        % \__ \  __/ |_  | | | | | |  __/ |_| | | | (_) | (_| \__ \
+        % |___/\___|\__| |_| |_| |_|\___|\__|_| |_|\___/ \__,_|___/
+        %***********************************************************
+        function obj = set.opFolder(obj,value)
+            assert (~any(strfind(value, ' ')),...
+                'An output path containing whitespaces will confuse HTK')
+            obj.opFolder = value;
+        end
+        
+        function obj = set.wavFolder(obj,value)
+            assert (~any(strfind(value, ' ')),...
+                'Do not use audio speech path containing whitespaces')            
+            assert(isdir(value),...
+                'Audio speech path does not exist')
+            obj.wavFolder = value;
+        end
+        
+        function obj = set.noiseFolder(obj,value)
+            assert (~any(strfind(value, ' ')),...
+                'Do not use audio noise path containing whitespaces')            
+            assert(isdir(value),...
+                'Audio noise path does not exist')
+            obj.noiseFolder = value;
+        end
+                
         
         %% **********************************************************
         % mutex related    _
@@ -302,7 +351,7 @@ classdef cJob
         % checkStatus - see how much of the current job is complete
         %************************************************************
         function checkStatus(obj)
-            NOWopen = sum(obj.todoStatus==0); %Starting from R2010b, Matlab supports enumerations. For now we use horrible integers for compatibility.
+            NOWopen = sum(obj.todoStatus==0); %Starting from R2010b, Matlab supports enumerations. For now, we resort to integers for compatibility.
             NOWpend = sum(obj.todoStatus==1);
             NOWdone = sum(obj.todoStatus==2);
             
@@ -424,18 +473,15 @@ classdef cJob
         %************************************************************
         function [stimulus, sampleRate] = getStimulus(obj, currentWav)
             
-            % NRCgetStimulus.m - N.R.Clark Aug 2010
-            % Modified version of RTF script to include:
+            % getStimulus.m - NC Aug 2010
+            % Modified version of Rob's script to include:
             %
             % 1)Signal and noise samples with different sample rate. The component with
-            % lower sample rate is upsampled to the rate of that with the higher rate.
-            %
-            % 2) Neater level setting
-            %
+            % lower sample rate is upsampled to the rate of that with the
+            % higher rate.
+            % 2) Clearer level setting
             % 3) Parameter to change noise intro duration
-            %
-            % 4) Added some silence on the tail (read babble) same duration as noise
-            % pre dur
+            % 4) Noise padding at end of stimulus
             %
             % ORIGINAL HEADER:
             % getStimulus.m
@@ -453,8 +499,7 @@ classdef cJob
             noise = noise./sqrt(mean(noise.^2)); %Normalize RMS to 1
             noise = noise * 20e-6*10^(obj.currentNoiseLevel/20); %Convert RMS to pascals at desired level
             %disp(20*log10(sqrt(mean(noise.^2))/20e-6))
-            
-            
+                        
             % Do sample rate conversion if needed
             % Will always convert stimulus component with lower rate up to that with
             % higher rate.
@@ -477,8 +522,6 @@ classdef cJob
             
             % mix stimuli
             % Everything from here down (mostly) is RTF's original
-            % add 1/2  second prior to stimulus
-            % and 0 s following it
             silenceStart = floor(obj.noisePreDur*sampleRate);
             silenceEnd = floor(obj.noisePostDur*sampleRate);
             
@@ -497,7 +540,6 @@ classdef cJob
             noise = noise(idx:idx+stimLength-1);
             
             stimulus = speech+noise;
-            %disp(20*log10(sqrt(mean(stimulus.^2))/20e-6))
             
             % add ramps to noise
             stimInNoiseTime = dt:dt:dt*length(stimulus);
@@ -516,8 +558,7 @@ classdef cJob
             stimulus = [additionalSilencePoints; stimulus]'; %now rotated.
             %disp(20*log10(sqrt(mean(stimulus.^2))/20e-6))
         end% ------ OF GETSTIMULUS
-        
-        
+                
         
         %% **********************************************************
         % processWavs - do all of the MAP signal processing
@@ -850,11 +891,9 @@ classdef cJob
         end % ------ of NRC_HANNING
         
         %% ************************************************************************
-        % writeHTK - something written by anonymous Sue
+        % writeHTK - convert data to htk format -> by anonymous Sue (2001)
         %**************************************************************************
         function retcode = writeHTK(filename, htkdata, nFrames, sampPeriod, SampSize, ParamKind, byte_order)
-            % retcode = writehtk(filename, htkdata, nFrames, sampPeriod, SampSize, ParamKind, byte_order)
-            %
             % Write an HTK format file.
             %
             % Input parameters:
