@@ -7,18 +7,13 @@ function Exp_Tutorial_1(isMasterNode)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 expName = 'Tutorial';
 dataFolderPrefix = 'featR';
-if isunix
-    expFolderPrefix = '/scratch/nrclark/exps/';
-else
-    expFolderPrefix = 'D:\Exps';
-end
-
-expFolder = fullfile(expFolderPrefix,expName);
-hmmFolder = fullfile(expFolder,'hmm');
+expFolderPrefix = pwd; % I recommend that you change this
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sort out the training (LEARNING) condition
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+expFolder = fullfile(expFolderPrefix,expName);
+hmmFolder = fullfile(expFolder,'hmm');
 learnFolder = fullfile(expFolder,'featL');
 
 xL = cJob('L', learnFolder);

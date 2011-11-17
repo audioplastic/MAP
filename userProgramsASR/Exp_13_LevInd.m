@@ -7,7 +7,7 @@ function Exp_13_LevInd(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '13ImpA';
+expName = '13NormBig';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -26,12 +26,12 @@ learnFolder = fullfile(expFolder,'featL');
 xL = jobject('L', learnFolder);
 
 xL.participant = 'NormalDIFF';%'NormalDIFF';
-xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb=0;', 'DRNLParams.a=400;'; };
+xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb=0;' };
 
 xL.noiseLevToUse   =  -200;
 xL.speechLevToUse  =  60;
 xL.speechDist = 'uniform';
-xL.speechLevStd       = 60/sqrt(12);
+xL.speechLevStd       = 80/sqrt(12);
 xL.meanSNR = Inf;
 
 xL.MAPopHSR = 1;
@@ -43,8 +43,8 @@ xL.numCoeff = 14;
 xL.removeEnergyStatic = 0;
 
 %%%%% Group of params that will influence simulation run time %%%%%%%
-xL.numWavs = 3000; %MAx=8440
-testWavs = 200; %MAX = 358
+xL.numWavs = 8440; %MAx=8440
+testWavs = 358; %MAX = 358
 spLevel = [30:15:90];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
