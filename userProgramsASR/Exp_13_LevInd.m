@@ -7,7 +7,7 @@ function Exp_13_LevInd(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '13NormAxop';
+expName = '13NormA';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -31,6 +31,7 @@ xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rat
 xL.noiseLevToUse   =  -200;
 xL.speechLevToUse  =  60;
 xL.speechDist = 'uniform';
+xL.speechLevStd       = 60/sqrt(12);
 xL.meanSNR = Inf;
 
 xL.MAPopHSR = 1;
