@@ -7,7 +7,7 @@ function Exp_13_LevInd(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '13NormA';
+expName = '13ImpB';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -26,7 +26,7 @@ learnFolder = fullfile(expFolder,'featL');
 xL = jobject('L', learnFolder);
 
 xL.participant = 'NormalDIFF';%'NormalDIFF';
-xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb=0;' };
+xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb=0;', 'DRNLParams.a=400'; };
 
 xL.noiseLevToUse   =  -200;
 xL.speechLevToUse  =  60;
@@ -87,71 +87,71 @@ for nn = 0*recConditions+1:1*recConditions
     end
 end
 
-tmpIdx=0;
-for nn = 1*recConditions+1:2*recConditions    
-    tmpIdx=tmpIdx+1;
-    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['LevInd_'  num2str(nn)]);
-    xR{nn}.opFolder = recFolder;    
-    
-    %These are the interesting differences between training and testing
-    xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.speechLevToUse = spLevel(tmpIdx);    
-    xR{nn}.speechDist = 'None';
-    xR{nn}.MAPparamChanges= {'DRNLParams.a=400;'};
-    
-    %Now just to wrap it up ready for processing
-    if isMasterNode && ~isdir(xR{nn}.opFolder)
-        mkdir(xR{nn}.opFolder);
-        xR{nn} = xR{nn}.assignWavPaths('R');
-        xR{nn} = xR{nn}.assignFiles;
-        xR{nn}.storeSelf;
-    end
-end
-
-tmpIdx=0;
-for nn = 2*recConditions+1:3*recConditions    
-    tmpIdx=tmpIdx+1;
-    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['LevInd_'  num2str(nn)]);
-    xR{nn}.opFolder = recFolder;    
-    
-    %These are the interesting differences between training and testing
-    xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.speechLevToUse = spLevel(tmpIdx);    
-    xR{nn}.speechDist = 'None';
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=7;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtauR=4;', 'DRNLParams.MOCtauF=DRNLParams.MOCtauR;'};
-    
-    %Now just to wrap it up ready for processing
-    if isMasterNode && ~isdir(xR{nn}.opFolder)
-        mkdir(xR{nn}.opFolder);
-        xR{nn} = xR{nn}.assignWavPaths('R');
-        xR{nn} = xR{nn}.assignFiles;
-        xR{nn}.storeSelf;
-    end
-end
-
-tmpIdx=0;
-for nn = 3*recConditions+1:4*recConditions    
-    tmpIdx=tmpIdx+1;
-    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['LevInd_'  num2str(nn)]);
-    xR{nn}.opFolder = recFolder;    
-    
-    %These are the interesting differences between training and testing
-    xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.speechLevToUse = spLevel(tmpIdx);    
-    xR{nn}.speechDist = 'None';
-    xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=7;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtauR=0.05;', 'DRNLParams.MOCtauF=DRNLParams.MOCtauR;'};
-    
-    %Now just to wrap it up ready for processing
-    if isMasterNode && ~isdir(xR{nn}.opFolder)
-        mkdir(xR{nn}.opFolder);
-        xR{nn} = xR{nn}.assignWavPaths('R');
-        xR{nn} = xR{nn}.assignFiles;
-        xR{nn}.storeSelf;
-    end
-end
+% tmpIdx=0;
+% for nn = 1*recConditions+1:2*recConditions    
+%     tmpIdx=tmpIdx+1;
+%     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+%     recFolder = fullfile(expFolder,['LevInd_'  num2str(nn)]);
+%     xR{nn}.opFolder = recFolder;    
+%     
+%     %These are the interesting differences between training and testing
+%     xR{nn}.numWavs = testWavs; %MAX = 358
+%     xR{nn}.speechLevToUse = spLevel(tmpIdx);    
+%     xR{nn}.speechDist = 'None';
+%     xR{nn}.MAPparamChanges= {'DRNLParams.a=400;'};
+%     
+%     %Now just to wrap it up ready for processing
+%     if isMasterNode && ~isdir(xR{nn}.opFolder)
+%         mkdir(xR{nn}.opFolder);
+%         xR{nn} = xR{nn}.assignWavPaths('R');
+%         xR{nn} = xR{nn}.assignFiles;
+%         xR{nn}.storeSelf;
+%     end
+% end
+% 
+% tmpIdx=0;
+% for nn = 2*recConditions+1:3*recConditions    
+%     tmpIdx=tmpIdx+1;
+%     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+%     recFolder = fullfile(expFolder,['LevInd_'  num2str(nn)]);
+%     xR{nn}.opFolder = recFolder;    
+%     
+%     %These are the interesting differences between training and testing
+%     xR{nn}.numWavs = testWavs; %MAX = 358
+%     xR{nn}.speechLevToUse = spLevel(tmpIdx);    
+%     xR{nn}.speechDist = 'None';
+%     xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=7;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtauR=4;', 'DRNLParams.MOCtauF=DRNLParams.MOCtauR;'};
+%     
+%     %Now just to wrap it up ready for processing
+%     if isMasterNode && ~isdir(xR{nn}.opFolder)
+%         mkdir(xR{nn}.opFolder);
+%         xR{nn} = xR{nn}.assignWavPaths('R');
+%         xR{nn} = xR{nn}.assignFiles;
+%         xR{nn}.storeSelf;
+%     end
+% end
+% 
+% tmpIdx=0;
+% for nn = 3*recConditions+1:4*recConditions    
+%     tmpIdx=tmpIdx+1;
+%     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+%     recFolder = fullfile(expFolder,['LevInd_'  num2str(nn)]);
+%     xR{nn}.opFolder = recFolder;    
+%     
+%     %These are the interesting differences between training and testing
+%     xR{nn}.numWavs = testWavs; %MAX = 358
+%     xR{nn}.speechLevToUse = spLevel(tmpIdx);    
+%     xR{nn}.speechDist = 'None';
+%     xR{nn}.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=7;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtauR=0.05;', 'DRNLParams.MOCtauF=DRNLParams.MOCtauR;'};
+%     
+%     %Now just to wrap it up ready for processing
+%     if isMasterNode && ~isdir(xR{nn}.opFolder)
+%         mkdir(xR{nn}.opFolder);
+%         xR{nn} = xR{nn}.assignWavPaths('R');
+%         xR{nn} = xR{nn}.assignFiles;
+%         xR{nn}.storeSelf;
+%     end
+% end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ** Generate features **
