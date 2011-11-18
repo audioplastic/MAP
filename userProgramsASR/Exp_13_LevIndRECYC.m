@@ -52,7 +52,7 @@ xL.noisePreDur = 1; %only short lead in needed for SRT type test
 xL.noisePostDur = 0.1;
 xL.truncateDur  = xL.noisePreDur-0.1;
 
-xL.noiseName = '20TalkerBabbale';
+xL.noiseName = '20TalkerBabble_bp';
 
 % if isMasterNode
 %     mkdir(xL.opFolder);
