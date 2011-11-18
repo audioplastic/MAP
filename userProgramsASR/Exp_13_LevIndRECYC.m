@@ -1,4 +1,4 @@
-function Exp_13_LevInd(isMasterNode)
+function Exp_13_LevIndRECYC(isMasterNode)
 % This experiment tests a recogniser on 3 different training sets with
 % different efferent conditions.
 % This is now using paramChanges and the hearing aid to correct an OHC
