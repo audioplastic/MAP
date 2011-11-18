@@ -54,11 +54,11 @@ xL.truncateDur  = xL.noisePreDur-0.1;
 
 xL.noiseName = '20TalkerBabbale';
 
-if isMasterNode
-    mkdir(xL.opFolder);
-    xL = xL.assignFiles;
-    xL.storeSelf;
-end
+% if isMasterNode
+%     mkdir(xL.opFolder);
+%     xL = xL.assignFiles;
+%     xL.storeSelf;
+% end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sort out the testing (RECOGNITION) conditions
@@ -119,7 +119,7 @@ end
 % Nodes that are not the master node are only interested in the opFolder
 % member of the jobjects.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-worker(xL.opFolder);
+% worker(xL.opFolder);
 maxConds = nn;
 if ~isMasterNode %dont bother wasting master node effort on generating testing features (for now)
     for nn = 1:maxConds
@@ -140,9 +140,9 @@ if isMasterNode
     end
     y = HMMclass(hmmFolder);    
     y.numCoeff = 14*3;
-    y.createSCP(xL.opFolder)
-    y.createMLF(xL.opFolder)
-    y.train(xL.opFolder) %This node can be busy training, even if other jobs are being processed for testing
+%     y.createSCP(xL.opFolder)
+%     y.createMLF(xL.opFolder)
+%     y.train(xL.opFolder) %This node can be busy training, even if other jobs are being processed for testing
     
     % ALLOW MASTER NODE TO MUCK IN WITH GENERATING TESTING FEATURES ONCE
     % HMM HAS BEEN TRAINED
