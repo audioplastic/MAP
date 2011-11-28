@@ -60,6 +60,8 @@ OMEParams.stapesScalar=	     45e-9;
 OMEParams.rateToAttenuationFactor=0.006;   % * N(all ICspikes)
 % OMEParams.rateToAttenuationFactor=0;   % * N(all ICspikes)
 
+OMEParams.ARrateThreshold=40;
+
 % 'probability model': Ar based on AN firing probabilities (LSR)
 OMEParams.rateToAttenuationFactorProb=0.00;% * N(all ANrates)
 % OMEParams.rateToAttenuationFactorProb=0;% * N(all ANrates)
