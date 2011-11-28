@@ -7,7 +7,7 @@ function Exp_14_LevInd(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '14Lev10dBSNRtrain';
+expName = '14Lev10dBSNRtrainAR';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -26,7 +26,10 @@ learnFolder = fullfile(expFolder,'featL');
 xL = jobject('L', learnFolder);
 
 xL.participant = 'NormalDIFF';%'NormalDIFF';
-xL.MAPparamChanges= { 'OMEParams.rateToAttenuationFactorProb=0;',...
+xL.MAPparamChanges= { 
+                'OMEParams.rateToAttenuationFactorProb=3;',...
+                'OMEParams.ARrateThreshold=30;',... %Threshold of 40 makes AR kick off around 65 dB for bb noise
+                'OMEParams.ARtau=0.1;',...
                 'DRNLParams.MOCtauR=2;',...
                 'DRNLParams.MOCtauF=DRNLParams.MOCtauR;',...                
                 'DRNLParams.rateToAttenuationFactorProb=9;',...
@@ -108,7 +111,7 @@ for nn = recConditions+1:recConditions+recConditionsB;
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.speechLevToUse = spLevel(tmpIdx);
-    xR{nn}.noiseLevToUse = -200;
+    xR{nn}.noiseLevToUse = spLevel(tmpIdx)-20;
     xR{nn}.speechDist = 'None';
     xR{nn}.noiseDist = 'None';
 

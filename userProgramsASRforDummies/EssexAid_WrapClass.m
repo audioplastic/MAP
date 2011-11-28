@@ -1,4 +1,4 @@
-classdef cEssexAid
+classdef EssexAid_WrapClass
     %ESSEXAID_WRAPCLASS Wrapper for the EssexAid - Nick Clark July 2011
     %   This class wraps up the EssexAid algorithm function that processes
     %   each block of samples. This wrapper closely emulates the GUI used
@@ -29,10 +29,10 @@ classdef cEssexAid
         %------------------------------------------------------------------
         % Params for audiometric freqs 250, 500, 1000, 2000, 4000, 8000 Hz
         %------------------------------------------------------------------
-        audiometry_dB= [ 0;    0;    0;    0;    0;   0];   %Pure tone threshold in dB SPL
+%         audiometry_dB= [ 0;    0;    0;    0;    0;   0];   %Pure tone threshold in dB SPL
         mainGain_dB  = [ 0;    0;    0;    0;    0;   0];   %Gain applied at audiometric frequencies
-        TC_dBHL      = [40;   40;   40;   40;   40;  40];   %Compression thresholds (in dB HL from 2nd filt)
-        TM_dBHL      = [10;   10;   10;   10;   10;  10];   %MOC thresholds (in dB OUTPUT from 2nd filt)
+        TC_dBSPL      = [40;   40;   40;   40;   40;  40];   %Compression thresholds (in dB SPL from 2nd filt before gain)
+        TM_dBSPL      = [10;   10;   10;   10;   10;  10];   %MOC thresholds (in dB SPL from 2nd filt before gain)
         DRNLc        = [ 0.2;  0.2;  0.2;  0.2;  0.2; 0.2]; %Compression exponent at audiometric frequencies
         
         %------------------------------------------------------------------
@@ -98,6 +98,10 @@ classdef cEssexAid
         
         %--------------------------------------------------------------
         % ENUMERATIONS USED IN THE FRAME PROCESSOR
+        % Fake enumeration - must be kept up to date with C++ enum
+        % This code makes it easy to slot the matlab generated C
+        % into the realtime C++ framework. Commented out values serve as a
+        % reminder
         %--------------------------------------------------------------
         enumC_ARb  = 0;
         enumC_ARa  = 2;
@@ -181,7 +185,8 @@ classdef cEssexAid
         % Get method for TC_dBO_INTERP
         %************************************************************
         function value = get.TC_dBO_INTERP(obj)
-            TC_dBO = obj.audiometry_dB - obj.mainGain_dB + obj.TC_dBHL;
+%             TC_dBO = obj.audiometry_dB - obj.mainGain_dB + obj.TC_dBSPL;
+            TC_dBO = obj.TC_dBSPL;
             value  = obj.interpPars(TC_dBO, obj.numChannels);
         end
         
@@ -189,7 +194,8 @@ classdef cEssexAid
         % Get method for TM_dBO_INTERP
         %************************************************************
         function value = get.TM_dBO_INTERP(obj)
-            TM_dBO = obj.audiometry_dB - obj.mainGain_dB + obj.TM_dBHL;
+%             TM_dBO = obj.audiometry_dB - obj.mainGain_dB + obj.TM_dBSPL;
+            TM_dBO =  obj.TM_dBSPL;
             value  = obj.interpPars(TM_dBO, obj.numChannels);
         end
         
@@ -324,29 +330,29 @@ classdef cEssexAid
             obj = obj.flushAidData;
             obj.numSamples = value;
         end
-        function obj = set.audiometry_dB(obj,value)
-            [nRows,nCols] = size(value);
-            assert(nRows==obj.numAudiometricFreqs && nCols==1, 'must be 6x1 column vector') %#ok<MCSUP>
-            obj = obj.flushAidData;
-            obj.audiometry_dB = value;
-        end
+%         function obj = set.audiometry_dB(obj,value)
+%             [nRows,nCols] = size(value);
+%             assert(nRows==obj.numAudiometricFreqs && nCols==1, 'must be 6x1 column vector') %#ok<MCSUP>
+%             obj = obj.flushAidData;
+%             obj.audiometry_dB = value;
+%         end
         function obj = set.mainGain_dB(obj,value)
             [nRows,nCols] = size(value);
             assert(nRows==obj.numAudiometricFreqs && nCols==1, 'must be 6x1 column vector') %#ok<MCSUP>
             obj = obj.flushAidData;
             obj.mainGain_dB = value;
         end
-        function obj = set.TC_dBHL(obj,value)
+        function obj = set.TC_dBSPL(obj,value)
             [nRows,nCols] = size(value);
             assert(nRows==obj.numAudiometricFreqs && nCols==1, 'must be 6x1 column vector') %#ok<MCSUP>
             obj = obj.flushAidData;
-            obj.TC_dBHL = value;
+            obj.TC_dBSPL = value;
         end
-        function obj = set.TM_dBHL(obj,value)
+        function obj = set.TM_dBSPL(obj,value)
             [nRows,nCols] = size(value);
             assert(nRows==obj.numAudiometricFreqs && nCols==1, 'must be 6x1 column vector') %#ok<MCSUP>
             obj = obj.flushAidData;
-            obj.TM_dBHL = value;
+            obj.TM_dBSPL = value;
         end
         function obj = set.DRNLc(obj,value)
             [nRows,nCols] = size(value);
@@ -449,7 +455,7 @@ classdef cEssexAid
             %--------------------------------------------------------------
             % EMULATION OF THE GUI PARAMETER CONVERSIONS
             %--------------------------------------------------------------
-            biggestNumSamples = obj.numSamples; 
+            biggestNumSamples = obj.numSamples; %This is set to 6912 when generating C from matlab but is is set to a smaller value here for efficiency
             
             filterStatesL = (zeros(3000,1));
             filterStatesR = filterStatesL;
@@ -487,7 +493,7 @@ classdef cEssexAid
             end
             
             %--------------------------------------------------------------
-            % EMULATION OF THE IO CALLBACK THREAD
+            % EMULATION OF THE C++ IO CALLBACK THREAD
             %--------------------------------------------------------------
             frameBufferL = buffer(obj.stimulusINTERNAL(:,1), obj.numSamples);
             frameBufferR = buffer(obj.stimulusINTERNAL(:,2), obj.numSamples);
@@ -554,9 +560,67 @@ classdef cEssexAid
             end %End of frame processing emulation loop
             obj.aidOP = op;
             obj.MOCrecord=moc;
-                       
             
-        end %End of process stim method          
+            %This variable is reserved for C code generation
+            obj.emlc_z={ ...
+                    frameBufferPadL,...
+                    frameBufferPadR,...
+                    filterStatesL,...
+                    filterStatesR,...
+                    filterCoeffs,...
+                    obj.numChannels,...
+                    obj.numSamples,...
+                    ARampL,...
+                    ARampR,...
+                    obj.ARthresholdPa,...
+                    obj.filterOrder,...
+                    obj.DRNLb_INTERP,...
+                    obj.DRNLc_INTERP,...
+                    obj.TM_dBO_INTERP,...
+                    obj.MOCfactor,...
+                    peakIPL,...
+                    peakOPL,...
+                    rmsIPL,...
+                    rmsOPL,...
+                    peakIPR,...
+                    peakOPR,...
+                    rmsIPR,...
+                    rmsOPR,...
+                    MOCend,...
+                    MOCcontrol,...
+                    obj.mainGain_INTERP,...
+                    obj.useGTF};
+            
+        end %End of process stim method  
+        
+        %% **********************************************************
+        % generate C code
+        %************************************************************
+        function obj = generateC(obj)            
+            % HOW TO GENERATE THE ALGO FOR THE C++ IMPLEMENTATION
+            % 1) Make sure the the buffer size used corresponds to the name of the c
+            % files that you want to generate. For the VFrame version, ensure that the
+            % buffer size is max (6912)
+            % Older instructions are now obsolete
+            
+            if obj.numSamples ~= 6912 || isempty(obj.aidOP)
+                tmpSamples = obj.numSamples;
+                obj.numSamples = 6912;
+                obj = obj.processStim; %need to update z parameter
+                obj.numSamples = tmpSamples;
+            end
+            
+            rtw_config = emlcoder.RTWConfig;
+            % rtw_config.TargetFunctionLibrary = 'C89/C90 (ANSI)'; %DO NOT USE prevents having to declare all the "extern" crap in C++
+            rtw_config.FilePartitionMethod = 'SingleFile';
+            rtw_config.GenCodeOnly = true;
+            
+            z = obj.emlc_z; %#ok<NASGU>
+            
+            % % % USE THE FOLLOWING TO COMPILE LIB
+            emlc EssexAidProcessVFrameSwitchable -eg z -launchreport -T rtw -s rtw_config
+
+        end% ---- of generateC
         
     end %End of methods block
     
