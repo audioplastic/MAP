@@ -27,7 +27,7 @@ xL = jobject('L', learnFolder);
 
 xL.participant = 'NormalDIFF';%'NormalDIFF';
 xL.MAPparamChanges= { ...
-                'OMEParams.rateToAttenuationFactorProb=12;',...
+                'OMEParams.rateToAttenuationFactorProb=3;',...
                 'OMEParams.ARrateThreshold=30;',... %Threshold of 40 makes AR kick off around 65 dB for bb noise
                 'OMEParams.ARtau=0.1;',...
                 'DRNLParams.MOCtauR=2;',...
@@ -106,7 +106,7 @@ tmpIdx=0;
 for nn = 1:recConditionsB;    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['ARb_'  num2str(nn)]);
+    recFolder = fullfile(expFolder,['ARc_'  num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
