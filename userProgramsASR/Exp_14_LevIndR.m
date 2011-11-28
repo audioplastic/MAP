@@ -99,7 +99,7 @@ xL.noiseName = '20TalkerBabble';
 %     end
 % end
 
-
+recConditionsB = numel(spLevel);
 
 tmpIdx=0;
 for nn = 1:recConditionsB;    
