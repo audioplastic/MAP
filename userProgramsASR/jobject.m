@@ -26,7 +26,7 @@ classdef jobject
         
         
         participant        = 'Normal';%'DEMO2_multiSpont';
-        noiseName          = '8TalkerBabble';
+        noiseName          = '20TalkerBabble';
         numWavs            =  5;
         noiseLevToUse      = -200;
         speechLevToUse     =  50;
@@ -96,22 +96,23 @@ classdef jobject
         %************************************************************
         % Portable EssexAid params
         %************************************************************        
-%         sampleRate = 48e3;        
-        bwOct = 1/1;
-        filterOrder  = 2;  
-                
-        mainGain = [ 1;    1;    1;    1;    1];     % gain in linear units
-        TCdBO    = [40;   40;   40;   40;   40];      %Compression thresholds (in dB OUTPUT from 2nd filt)
-        TMdBO    = [10;   10;   10;   10;   10];      %MOC thresholds (in dB OUTPUT from 2nd filt)
-        DRNLc    = [ 0.2;  0.2;  0.2;  0.2;  0.2;]
-        
-        ARtau  = 0.03;            % decay time constant
-        ARthresholddB = 85;       % dB SPL (input signal level) =>200 to disable        
-        MOCtau = 0.3;
-        MOCfactor = 0.5;   %dB per dB OUTPUT
-                      
-        numSamples = 1024; %MAX=6912        
+% %         sampleRate = 48e3;        
+%         bwOct = 1/1;
+%         filterOrder  = 2;  
+%                 
+%         mainGain = [ 1;    1;    1;    1;    1];     % gain in linear units
+%         TCdBO    = [40;   40;   40;   40;   40];      %Compression thresholds (in dB OUTPUT from 2nd filt)
+%         TMdBO    = [10;   10;   10;   10;   10];      %MOC thresholds (in dB OUTPUT from 2nd filt)
+%         DRNLc    = [ 0.2;  0.2;  0.2;  0.2;  0.2;]
+%         
+%         ARtau  = 0.03;            % decay time constant
+%         ARthresholddB = 85;       % dB SPL (input signal level) =>200 to disable        
+%         MOCtau = 0.3;
+%         MOCfactor = 0.5;   %dB per dB OUTPUT
+%                       
+%         numSamples = 1024; %MAX=6912        
         useAid = 0;
+        aidInstance
     end
         
     %%  *********************************************************
@@ -168,7 +169,7 @@ classdef jobject
 %             mkdir(obj.opFolder);
             obj = obj.initMAP;
             
-            
+            obj.aidInstance = cEssexAid;
         end % ------ OF CONSTRUCTOR
         
         %% **********************************************************
@@ -554,12 +555,15 @@ classdef jobject
             % NOW TO LOAD IN THE HEARING AID
             %**********************************************************
             if obj.useAid
-%                 disp(size(stimulus))
-                stimulus = [stimulus; stimulus]'; %EsxAid requires stereo stim
-%                 disp(size(stimulus))
-                stimulus = EssexAid_guiEmulatorWrapper(stimulus, sampleRate, obj);
-                stimulus = stimulus(1,:); %convert back to mono
-%                 disp(size(stimulus))
+% %                 disp(size(stimulus))
+%                 stimulus = [stimulus; stimulus]'; %EsxAid requires stereo stim
+% %                 disp(size(stimulus))
+%                 stimulus = EssexAid_guiEmulatorWrapper(stimulus, sampleRate, obj);
+%                 stimulus = stimulus(1,:); %convert back to mono
+% %                 disp(size(stimulus))
+                obj.aidInstance.stimulusUSER = stimulus;
+                obj.aidInstance = obj.aidInstance.processStim;
+                stimulus = obj.aidInstance.aidOPnice;
             end
             
 %             %**********************************************************

@@ -47,8 +47,8 @@ xL.probHaxesSM = gca;
 % xL.participant = 'NormalNOEFF';
 xL.participant = 'NormalDIFF';
 
-xL.noiseLevToUse   = 70;
-xL.speechLevToUse  = -100;
+xL.noiseLevToUse   = -100;
+xL.speechLevToUse  = 60;
 
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
@@ -67,23 +67,28 @@ xL = xL.assignFiles;
 xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_2841A.wav'));
 xL.noiseName = '20TalkerBabble';
 
-xL.removeEnergyStatic = 1;
+xL.removeEnergyStatic = 0;
 xL.doCMN = 0;
 
 xL.useSpectrogram = 0;
 xL.numCoeff = 14;
 
-xL.noisePreDur = 12;
+xL.noisePreDur = 2;
 xL.noisePostDur = 0.1;
 xL.truncateDur  = xL.noisePreDur-0.1; %Dr. RF used 0.550
 
 
 
 
-xL.MAPparamChanges=         {'DRNLParams.rateToAttenuationFactorProb=40;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;',...
-                             'OMEParams.rateToAttenuationFactorProb=0.00;',...
-                             'DRNLParams.MOCtauR=4;', 'DRNLParams.MOCtauF=DRNLParams.MOCtauR;'};% xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =40;','DRNLParams.MOCtau =0.35;'};
-
+xL.MAPparamChanges= { ...
+                'OMEParams.rateToAttenuationFactorProb=3;',...
+                'OMEParams.ARrateThreshold=30;',... %Threshold of 40 makes AR kick off around 65 dB for bb noise
+                'OMEParams.ARtau=0.1;',...
+                'DRNLParams.MOCtauR=2;',...
+                'DRNLParams.MOCtauF=DRNLParams.MOCtauR;',...                
+                'DRNLParams.rateToAttenuationFactorProb=9;',...
+                'DRNLParams.MOCrateThresholdProb=85;',...
+                };
 
 xL.storeSelf;
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

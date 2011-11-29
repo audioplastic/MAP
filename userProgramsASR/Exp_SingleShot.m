@@ -56,7 +56,9 @@ xL.MAPopLSR = 0;
 
 xL.numWavs = 1; %MAx=8440
 
-xL.useAid = 0;
+xL.useAid = 1;
+xL.aidInstance.mainGain_dB = ones(size(xL.aidInstance.mainGain_dB))*50;
+
 
 xL.useSACF = 0;
 xL.SACFnBins = 128;
@@ -77,13 +79,18 @@ xL.noisePostDur = 0.1;
 xL.truncateDur  = 0.9; %Dr. RF used 0.550
 
 
+
+xL.MAPparamChanges= { ...
+                'OMEParams.rateToAttenuationFactorProb=3;',...
+                'OMEParams.ARrateThreshold=30;',... %Threshold of 40 makes AR kick off around 65 dB for bb noise
+                'OMEParams.ARtau=0.1;',...
+                'DRNLParams.MOCtauR=2;',...
+                'DRNLParams.MOCtauF=DRNLParams.MOCtauR;',...                
+                'DRNLParams.rateToAttenuationFactorProb=9;',...
+                'DRNLParams.MOCrateThresholdProb=85;',...
+                };
+            
 xL.storeSelf;
-
-% xL.MAPparamChanges= {' DRNLParams.rateToAttenuationFactorProb=0;', 'OMEParams.rateToAttenuationFactorProb=0;'};
-xL.MAPparamChanges=         {'DRNLParams.rateToAttenuationFactorProb=7;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtau=2;',...
-                             'OMEParams.rateToAttenuationFactorProb=0;', 'OMEParams.ARrateThreshold=50;', 'OMEParams.ARtau=0.5;'};
-% xL.MAPparamChanges= {'OMEParams.rateToAttenuationFactorProb=0;', 'DRNLParams.rateToAttenuationFactorProb = 0.010;', 'DRNLParams.MOCrateThresholdProb =40;','DRNLParams.MOCtau =0.35;'};
-
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ** Generate features **
 % This is the time consuming, processing intensive portion of the program.

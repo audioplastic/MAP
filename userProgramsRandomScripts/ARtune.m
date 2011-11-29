@@ -13,7 +13,7 @@ close all; clear all; clc
 %             zeros(1, ceil(silDuration*sr))];
 
 %%
-speechLev = 90;
+speechLev = 70;
 noiseLev = speechLev-10;
 [stimulus,sr] = wavread(fullfile('..','userProgramsASR','demo_wavs','microAURORA','MHS_2841A'));
 % stimulus = randn(44100,1); sr = 44.1e3;
@@ -33,7 +33,7 @@ addpath(...
             
 global ANprobRateOutput  ANdt savedBFlist MOCattenuation DRNLParams ARattenuation
 
-paramChanges= { 'OMEParams.rateToAttenuationFactorProb=3;',...
+paramChanges= { 'OMEParams.rateToAttenuationFactorProb=9;',...
                 'OMEParams.ARrateThreshold=30;',... %Threshold of 40 makes AR kick off around 65 dB for bb noise
                 'OMEParams.ARtau=0.1;',...
                 'DRNLParams.MOCtauR=2;',...

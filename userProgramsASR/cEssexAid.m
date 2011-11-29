@@ -1,4 +1,4 @@
-classdef EssexAid_WrapClass
+classdef cEssexAid
     %ESSEXAID_WRAPCLASS Wrapper for the EssexAid - Nick Clark July 2011
     %   This class wraps up the EssexAid algorithm function that processes
     %   each block of samples. This wrapper closely emulates the GUI used
@@ -146,7 +146,7 @@ classdef EssexAid_WrapClass
         %% **********************************************************
         % Constructor
         %************************************************************
-        function obj = EssexAid_WrapClass(sr, stimulus)          
+        function obj = cEssexAid(sr, stimulus)          
             
             if nargin > 0
                 obj.sr = sr;
