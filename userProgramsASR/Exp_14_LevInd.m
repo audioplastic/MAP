@@ -7,7 +7,7 @@ function Exp_14_LevInd(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '14Lev10dBSNRtrainAR';
+expName = '14Lev10dBSNRtrainAR9';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -27,7 +27,7 @@ xL = jobject('L', learnFolder);
 
 xL.participant = 'NormalDIFF';%'NormalDIFF';
 xL.MAPparamChanges= { 
-                'OMEParams.rateToAttenuationFactorProb=3;',...
+                'OMEParams.rateToAttenuationFactorProb=9;',...
                 'OMEParams.ARrateThreshold=30;',... %Threshold of 40 makes AR kick off around 65 dB for bb noise
                 'OMEParams.ARtau=0.1;',...
                 'DRNLParams.MOCtauR=2;',...
