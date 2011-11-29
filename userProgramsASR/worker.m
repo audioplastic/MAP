@@ -28,7 +28,7 @@ personalWork = 0;
 while(any(x.todoStatus==0))        
     x.lockJobList;
     x = x.loadSelf; %Reload incase changed
-    rJobs = 4+randi(5);%Grab 1st 5-9 open jobs
+    rJobs = 8+randi(8);%Grab 1st open jobs
     todoNow = find(~x.todoStatus,rJobs,'first');     
     x.todoStatus(todoNow) = 1; %Flag it (them) as pending
     x.storeSelf; %store pending flag as quickly as possible to minimise race condition impact
