@@ -7,7 +7,7 @@ function Exp_14_LevIndR(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '14Lev10dBSNRtrainAR9';
+expName = '14Lev10dBSNRtrainAR';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
