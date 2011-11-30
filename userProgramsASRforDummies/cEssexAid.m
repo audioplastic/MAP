@@ -24,7 +24,7 @@ classdef cEssexAid < aAid
     properties(Access = public)
         sr         = 48e3;
         numSamples = 1024; %MAX=6912, LAB_USE=48
-        input                   
+        input     
         
         %------------------------------------------------------------------
         % Params for audiometric freqs 250, 500, 1000, 2000, 4000, 8000 Hz

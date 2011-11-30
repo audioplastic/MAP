@@ -112,7 +112,6 @@ classdef cJob
         %************************************************************
         % Portable EssexAid params
         %************************************************************
-        useAid = 0;
         aidInstance
     end
     
@@ -185,7 +184,6 @@ classdef cJob
             tline = fgetl(fp);
             while ischar(tline)
                 try
-                    disp([tline ';'])
                     eval([tline ';']);
                 catch %#ok<CTCH>
                     assert(false, 'Syntax error in config file');
