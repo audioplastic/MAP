@@ -27,7 +27,7 @@ xL = jobject('L', learnFolder);
 
 xL.participant = 'NormalDIFF';%'NormalDIFF';
 xL.MAPparamChanges= { ...
-                'OMEParams.rateToAttenuationFactorProb=9;',...
+                'OMEParams.rateToAttenuationFactorProb=3;',...
                 'OMEParams.ARrateThreshold=30;',... %Threshold of 40 makes AR kick off around 65 dB for bb noise
                 'OMEParams.ARtau=0.1;',...
                 'DRNLParams.MOCtauR=2;',...
@@ -55,7 +55,7 @@ xL.removeEnergyStatic = 0;
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
 testWavs = 358; %MAX = 358
-nzLevel = [-200 40 50 60 70];
+nzLevel = [40 50 60 70];
 spLevel = 90;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
