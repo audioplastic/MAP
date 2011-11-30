@@ -1,4 +1,4 @@
-function Exp_14_LevIndR(isMasterNode)
+function Exp_14_LevIndSRT(isMasterNode)
 % This experiment tests a recogniser on 3 different training sets with
 % different efferent conditions.
 % This is now using paramChanges and the hearing aid to correct an OHC
@@ -54,7 +54,7 @@ xL.removeEnergyStatic = 0;
 
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
-testWavs = 358; %MAX = 358
+testWavs = 50; %MAX = 358
 nzLevel = 30;
 spLevel = [30 40 50 60 70];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -96,7 +96,7 @@ for nn = 0*recConditions+1:1*recConditions
     xR{nn}.noiseLevToUse = nzLevel;
     xR{nn}.speechDist = 'None';
     xR{nn}.noiseDist = 'None';
-    xR{nn}.MAPparamChanges= { 'DRNLParams.a=400;' };
+    xR{nn}.MAPparamChanges= [xL.MAPparamChanges { 'DRNLParams.a=400;' }];
     
     xR{nn}.useAid=0;
 %     xR{nn}.aidInstance = newAid;

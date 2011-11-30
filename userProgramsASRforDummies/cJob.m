@@ -171,7 +171,7 @@ classdef cJob
             obj = obj.assignWavPaths(LearnOrRecWavs);
             obj = obj.initMAP;      
             
-            obj.aidInstance = cEssexAid;
+            %obj.aidInstance = cEssexAid;
             
         end % ------ OF CONSTRUCTOR
         
@@ -185,9 +185,10 @@ classdef cJob
             tline = fgetl(fp);
             while ischar(tline)
                 try
+                    disp([tline ';'])
                     eval([tline ';']);
                 catch %#ok<CTCH>
-                    assert(0, 'Syntax error in config file');
+                    assert(false, 'Syntax error in config file');
                 end
                 tline = fgetl(fp);
             end
@@ -218,20 +219,22 @@ classdef cJob
             obj.opFolder = value;
         end
         
-        function obj = set.wavFolder(obj,value)
-            assert (~any(strfind(value, ' ')),...
-                'Do not use audio speech path containing whitespaces')            
+        function obj = set.wavFolder(obj,value)         
             assert(isdir(value),...
                 'Audio speech path does not exist')
             obj.wavFolder = value;
         end
         
-        function obj = set.noiseFolder(obj,value)
-            assert (~any(strfind(value, ' ')),...
-                'Do not use audio noise path containing whitespaces')            
+        function obj = set.noiseFolder(obj,value)          
             assert(isdir(value),...
                 'Audio noise path does not exist')
             obj.noiseFolder = value;
+        end
+        
+        function obj = set.aidInstance(obj,value)
+            assert (isa(value, 'aAid') || isempty(value),...
+                'The aid instance can only be set to nothing ([]) or to an object derrived from the aAid abstract class')
+            obj.aidInstance = value;
         end
                 
         
@@ -562,10 +565,10 @@ classdef cJob
             %**********************************************************
             % NOW TO LOAD IN THE HEARING AID
             %**********************************************************
-            if obj.useAid
-                obj.aidInstance.stimulusUSER = stimulus;
+            if ~isempty(obj.aidInstance)
+                obj.aidInstance.input = stimulus;
                 obj.aidInstance = obj.aidInstance.processStim;
-                stimulus = obj.aidInstance.aidOPnice;
+                stimulus = obj.aidInstance.output;
             end
             
             AN_spikesOrProbability = 'probability';

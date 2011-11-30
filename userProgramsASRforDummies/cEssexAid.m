@@ -1,4 +1,4 @@
-classdef cEssexAid
+classdef cEssexAid < aAid
     %ESSEXAID_WRAPCLASS Wrapper for the EssexAid - Nick Clark July 2011
     %   This class wraps up the EssexAid algorithm function that processes
     %   each block of samples. This wrapper closely emulates the GUI used
@@ -24,7 +24,7 @@ classdef cEssexAid
     properties(Access = public)
         sr         = 48e3;
         numSamples = 1024; %MAX=6912, LAB_USE=48
-        stimulusUSER                   
+        input                   
         
         %------------------------------------------------------------------
         % Params for audiometric freqs 250, 500, 1000, 2000, 4000, 8000 Hz
@@ -71,7 +71,7 @@ classdef cEssexAid
     properties(Dependent = true, Hidden = false)
         channelBFs %= 250 * 2.^((0:fNmax)'*params.bwOct);        
         numChannels %= numel(channelBFs);        
-        aidOPnice %aid output reformatted to be exactly the same dimensions as the input stimulus                               
+        output %aid output reformatted to be exactly the same dimensions as the input stimulus                               
     end
     
     %% **********************************************************
@@ -153,9 +153,9 @@ classdef cEssexAid
             end
             
             if nargin > 1
-                obj.stimulusUSER = stimulus;
+                obj.input = stimulus;
             else         
-                obj.stimulusUSER = obj.pipSequence(obj.sr);
+                obj.input = obj.pipSequence(obj.sr);
             end
         end
         
@@ -239,7 +239,7 @@ classdef cEssexAid
         % stereo if needs be and/or rotate to 2xN array.
         %*************************************************************
         function value = get.stimulusINTERNAL(obj)            
-            [nRows, nCols] = size(obj.stimulusUSER);
+            [nRows, nCols] = size(obj.input);
             
             % Assume that the stimulus duration is greater than 2 samples.
             % Therefore the number of channels is the min dim.            
@@ -247,15 +247,15 @@ classdef cEssexAid
             
             if nChans == 2
                 if I == 2
-                    value = obj.stimulusUSER;
+                    value = obj.input;
                 else
-                    value = obj.stimulusUSER';
+                    value = obj.input';
                 end
             elseif nChans == 1 %Just to be explicit
                 if I == 2
-                    value = [obj.stimulusUSER obj.stimulusUSER];   
+                    value = [obj.input obj.input];   
                 else
-                    value = [obj.stimulusUSER; obj.stimulusUSER]';
+                    value = [obj.input; obj.input]';
                 end
             end
         end
@@ -269,9 +269,9 @@ classdef cEssexAid
         % very useful for the speech recognition work and presumably
         % for multithreshold also.
         %*************************************************************
-        function value = get.aidOPnice(obj)
+        function value = get.output(obj)
             if ~isempty(obj.aidOP)
-                [nRows, nCols] = size(obj.stimulusUSER);
+                [nRows, nCols] = size(obj.input);
                 
                 % Assume that the stimulus duration is greater than 2 samples.
                 % Therefore the number of channels is the min dim.
@@ -309,7 +309,7 @@ classdef cEssexAid
         % processStim will have to be called explicity by the user once
         % again. 
         %*************************************************************
-        function obj = set.stimulusUSER(obj,value)
+        function obj = set.input(obj,value)
             [nRows, nCols] = size(value);
             
             % Assume that the stimulus duration is greater than 2 samples.
@@ -318,7 +318,7 @@ classdef cEssexAid
             assert(nChans<3 && nChans, 'Number of stimulus channels must be 1 or 2')
             
             obj = obj.flushAidData; %flush any previous hearing aid data if the input stimulus changes
-            obj.stimulusUSER = value;
+            obj.input = value;
         end                     
         function obj = set.sr(obj,value)
             assert(value>=20e3 && value<=192e3, 'sr must be between 20 and 192 kHz')            
@@ -417,13 +417,13 @@ classdef cEssexAid
             tAxis = dt:dt:dt*size(obj.stimulusINTERNAL,1);
             
             subplot(2,1,1)
-            plot(tAxis(1:length(obj.stimulusUSER)), sig2dBSPL(obj.stimulusUSER), 'k')
-            if ~isempty(obj.aidOPnice)
+            plot(tAxis(1:length(obj.input)), sig2dBSPL(obj.input), 'k')
+            if ~isempty(obj.output)
                 hold on
-                plot(tAxis(1:length(obj.stimulusUSER)), sig2dBSPL(obj.aidOPnice), 'r')
+                plot(tAxis(1:length(obj.input)), sig2dBSPL(obj.output), 'r')
             end                                   
             ylim([0 100])
-            xlim([0 tAxis(length(obj.stimulusUSER))])
+            xlim([0 tAxis(length(obj.input))])
             title('Level response')
             xlabel('Time in seconds')
             ylabel('Level in dB SPL')
@@ -445,7 +445,7 @@ classdef cEssexAid
         % OVERLOADED soundsc method 
         %************************************************************
         function soundsc(obj)
-            soundsc(obj.aidOPnice, obj.sr)
+            soundsc(obj.output, obj.sr)
         end                 
         
         %% **********************************************************

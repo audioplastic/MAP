@@ -56,7 +56,7 @@ xL.MAPopLSR = 0;
 
 xL.numWavs = 1; %MAx=8440
 
-xL.useAid = 1;
+xL.useAid = 0;
 xL.aidInstance.mainGain_dB = ones(size(xL.aidInstance.mainGain_dB))*50;
 
 
@@ -68,8 +68,8 @@ mkdir(xL.opFolder);
 xL = xL.assignFiles;
 xL.wavList  = dir(fullfile(xL.wavFolder, 'MHS_2841A.wav'));
 
-xL.removeEnergyStatic = 1;
-xL.doCMN = 1;
+xL.removeEnergyStatic = 0;
+xL.doCMN = 0;
 
 xL.useSpectrogram = 0;
 xL.numCoeff = 14;
@@ -88,6 +88,7 @@ xL.MAPparamChanges= { ...
                 'DRNLParams.MOCtauF=DRNLParams.MOCtauR;',...                
                 'DRNLParams.rateToAttenuationFactorProb=9;',...
                 'DRNLParams.MOCrateThresholdProb=85;',...
+                'DRNLParams.a=400;'...
                 };
             
 xL.storeSelf;
