@@ -54,9 +54,9 @@ xL.removeEnergyStatic = 0;
 
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
-testWavs = 50; %MAX = 358
+testWavs = 150; %MAX = 358
 nzLevel = 30;
-spLevel = [30 40 50 60 70];
+spLevel = [30 40 50 60 70 80 90];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 6; %only short lead in needed for SRT type test
