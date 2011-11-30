@@ -56,7 +56,7 @@ xL.removeEnergyStatic = 0;
 xL.numWavs = 8440; %MAx=8440
 testWavs = 150; %MAX = 358
 nzLevel = 30;
-spLevel = [30 40 50 60 70 80 90];
+spLevel = [40 50 60 70 80 90];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 6; %only short lead in needed for SRT type test
@@ -87,7 +87,7 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['SRT_'  num2str(nn)]);
+    recFolder = fullfile(expFolder,['SRTA_'  num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -98,9 +98,65 @@ for nn = 0*recConditions+1:1*recConditions
     xR{nn}.noiseDist = 'None';
     xR{nn}.MAPparamChanges= [xL.MAPparamChanges { 'DRNLParams.a=400;' }];
     
-    xR{nn}.useAid=0;
-%     xR{nn}.aidInstance = newAid;
-%     xR{nn}.aidInstance.mainGain_dB = ones(size(newAid.mainGain_dB)) * 50;
+    xR{nn}.useAid=1;
+    xR{nn}.aidInstance = newAid;
+    xR{nn}.aidInstance.mainGain_dB = ones(size(newAid.mainGain_dB)) * 10;
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode && ~isdir(xR{nn}.opFolder)
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
+
+tmpIdx=0;
+for nn = 1*recConditions+1:2*recConditions    
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['SRTA_'  num2str(nn)]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = testWavs; %MAX = 358
+    xR{nn}.speechLevToUse = spLevel(tmpIdx);    
+    xR{nn}.noiseLevToUse = nzLevel;
+    xR{nn}.speechDist = 'None';
+    xR{nn}.noiseDist = 'None';
+    xR{nn}.MAPparamChanges= [xL.MAPparamChanges { 'DRNLParams.a=400;' }];
+    
+    xR{nn}.useAid=1;
+    xR{nn}.aidInstance = newAid;
+    xR{nn}.aidInstance.mainGain_dB = ones(size(newAid.mainGain_dB)) * 20;
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode && ~isdir(xR{nn}.opFolder)
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
+
+tmpIdx=0;
+for nn = 2*recConditions+1:3*recConditions    
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['SRTA_'  num2str(nn)]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = testWavs; %MAX = 358
+    xR{nn}.speechLevToUse = spLevel(tmpIdx);    
+    xR{nn}.noiseLevToUse = nzLevel;
+    xR{nn}.speechDist = 'None';
+    xR{nn}.noiseDist = 'None';
+    xR{nn}.MAPparamChanges= [xL.MAPparamChanges { 'DRNLParams.a=400;' }];
+    
+    xR{nn}.useAid=1;
+    xR{nn}.aidInstance = newAid;
+    xR{nn}.aidInstance.mainGain_dB = ones(size(newAid.mainGain_dB)) * 30;
     
     %Now just to wrap it up ready for processing
     if isMasterNode && ~isdir(xR{nn}.opFolder)
