@@ -36,10 +36,10 @@ xL.MAPparamChanges= {
                 'DRNLParams.MOCrateThresholdProb=85;'};
             
 xL.noiseLevToUse   =  -200;
-xL.speechLevToUse  =  70;
+xL.speechLevToUse  =  75;
 xL.speechDist = 'uniform';
 xL.noiseDist  = 'uniform';
-xL.speechLevStd    = 60/sqrt(12);
+xL.speechLevStd    = 50/sqrt(12);
 xL.noiseLevStd    = 0;
 xL.meanSNR = 10;
 
@@ -136,6 +136,30 @@ for nn = recConditions+recConditionsB+1:recConditions+recConditionsB+recConditio
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.speechLevToUse = spLevel(tmpIdx);
     xR{nn}.noiseLevToUse = spLevel(tmpIdx)-10;
+    xR{nn}.speechDist = 'None';
+    xR{nn}.noiseDist = 'None';
+
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode && ~isdir(xR{nn}.opFolder)
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
+
+tmpIdx=0;
+for nn = recConditions+recConditionsB+recConditionsB+1:recConditions+recConditionsB+recConditionsB+recConditionsB;    
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['SNR_'  num2str(nn)]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = testWavs; %MAX = 358
+    xR{nn}.speechLevToUse = spLevel(tmpIdx);
+    xR{nn}.noiseLevToUse = 30;
     xR{nn}.speechDist = 'None';
     xR{nn}.noiseDist = 'None';
 
