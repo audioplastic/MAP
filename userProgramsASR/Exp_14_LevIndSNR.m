@@ -92,8 +92,8 @@ for nn = 0*recConditions+1:1*recConditions
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.speechLevToUse = 60;%spLevel(tmpIdx);    
-    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
+    xR{nn}.speechLevToUse = 50;%spLevel(tmpIdx);    
+    xR{nn}.noiseLevToUse = nzLevel(tmpIdx)-10;
     xR{nn}.speechDist = 'None';
     xR{nn}.noiseDist = 'None';
     xR{nn}.MAPparamChanges= [xL.MAPparamChanges { 'DRNLParams.a=400;' }];

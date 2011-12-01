@@ -59,7 +59,7 @@ while(any(x.todoStatus==0))
     disp( ['This process has completed ' num2str(personalWork) ' jobs'] )
     x.checkStatus        
 end
-x.checkStatus
+
 
 disp('-*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*-')
 disp( ' > COMPLETED CURRENT JOB' )
