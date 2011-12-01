@@ -23,6 +23,7 @@ end
 x=obj;
 clear obj;
 x.initMAP; %Need to alert it to the path
+x.checkStatus
 
 personalWork = 0;
 while(any(x.todoStatus==0))        
@@ -58,11 +59,12 @@ while(any(x.todoStatus==0))
     disp( ['This process has completed ' num2str(personalWork) ' jobs'] )
     x.checkStatus        
 end
+x.checkStatus
 
 disp('-*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*-')
 disp( ' > COMPLETED CURRENT JOB' )
 disp( ['  In the folder ' workFolder '  .....'] )
-disp( ['  This process completed ' num2str(personalWork) ' jobs'] )
+disp( ['  This process completed ' num2str(personalWork) ' lists'] )
 disp('-*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*--*-')
 
 

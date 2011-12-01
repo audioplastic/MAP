@@ -55,7 +55,7 @@ xL.removeEnergyStatic = 0;
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
 testWavs = 150; %MAX = 358
-nzLevel = [40 50 60 70 80];
+nzLevel = [40 50 60 70];
 % spLevel = [30 40 50 60 70 80 90];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -87,20 +87,21 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['SNRI_'  num2str(nn)]);
+    recFolder = fullfile(expFolder,['SRTAtgc_'  num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.speechLevToUse = 70;    
+    xR{nn}.speechLevToUse = 60;%spLevel(tmpIdx);    
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
     xR{nn}.speechDist = 'None';
     xR{nn}.noiseDist = 'None';
     xR{nn}.MAPparamChanges= [xL.MAPparamChanges { 'DRNLParams.a=400;' }];
     
-    xR{nn}.useAid=0;
-%     xR{nn}.aidInstance = newAid;
-%     xR{nn}.aidInstance.mainGain_dB = ones(size(newAid.mainGain_dB)) * 50;
+    xR{nn}.useAid=1;
+    xR{nn}.aidInstance = newAid;
+    xR{nn}.aidInstance.mainGain_dB = ones(size(newAid.mainGain_dB)) * 20;
+    xR{nn}.aidInstance.TC_dBSPL = ones(size(newAid.TC_dBSPL)) * 40;
     
     %Now just to wrap it up ready for processing
     if isMasterNode && ~isdir(xR{nn}.opFolder)
