@@ -54,7 +54,7 @@ xL.removeEnergyStatic = 0;
 
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
-testWavs = 200; %MAX = 358
+testWavs = 150; %MAX = 358
 nzLevel = 30;
 spLevel = [40 50 60 70 80 90];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -87,7 +87,7 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['SRTAtc_'  num2str(nn)]);
+    recFolder = fullfile(expFolder,['SRTAtcM_'  num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -101,7 +101,8 @@ for nn = 0*recConditions+1:1*recConditions
     xR{nn}.useAid=1;
     xR{nn}.aidInstance = newAid;
     xR{nn}.aidInstance.mainGain_dB = ones(size(newAid.mainGain_dB)) * 20;
-    xR{nn}.aidInstance.TC_dBSPL = ones(size(newAid.TC_dBSPL)) * 30;
+    xR{nn}.aidInstance.TC_dBSPL = ones(size(newAid.TC_dBSPL)) * 40;
+    xR{nn}.aidInstance.TM_dBSPL = ones(size(newAid.TM_dBSPL)) * 35;
     
     %Now just to wrap it up ready for processing
     if isMasterNode && ~isdir(xR{nn}.opFolder)
@@ -111,37 +112,6 @@ for nn = 0*recConditions+1:1*recConditions
         xR{nn}.storeSelf;
     end
 end
-
-tmpIdx=0;
-for nn = 1*recConditions+1:2*recConditions    
-    tmpIdx=tmpIdx+1;
-    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['SRTAtc_'  num2str(nn)]);
-    xR{nn}.opFolder = recFolder;    
-    
-    %These are the interesting differences between training and testing
-    xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.speechLevToUse = spLevel(tmpIdx);    
-    xR{nn}.noiseLevToUse = nzLevel;
-    xR{nn}.speechDist = 'None';
-    xR{nn}.noiseDist = 'None';
-    xR{nn}.MAPparamChanges= [xL.MAPparamChanges { 'DRNLParams.a=400;' }];
-    
-    xR{nn}.useAid=1;
-    xR{nn}.aidInstance = newAid;
-    xR{nn}.aidInstance.mainGain_dB = ones(size(newAid.mainGain_dB)) * 20;
-    xR{nn}.aidInstance.TC_dBSPL = ones(size(newAid.TC_dBSPL)) * 50;
-    
-    %Now just to wrap it up ready for processing
-    if isMasterNode && ~isdir(xR{nn}.opFolder)
-        mkdir(xR{nn}.opFolder);
-        xR{nn} = xR{nn}.assignWavPaths('R');
-        xR{nn} = xR{nn}.assignFiles;
-        xR{nn}.storeSelf;
-    end
-end
-
-
 
 
 
