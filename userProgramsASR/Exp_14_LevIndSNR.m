@@ -37,7 +37,7 @@ xL.MAPparamChanges= { ...
                 };
             
 xL.noiseLevToUse   =  -200;
-xL.speechLevToUse  =  70;
+xL.speechLevToUse  =  60;
 xL.speechDist = 'uniform';
 xL.noiseDist  = 'uniform';
 xL.speechLevStd    = 60/sqrt(12);
@@ -87,12 +87,12 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['SRTAtgcL5M_'  num2str(nn)]);
+    recFolder = fullfile(expFolder,['SRTAtgcL0M_'  num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.speechLevToUse = 50;%spLevel(tmpIdx);    
+    xR{nn}.speechLevToUse = 60;%spLevel(tmpIdx);    
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx)-10;
     xR{nn}.speechDist = 'None';
     xR{nn}.noiseDist = 'None';
@@ -101,9 +101,9 @@ for nn = 0*recConditions+1:1*recConditions
     xR{nn}.useAid=1;
     xR{nn}.aidInstance = newAid;
     xR{nn}.aidInstance.mainGain_dB = ones(size(newAid.mainGain_dB)) * 20;
-    xR{nn}.aidInstance.TC_dBSPL = ones(size(newAid.TC_dBSPL)) * 40;
-    xR{nn}.aidInstance.TM_dBSPL = ones(size(newAid.TM_dBSPL)) * 35;
-    xR{nn}.aidInstance.MOCfactor = 5;
+    xR{nn}.aidInstance.TC_dBSPL = ones(size(newAid.TC_dBSPL)) * 30;
+    xR{nn}.aidInstance.TM_dBSPL = ones(size(newAid.TM_dBSPL)) * 25;
+    xR{nn}.aidInstance.MOCfactor = o;
     
     %Now just to wrap it up ready for processing
     if isMasterNode && ~isdir(xR{nn}.opFolder)
