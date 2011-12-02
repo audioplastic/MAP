@@ -377,7 +377,7 @@ classdef cEssexAid
             obj.MOCtau = value;
         end
         function obj = set.MOCfactor(obj,value)
-            assert(value>=0 && value<=1, 'must be between 0 and 1')
+            %assert(value>=0 && value<=1, 'must be between 0 and 1')
             obj = obj.flushAidData;
             obj.MOCfactor = value;
         end
