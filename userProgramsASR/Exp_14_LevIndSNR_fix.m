@@ -55,8 +55,8 @@ xL.removeEnergyStatic = 0;
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
 testWavs = 150; %MAX = 358
-nzLevel = [80];
-spLevel = [70 80 90 100];
+nzLevel = [70];
+spLevel = [60 70 80 90];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 6; %only short lead in needed for SRT type test
@@ -87,7 +87,7 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['SRTfixNZ'  num2str(nn)]);
+    recFolder = fullfile(expFolder,['SRTfix70NZ'  num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -114,7 +114,7 @@ tmpIdx=0;
 for nn = 1*recConditions+1:2*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['SRTfixNZ'  num2str(nn)]);
+    recFolder = fullfile(expFolder,['SRTfix70NZ'  num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -141,7 +141,7 @@ tmpIdx=0;
 for nn = 2*recConditions+1:3*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['SRTfixNZ'  num2str(nn)]);
+    recFolder = fullfile(expFolder,['SRTfix70NZ'  num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
