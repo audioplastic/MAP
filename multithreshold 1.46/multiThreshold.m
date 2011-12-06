@@ -1441,13 +1441,8 @@ testOME(experiment.name, paramChanges);
 function pushbuttonBM_Callback(hObject, eventdata, handles)
 global  stimulusParameters experiment paramChanges
 aReadAndCheckParameterBoxes(handles);
-<<<<<<< HEAD
-% relativeFrequencies=[0.25    .5   .75  1  1.25 1.5    2];
-relativeFrequencies=1;
-=======
 relativeFrequencies=[0.25    .5   .75  1  1.25 1.5    2];
 relativeFrequencies=[ 1 ];
->>>>>>> upstream/master
 AN_spikesOrProbability='probability';
 AN_spikesOrProbability='spikes';
 testBM(stimulusParameters.targetFrequency, ...
@@ -1461,14 +1456,9 @@ aReadAndCheckParameterBoxes(handles);
 showPSTHs=0;
 targetFrequency=stimulusParameters.targetFrequency(1);
 BFlist=targetFrequency;
-<<<<<<< HEAD
-
-testANprob(targetFrequency,BFlist,-10:10:90,experiment.name, paramChanges);
-=======
 testLevels=-10:10:90;
 % testLevels=80:10:90;
 testAN(targetFrequency,BFlist,testLevels,experiment.name, paramChanges);
->>>>>>> upstream/master
 
 function pushbuttonPhLk_Callback(hObject, eventdata, handles)
 global experiment
@@ -1854,5 +1844,4 @@ function editOHIOnTones_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 

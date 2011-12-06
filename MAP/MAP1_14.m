@@ -203,18 +203,18 @@ a1=dt/DRNLParams.MOCtau-1; a0=1;
 b0=1+ a1;
 MOCfilt_b=b0; MOCfilt_a=[a0 a1];
 
-<<<<<<< HEAD
-%%% NEW %%%
-MOCfilt_aR = dt/DRNLParams.MOCtauR - 1; % R = Rising edge
-MOCfilt_bR = 1.0 + MOCfilt_aR;
-MOCfilt_aF = dt/DRNLParams.MOCtauF - 1; % F = Falling edge
-MOCfilt_bF = 1.0 + MOCfilt_aF;
-=======
+% <<<<<<< HEAD
+% %%% NEW %%%
+% MOCfilt_aR = dt/DRNLParams.MOCtauR - 1; % R = Rising edge
+% MOCfilt_bR = 1.0 + MOCfilt_aR;
+% MOCfilt_aF = dt/DRNLParams.MOCtauF - 1; % F = Falling edge
+% MOCfilt_bF = 1.0 + MOCfilt_aF;
+% =======
 a1=dt/DRNLParams.MOCtauProb-1; a0=1;
 b0=1+ a1;
 MOCfiltProb_b=b0; MOCfiltProb_a=[a0 a1];
 
->>>>>>> upstream/master
+% >>>>>>> upstream/master
 
 % figure(9), freqz(stapesDisp_b, stapesDisp_a)
 MOCboundary=cell(nBFs,1);
@@ -223,16 +223,16 @@ MOCprobBoundary=num2cell(zeros(nBFs,1));
 MOCattSegment=zeros(nBFs,reducedSegmentLength);
 MOCattenuation=ones(nBFs,signalLength);
 
-<<<<<<< HEAD
-if DRNLParams.a>0
-%     DRNLcompressionThreshold=4.2546e-012;% FIXED DISP for a=10k,b=8e-6,c=0.2 
-    DRNLcompressionThreshold=10^((1/(1-DRNLParams.c))* log10(DRNLParams.b/DRNLParams.a)); %THIS (I once thought was) WRONG!!!!!
-%     DRNLcompressionThreshold = ((DRNLParams.b^5)/DRNLParams.a)^0.25; %This is valid only for DRNLc = 0.2
-else
-    DRNLcompressionThreshold=inf;
-end
-
-=======
+% <<<<<<< HEAD
+% if DRNLParams.a>0
+% %     DRNLcompressionThreshold=4.2546e-012;% FIXED DISP for a=10k,b=8e-6,c=0.2 
+%     DRNLcompressionThreshold=10^((1/(1-DRNLParams.c))* log10(DRNLParams.b/DRNLParams.a)); %THIS (I once thought was) WRONG!!!!!
+% %     DRNLcompressionThreshold = ((DRNLParams.b^5)/DRNLParams.a)^0.25; %This is valid only for DRNLc = 0.2
+% else
+%     DRNLcompressionThreshold=inf;
+% end
+% 
+% =======
 % if DRNLParams.a>0
 %     DRNLcompressionThreshold=10^((1/(1-DRNLParams.c))* ...
 %     log10(DRNLParams.b/DRNLParams.a));
@@ -240,7 +240,7 @@ end
 %     DRNLcompressionThreshold=inf;
 % end
 % DRNLcompressionThreshold=DRNLParams.cTh;
->>>>>>> upstream/master
+% >>>>>>> upstream/master
 DRNLlinearOrder= DRNLParams.linOrder;
 DRNLnonlinearOrder= DRNLParams.nonlinOrder;
 
@@ -681,27 +681,27 @@ while segmentStartPTR<signalLength
                 filter(GTnonlin_b(BFno,:), GTnonlin_a(BFno,:), ...
                 nonlinOutput, GTnonlinBdry1{BFno,order});
         end
-<<<<<<< HEAD
-        %       broken stick instantaneous compression
-%         y= nonlinOutput.* DRNLa;  % linear section.
-%         % compress parts of the signal above the compression threshold
-%         abs_x = abs(nonlinOutput);
-%         idx=find(abs_x>DRNLcompressionThreshold);
-%         if ~isempty(idx)>0
-%             y(idx)=sign(y(idx)).* (DRNLb*abs_x(idx).^DRNLc);
-%         end
-%         nonlinOutput = y;
-
-        x = nonlinOutput;
-%         CtBM = 1e-8 * 10^(DRNLParams.CtBMdB/20);%4.2546e-008; % using [a * 10^((1/(1-c))* log10(b/a))] where a = 10k, b=8e-6, c=0.2   
-        CtBM = DRNLParams.CtBM;
-        CtS  = CtBM/DRNLa;      %Compression threshold in units of stapes disp
-        y = zeros(size(x));
-        abs_x = abs(x);
-        y(abs_x<CtS)   = DRNLa * x(abs_x<CtS);
-        y(abs_x>=CtS)  = sign(x(abs_x>=CtS)) * DRNLa * CtS .* exp(   DRNLc * log(  abs_x(abs_x>=CtS)/CtS  )   );
-        nonlinOutput=y;
-=======
+% <<<<<<< HEAD
+%         %       broken stick instantaneous compression
+% %         y= nonlinOutput.* DRNLa;  % linear section.
+% %         % compress parts of the signal above the compression threshold
+% %         abs_x = abs(nonlinOutput);
+% %         idx=find(abs_x>DRNLcompressionThreshold);
+% %         if ~isempty(idx)>0
+% %             y(idx)=sign(y(idx)).* (DRNLb*abs_x(idx).^DRNLc);
+% %         end
+% %         nonlinOutput = y;
+% 
+%         x = nonlinOutput;
+% %         CtBM = 1e-8 * 10^(DRNLParams.CtBMdB/20);%4.2546e-008; % using [a * 10^((1/(1-c))* log10(b/a))] where a = 10k, b=8e-6, c=0.2   
+%         CtBM = DRNLParams.CtBM;
+%         CtS  = CtBM/DRNLa;      %Compression threshold in units of stapes disp
+%         y = zeros(size(x));
+%         abs_x = abs(x);
+%         y(abs_x<CtS)   = DRNLa * x(abs_x<CtS);
+%         y(abs_x>=CtS)  = sign(x(abs_x>=CtS)) * DRNLa * CtS .* exp(   DRNLc * log(  abs_x(abs_x>=CtS)/CtS  )   );
+%         nonlinOutput=y;
+% =======
         
         
         % Nick's compression algorithm
@@ -742,7 +742,7 @@ while segmentStartPTR<signalLength
 %     ylim([-1e-5 1e-5])
 %     pause(1)
 % end
->>>>>>> upstream/master
+% >>>>>>> upstream/master
 
 %       second filter removes distortion products
         for order = 1 : GTnonlinOrder
@@ -936,48 +936,48 @@ while segmentStartPTR<signalLength
                 MOCattenuation(:,segmentStartPTR:segmentEndPTR)= ...
                     ones(size(rates))* -rateToAttenuationFactorProb;                
             else
-<<<<<<< HEAD
-                
-                smoothedRates = zeros(1,c);
-                for idx=1:nBFs
-%                     [smoothedRates, MOCprobBoundary{idx}] = ...
-%                         filter(MOCfilt_b, MOCfilt_a, rates(idx,:), ...
-%                         MOCprobBoundary{idx});
-%                     smoothedRates=smoothedRates-MOCrateThresholdProb;
-%                     smoothedRates(smoothedRates<0)=0;
-%                     x =  (1- smoothedRates* rateToAttenuationFactorProb); %ORIGINAL 
-
-                    %NEW !!!
-                    
-                    for nn = 1:c
-                        if rates(idx,nn) < MOCprobBoundary{idx} %// - This is line to make smoothing only apply to release
-                            smoothedRates(nn) = MOCfilt_bF*rates(idx,nn) - MOCfilt_aF*MOCprobBoundary{idx};% // difference eqn for one-pole lpf
-                        else
-                            smoothedRates(nn) = MOCfilt_bR*rates(idx,nn) - MOCfilt_aR*MOCprobBoundary{idx};% // difference eqn for one-pole lpf
-                        end
-                        MOCprobBoundary{idx} = smoothedRates(nn);
-                    end
-                    
-                    x = -20*log10(  max(smoothedRates/MOCrateThresholdProb,1)  )*rateToAttenuationFactorProb; %dB attenuation
-                    x = 10.^(x/20);
-                    %x = max(x,10^(-35/20));    
-%                     %ALSO - filter at the end - this will stop rapid attack
-%                     %and slow decay
-%                     [x, MOCprobBoundary{idx}] = ...
-%                         filter(MOCfilt_b, MOCfilt_a, x, ...
-%                         MOCprobBoundary{idx});
-                    
-                                        
-                    MOCattenuation(idx,segmentStartPTR:segmentEndPTR)= ...
-                        x;                                                            
-                end
-            end
-%             MOCattenuation(MOCattenuation<0)=0.001;REDUNDANT
-
-            %             plot(MOCattenuation)
-
-
-=======
+% <<<<<<< HEAD
+%                 
+%                 smoothedRates = zeros(1,c);
+%                 for idx=1:nBFs
+% %                     [smoothedRates, MOCprobBoundary{idx}] = ...
+% %                         filter(MOCfilt_b, MOCfilt_a, rates(idx,:), ...
+% %                         MOCprobBoundary{idx});
+% %                     smoothedRates=smoothedRates-MOCrateThresholdProb;
+% %                     smoothedRates(smoothedRates<0)=0;
+% %                     x =  (1- smoothedRates* rateToAttenuationFactorProb); %ORIGINAL 
+% 
+%                     %NEW !!!
+%                     
+%                     for nn = 1:c
+%                         if rates(idx,nn) < MOCprobBoundary{idx} %// - This is line to make smoothing only apply to release
+%                             smoothedRates(nn) = MOCfilt_bF*rates(idx,nn) - MOCfilt_aF*MOCprobBoundary{idx};% // difference eqn for one-pole lpf
+%                         else
+%                             smoothedRates(nn) = MOCfilt_bR*rates(idx,nn) - MOCfilt_aR*MOCprobBoundary{idx};% // difference eqn for one-pole lpf
+%                         end
+%                         MOCprobBoundary{idx} = smoothedRates(nn);
+%                     end
+%                     
+%                     x = -20*log10(  max(smoothedRates/MOCrateThresholdProb,1)  )*rateToAttenuationFactorProb; %dB attenuation
+%                     x = 10.^(x/20);
+%                     %x = max(x,10^(-35/20));    
+% %                     %ALSO - filter at the end - this will stop rapid attack
+% %                     %and slow decay
+% %                     [x, MOCprobBoundary{idx}] = ...
+% %                         filter(MOCfilt_b, MOCfilt_a, x, ...
+% %                         MOCprobBoundary{idx});
+%                     
+%                                         
+%                     MOCattenuation(idx,segmentStartPTR:segmentEndPTR)= ...
+%                         x;                                                            
+%                 end
+%             end
+% %             MOCattenuation(MOCattenuation<0)=0.001;REDUNDANT
+% 
+%             %             plot(MOCattenuation)
+% 
+% 
+% =======
 
                 for idx=1:nBFs
                     [smoothedRates, MOCprobBoundary{idx}] = ...
@@ -995,7 +995,7 @@ while segmentStartPTR<signalLength
                 
             % plot(MOCattenuation)            
             
->>>>>>> upstream/master
+% >>>>>>> upstream/master
         case 'spikes'
             ANtimeCount=0;
             % implement speed upt

@@ -1,4 +1,4 @@
-function Exp_14_LevInd(isMasterNode)
+function Exp_14_gen_model(isMasterNode)
 % This experiment tests a recogniser on 3 different training sets with
 % different efferent conditions.
 % This is now using paramChanges and the hearing aid to correct an OHC
@@ -7,7 +7,7 @@ function Exp_14_LevInd(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '14Lev10dBSNRnewMAPa';
+expName = '14_multinoise';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -25,23 +25,14 @@ learnFolder = fullfile(expFolder,'featL');
 
 xL = jobject('L', learnFolder);
 
-xL.participant = 'Normal';%'NormalDIFF';
-% xL.MAPparamChanges= { 
-%                 'OMEParams.rateToAttenuationFactorProb=9;',...
-%                 'OMEParams.ARrateThreshold=30;',... %Threshold of 40 makes AR kick off around 65 dB for bb noise
-%                 'OMEParams.ARtau=0.1;',...
-%                 'DRNLParams.MOCtauR=2;',...
-%                 'DRNLParams.MOCtauF=DRNLParams.MOCtauR;',...                
-%                 'DRNLParams.rateToAttenuationFactorProb=9;',...
-%                 'DRNLParams.MOCrateThresholdProb=85;'};
-            
+xL.participant = 'NormalDIFF';%'NormalDIFF';
+xL.MAPparamChanges= {'DRNLParams.rateToAttenuationFactorProb=9;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtauR=2;', 'DRNLParams.MOCtauF=DRNLParams.MOCtauR;'};
+
 xL.noiseLevToUse   =  -200;
-xL.speechLevToUse  =  70;
+xL.speechLevToUse  =  60;
 xL.speechDist = 'uniform';
-xL.noiseDist  = 'uniform';
-xL.speechLevStd    = 60/sqrt(12);
-xL.noiseLevStd    = 0;
-xL.meanSNR = 10;
+xL.speechLevStd  = 60/sqrt(12);
+xL.meanSNR = Inf;
 
 xL.MAPopHSR = 1;
 xL.MAPopMSR = 0;
@@ -52,17 +43,17 @@ xL.numCoeff = 14;
 xL.removeEnergyStatic = 0;
 
 %%%%% Group of params that will influence simulation run time %%%%%%%
-xL.numWavs = 8440; %MAx=8440
-testWavs = 358; %MAX = 358
+xL.numWavs = 1; %MAx=8440
+testWavs = 1; %MAX = 358
 nzLevel = [-200 40 50 60 70];
-spLevel = [30 40 50 60 70 80 90 100];
+spLevel = 30:10:90;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-xL.noisePreDur = 6; %only short lead in needed for SRT type test
+xL.noisePreDur = 1; %only short lead in needed for SRT type test
 xL.noisePostDur = 0.1;
 xL.truncateDur  = xL.noisePreDur-0.1;
 
-xL.noiseName = '20TalkerBabble';
+xL.noiseName = '20TalkerBabbale';
 
 if isMasterNode
     mkdir(xL.opFolder);
@@ -88,33 +79,6 @@ for nn = 0*recConditions+1:1*recConditions
     xR{nn}.speechLevToUse = 60;%spLevel(tmpIdx);    
     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
     xR{nn}.speechDist = 'None';
-    xR{nn}.noiseDist = 'None';
-    
-    %Now just to wrap it up ready for processing
-    if isMasterNode && ~isdir(xR{nn}.opFolder)
-        mkdir(xR{nn}.opFolder);
-        xR{nn} = xR{nn}.assignWavPaths('R');
-        xR{nn} = xR{nn}.assignFiles;
-        xR{nn}.storeSelf;
-    end
-end
-
-
-recConditionsB = numel(spLevel);
-tmpIdx=0;
-for nn = recConditions+1:recConditions+recConditionsB;    
-    tmpIdx=tmpIdx+1;
-    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['SNR_'  num2str(nn)]);
-    xR{nn}.opFolder = recFolder;    
-    
-    %These are the interesting differences between training and testing
-    xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.speechLevToUse = spLevel(tmpIdx);
-    xR{nn}.noiseLevToUse = spLevel(tmpIdx)-20;
-    xR{nn}.speechDist = 'None';
-    xR{nn}.noiseDist = 'None';
-
     
     %Now just to wrap it up ready for processing
     if isMasterNode && ~isdir(xR{nn}.opFolder)
@@ -126,7 +90,7 @@ for nn = recConditions+1:recConditions+recConditionsB;
 end
 
 tmpIdx=0;
-for nn = recConditions+recConditionsB+1:recConditions+recConditionsB+recConditionsB;    
+for nn = 1*recConditions+1:2*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
     recFolder = fullfile(expFolder,['SNR_'  num2str(nn)]);
@@ -134,11 +98,12 @@ for nn = recConditions+recConditionsB+1:recConditions+recConditionsB+recConditio
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
-    xR{nn}.speechLevToUse = spLevel(tmpIdx);
-    xR{nn}.noiseLevToUse = spLevel(tmpIdx)-10;
+    xR{nn}.speechLevToUse = 60;%spLevel(tmpIdx);    
+    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
     xR{nn}.speechDist = 'None';
-    xR{nn}.noiseDist = 'None';
-
+    xR{nn}.MAPparamChanges = {'DRNLParams.rateToAttenuationFactorProb=9;','DRNLParams.MOCrateThresholdProb=85;', 'DRNLParams.MOCtauR=2;', 'DRNLParams.MOCtauF=DRNLParams.MOCtauR;'};
+    xR{nn}.noisePreDur = 6; %only short lead to save time
+    xR{nn}.truncateDur  = xL.noisePreDur-0.1;
     
     %Now just to wrap it up ready for processing
     if isMasterNode && ~isdir(xR{nn}.opFolder)
