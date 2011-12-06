@@ -154,7 +154,7 @@ for nn = 0*recConditions+1:1*recConditions
     
     xR{nn}.useAid=1;
     xR{nn}.aidInstance = newAid;
-    xR{nn}.aidInstance.mainGain_dB = ones(size(newAid.mainGain_dB)) * 30;
+    xR{nn}.aidInstance.mainGain_dB = ones(size(newAid.mainGain_dB)) * 20;
     xR{nn}.aidInstance.TC_dBSPL = ones(size(newAid.TC_dBSPL)) * 30;
     xR{nn}.aidInstance.TM_dBSPL = ones(size(newAid.TM_dBSPL)) * 25;
     xR{nn}.aidInstance.MOCfactor = 0;

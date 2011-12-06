@@ -114,7 +114,7 @@ DRNLParams.MOCtau =0.45;                         % smoothing for MOC
 DRNLParams.MOCtauR =.400; 
 DRNLParams.MOCtauF =.100; 
 
-DRNLParams.CtBM = 8e-8;%18.0618; % 18 gives old a=800; old val was 12.5772 fo a=10k
+DRNLParams.CtBM = 8e-8;%20*log10(8e-8/1e-8) = 18.0618; % 18 gives old a=800; old val was 12.5772 fo a=10k
 
 %% #4 IHC_cilia_RPParams
 
