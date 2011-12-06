@@ -1,5 +1,7 @@
 function testRP(BFs,MAPparamsName,paramChanges)
-% testIHC used for IHC I/O function
+% testIHC evaluates IHC I/O function
+% multiple BFs can be used but only one is easier to interpret.
+% e.g. testRP(1000,'Normal',{});
 
 global experiment method inputStimulusParams
 global stimulusParameters IHC_VResp_VivoParams IHC_cilia_RPParams
@@ -15,6 +17,12 @@ drawnow
 
 if nargin<3
     paramChanges=[]; 
+end
+if nargin<2
+    MAPparamsName='Normal';
+end
+if nargin<3
+    BFs=800; 
 end
 
 levels=-20:10:100;
@@ -131,10 +139,10 @@ for BFno=1:length(BFs)
     subplot(2,2,2)
     restingIHC_cilia=IHCrestingCiliaCond;
     plot(levels, IHC_cilia_peak,'k', 'linewidth',2), hold on
-    plot(levels, IHC_cilia_min,'r', 'linewidth',2)
-    hold on,
-    plot([min(levels) max(levels)], ...
-        [restingIHC_cilia restingIHC_cilia], 'g')
+%     plot(levels, IHC_cilia_min,'r', 'linewidth',2)
+%     hold on,
+%     plot([min(levels) max(levels)], ...
+%         [restingIHC_cilia restingIHC_cilia], 'g')
     title(' IHC apical cond.')
     ylabel ('IHCcilia(conductance)'), xlabel('dB SPL')
     xlim([min(levels) max(levels)])
@@ -181,7 +189,7 @@ hold on, plot(sndLevel,RPanimal,'o')
 
     grid on
     title(['Et= ' num2str(IHC_cilia_RPParams.Et) ':  RP data 7 kHz Patuzzi'])
-    ylabel ('RP(V)'), xlabel('dB SPL')
+    ylabel ('RP(V) peak and DC'), xlabel('dB SPL')
     ylim([-0.08 -0.04])
     allIHC_RP_peak=[allIHC_RP_peak IHC_RP_peak];
     allIHC_RP_dc=[allIHC_RP_dc IHC_RP_dc];

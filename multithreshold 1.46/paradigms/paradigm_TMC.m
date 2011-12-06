@@ -1,12 +1,13 @@
 function paradigm_TMC(handles)
 global stimulusParameters experiment betweenRuns
 
-paradigm_training(handles) % default
+paradigmBase(handles) % default
 
 stimulusParameters.WRVname='maskerLevel';
 stimulusParameters.WRVstartValues=50;
 stimulusParameters.WRVsteps= [-10 -4];
 stimulusParameters.WRVlimits=[-30 110];
+
 
 stimulusParameters.cueTestDifference = 10;
 experiment.psyFunSlope = -1;

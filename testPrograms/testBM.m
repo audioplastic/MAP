@@ -1,29 +1,33 @@
-function testBM (BMlocations, paramsName,...
+function testBM (BFlist, paramsName,...
     relativeFrequencies, AN_spikesOrProbability, paramChanges)
 % testBM generates input output functions for DRNL model for any number
-% of locations.
-% Computations are bast on a single channel model (channelBFs=BF)
-% peak displacement (peakAmp) is measured.
-%  if DRNLParams.useMOC is chosen, the full model is run (slow)
-%  otherwise only DRNL is computed.
-% Tuning curves are generated based on a range of frequencies reletove to
-% the BF of the location.
+% of locations (BFlist).
+% Each BF is evaluated using a single channel model
 %
+% Peak displacement as a function of pure tone level(peakAmp) is displayed
+%
+% If relative Frequencies is set to a range of values, tuning curves will
+%   be computed using these stimulus frequencie.
+%
+% If AN_spikesOrProbability is set to 'spikes' the full model is run (slow)
+%  otherwise efferent activity is based on AN pspiking probabilities.
+%
+% testBM (1000, 'Normal', 1, 'probability', [])
+%   for tuning curves at 6 locations:
+% testBM ([250 500 1000 2000 4000 8000], 'Normal', [.5 .75 .9 1 1.1 1.25 1.5], 'probability', [])
 
 global    DRNLParams
 
-if nargin<5
-    paramChanges=[];
-end
-
-if nargin<4
-    AN_spikesOrProbability='probability';
-end
+if nargin<5, paramChanges=[]; end
+if nargin<4, AN_spikesOrProbability='spikes'; end
+if nargin==0, BFlist=1000; paramsName='Normal'; 
+    relativeFrequencies=1; end
 
 savePath=path;
 addpath (['..' filesep 'utilities'],['..' filesep 'MAP'])
+tic
 
-levels=-10:5:120;   nLevels=length(levels);
+levels=-10:10:100;   nLevels=length(levels);
 % levels= 50;   nLevels=length(levels);
 
 % refBMdisplacement is the displacement of the BM at threshold
@@ -31,7 +35,8 @@ levels=-10:5:120;   nLevels=length(levels);
 % ? adjust for frequency
 refBMdisplacement= 1e-8; % adjusted for 10 nm at 1 kHz 
 
-toneDuration=.200;
+toneDuration=.5;
+% toneDuration=.050;
 rampDuration=0.01;
 silenceDuration=0.01;
 
@@ -44,9 +49,9 @@ set(gcf,'name','DRNL - BM')
 pause(0.1)
 
 finalSummary=[];
-nBFs=length(BMlocations);
+nBFs=length(BFlist);
 BFno=0; plotCount=0;
-for BF=BMlocations
+for BF=BFlist
     BFno=BFno+1;
     plotCount=plotCount+nBFs;
     stimulusFrequencies=BF* relativeFrequencies;
@@ -104,10 +109,15 @@ for BF=BMlocations
     end  % level
 
     %% analyses results and plot
+if length(relativeFrequencies)>2
+    maxRows=3;
+else
+    maxRows=2;
+end
 
     % BM I/O plot (top panel)
     figure(3)
-    subplot(3,nBFs,BFno), cla
+    subplot(maxRows,nBFs,BFno), cla
     plot(levels,peakAmpBMdB, 'linewidth',2)
     hold on, plot(levels, repmat(refBMdisplacement,1,length(levels)))
     hold off
@@ -120,17 +130,21 @@ for BF=BMlocations
     set(gca,'ytick',[-10 0 10 20 40])
     grid on
     %     legend({num2str(stimulusFrequencies')}, 'location', 'EastOutside')
-    UTIL_printTabTable([levels' peakAmpBMdB], ...
+    UTIL_printTabTable([levels' peakAmpBMdB peakAmpBM*1e9], ...
         num2str([0 stimulusFrequencies]','%5.0f'), '%5.0f')
     finalSummary=[finalSummary peakAmpBMdB];
 
     % Tuning curve
     if length(relativeFrequencies)>2
-        figure(3), subplot(3,nBFs, 2*nBFs+BFno)
-        %         contour(stimulusFrequencies,levels,peakAmpBM,...
-        %             [refBMdisplacement refBMdisplacement],'r')
-        contour(stimulusFrequencies,levels,peakAmpBM,...
-            refBMdisplacement.*[1 5 10 50 100])
+        figure(3), subplot(maxRows,nBFs, 2*nBFs+BFno)
+                contour(stimulusFrequencies,levels,peakAmpBM,...
+                    [refBMdisplacement refBMdisplacement],'r','linewidth',4)
+                ylim([-10 40])
+                
+%         contour(stimulusFrequencies,levels,peakAmpBM,...
+%             refBMdisplacement.*[1 5 10 50 100])
+%         ylim([-10 90])
+
         title(['tuning curve at ' num2str(refBMdisplacement) 'm']);
         ylabel('level (dB) at reference')
         xlim([100 10000])
@@ -142,10 +156,11 @@ for BF=BMlocations
 
     % MOC contribution
     figure(3)
-    subplot(3,nBFs,nBFs+BFno), cla
+    subplot(maxRows,nBFs,nBFs+BFno), cla
     plot(levels,20*log10(peakEfferent), 'linewidth',2)
-    ylabel('MOC (dB attenuation)'), xlabel('level')
-    title(['peak MOC: model= ' AN_spikesOrProbability])
+    ylabel('MOC (dB attenuation)'), xlabel('level (dB SPL)')
+    title(['MOC: (' AN_spikesOrProbability ') duration= ' ...
+        num2str(1000*toneDuration,'%5.0f') ' ms'])
     grid on
     if length(levels)>1, xlim([min(levels) max(levels)]), end
 
@@ -156,9 +171,15 @@ for BF=BMlocations
 
 end % best frequency
 
+
 UTIL_showStructureSummary(DRNLParams, 'DRNLParams', 10)
 
     UTIL_printTabTable([levels' finalSummary], ...
         num2str([0 stimulusFrequencies]','%5.0f'), '%5.0f')
-
+    diff(finalSummary)
+    if ~isempty(paramChanges)
+        disp(paramChanges)
+    end
+    
+toc
 path(savePath);

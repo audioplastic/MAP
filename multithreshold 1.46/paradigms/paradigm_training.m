@@ -1,8 +1,10 @@
 function paradigm_training(handles)
 global stimulusParameters experiment betweenRuns
 
-stimulusParameters.subjectSampleRate=44100; % compatible with file input
-% stimulusParameters.subjectSampleRate=64000; % compatible with file input
+paradigmBase(handles) % default
+
+% rest may be unnecessary
+
 % stimulusParameters.subjectSampleRate=128000; % compatible with file input
 
 %  assessment method
@@ -18,7 +20,7 @@ experiment.allowCatchTrials= 1;
 
 % {'tone','noise', 'pinkNoise','whiteNoise','OHIO'}
 stimulusParameters.WRVname='targetLevel';
-stimulusParameters.WRVstartValues=20 ;
+stimulusParameters.WRVstartValues=30 ;
 stimulusParameters.WRVsteps=[10 2];
 stimulusParameters.WRVlimits=[-30 110];
 

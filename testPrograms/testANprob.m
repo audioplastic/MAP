@@ -1,12 +1,14 @@
-function vectorStrength=testANprob(targetFrequency,BFlist, levels, ...
+function testANprob(targetFrequency,BFlist, levels, ...
     paramsName, paramChanges)
-% testIHC used either for IHC I/O function ...
-%  or receptive field (doReceptiveFields=1)
+% testANprob generates rate/level functions for AN and brainstem units.
+%  also other information like PSTHs, MOC efferent activity levels.
+% A 'probability' model is used.
+% e.g.
+% testANprob(1000,1000, -10:10:80, 'Normal')
 
 global IHC_VResp_VivoParams  IHC_cilia_RPParams IHCpreSynapseParams
 global AN_IHCsynapseParams
-
-global ANprobRateOutput dt tauCas
+global ANprobRateOutput dt ANtauCas
 global ARattenuation MOCattenuation
 
 AN_spikesOrProbability='probability';
@@ -16,17 +18,10 @@ addpath (['..' filesep 'MAP'], ['..' filesep 'utilities'], ...
     ['..' filesep 'parameterStore'],  ['..' filesep 'wavFileStore'],...
     ['..' filesep 'testPrograms'])
 
-if nargin<5
-    paramChanges=[];
-end
-
-if nargin<4
-    paramsName='Normal';
-end
-
-if nargin<3
-    levels=-10:10:80;
-end
+if nargin<5, paramChanges=[]; end
+if nargin<4, paramsName='Normal'; end
+if nargin<3, levels=-10:10:80; end
+if nargin==0, targetFrequency=1000; BFlist=1000; end
 
 nLevels=length(levels);
 
@@ -48,7 +43,7 @@ AR=zeros(nLevels,1);
 MOC=zeros(nLevels,1);
 
 figure(15), clf
-set(gcf,'position',[607    17   368   321])
+set(gcf,'position',[980   356   401   321])
 drawnow
 
 %% guarantee that the sample rate is at least 10 times the frequency
@@ -90,7 +85,7 @@ for leveldB=levels
     MAP1_14(inputSignal, 1/dt, BFlist, ...
         paramsName, AN_spikesOrProbability, paramChanges);
 
-    nTaus=length(tauCas);
+    nTaus=length(ANtauCas);
 
     %LSR (same as HSR if no LSR fibers present)
     [nANFibers nTimePoints]=size(ANprobRateOutput);
@@ -114,7 +109,7 @@ for leveldB=levels
     AN_HSRsaturated(levelNo)= mean(PSTH(round(length(PSTH)/2): end));
 
     figure(15), subplot(2,2,4)
-    hold off, bar(PSTHtime,PSTH, 'b')
+    hold off, bar(PSTHtime,PSTH, 'k')
     hold on,  bar(PSTHtime,PSTHLSR,'r')
     ylim([0 1000])
     xlim([0 length(PSTH)*localPSTHbinwidth])
@@ -125,15 +120,17 @@ for leveldB=levels
 
 
     figure(15), subplot(2,2,3)
-    plot(20*log10(MOC), 'k'),
-    title(' MOC'), ylabel('dB attenuation')
+    plot(20*log10(MOC), 'k'), hold on
+    plot(20*log10(AR), 'r'),  hold off
+    title(' MOC/AR'), ylabel('dB attenuation')
     ylim([-30 0])
 
-
 end % level
+
 figure(15), subplot(2,2,3)
-plot(levels,20*log10(MOC), 'k'),
-title(' MOC'), ylabel('dB attenuation')
+plot(levels,20*log10(MOC), 'k'), hold on
+plot(levels,20*log10(AR), 'r'),  hold off
+title(' MOC/AR'), ylabel('dB attenuation')
 ylim([-30 0])
 xlim([0 max(levels)])
 
@@ -157,18 +154,19 @@ nRows=2; nCols=2;
 % AN rate - level ONSET functions
 subplot(nRows,nCols,1)
 plot(levels,AN_LSRonset,'ro'), hold on
-plot(levels,AN_HSRonset,'ko'), hold off
+plot(levels,AN_HSRonset,'ko', 'MarkerEdgeColor','k', 'markerFaceColor','k'), hold off
 ylim([0 1000]),  xlim([min(levels) max(levels)])
 ttl=['tauCa= ' num2str(IHCpreSynapseParams.tauCa)];
 title( ttl)
 xlabel('level dB SPL'), ylabel('peak rate (sp/s)'), grid on
-text(0, 800, 'AN onset', 'fontsize', 16)
+text(0, 800, 'AN onset', 'fontsize', 14)
 
 % AN rate - level ADAPTED function
 subplot(nRows,nCols,2)
 plot(levels,AN_LSRsaturated, 'ro'), hold on
-plot(levels,AN_HSRsaturated, 'ko'), hold off
-ylim([0 400])
+plot(levels,AN_HSRsaturated, 'ko', 'MarkerEdgeColor','k', 'markerFaceColor','k'), hold off
+maxYlim=340;
+ylim([0 maxYlim])
 set(gca,'ytick',0:50:300)
 xlim([min(levels) max(levels)])
 set(gca,'xtick',[levels(1):20:levels(end)])
@@ -177,7 +175,7 @@ ttl=[   'spont=' num2str(mean(AN_HSRsaturated(1,:)),'%4.0f')...
     '  sat=' num2str(mean(AN_HSRsaturated(end,1)),'%4.0f')];
 title( ttl)
 xlabel('level dB SPL'), ylabel ('adapted rate (sp/s)')
-text(0, 340, 'AN adapted', 'fontsize', 16), grid on
+text(0, maxYlim-50, 'AN adapted', 'fontsize', 14), grid on
 
 allData=[ levels'  AN_HSRonset AN_HSRsaturated...
     AN_LSRonset AN_LSRsaturated ];
@@ -189,8 +187,6 @@ UTIL_showStruct(IHC_cilia_RPParams, 'IHC_cilia_RPParams')
 UTIL_showStruct(IHCpreSynapseParams, 'IHCpreSynapseParams')
 UTIL_showStruct(AN_IHCsynapseParams, 'AN_IHCsynapseParams')
 
-fprintf('\n')
-disp('levels vectorStrength')
 
 allData=[ levels'  AN_HSRonset AN_HSRsaturated...
     AN_LSRonset AN_LSRsaturated ];
