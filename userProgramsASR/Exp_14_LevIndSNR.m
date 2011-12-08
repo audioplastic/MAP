@@ -54,7 +54,7 @@ xL.removeEnergyStatic = 0;
 
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
-testWavs = 150; %MAX = 358
+testWavs = 200; %MAX = 358
 nzLevel = [40 50 60 70];
 % spLevel = [30 40 50 60 70 80 90];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -87,23 +87,19 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['SRTAtgcL0M0_'  num2str(nn)]);
+    recFolder = fullfile(expFolder,['SRTnewNz_'  num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
     xR{nn}.numWavs = testWavs; %MAX = 358
     xR{nn}.speechLevToUse = 60;%spLevel(tmpIdx);    
-    xR{nn}.noiseLevToUse = nzLevel(tmpIdx)-10;
+    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
     xR{nn}.speechDist = 'None';
     xR{nn}.noiseDist = 'None';
-    xR{nn}.MAPparamChanges= [xL.MAPparamChanges { 'DRNLParams.a=400;' }];
+%     xR{nn}.MAPparamChanges= [xL.MAPparamChanges { 'DRNLParams.a=400;' }];
     
-    xR{nn}.useAid=1;
-    xR{nn}.aidInstance = newAid;
-    xR{nn}.aidInstance.mainGain_dB = ones(size(newAid.mainGain_dB)) * 30;
-    xR{nn}.aidInstance.TC_dBSPL = ones(size(newAid.TC_dBSPL)) * 30;
-    xR{nn}.aidInstance.TM_dBSPL = ones(size(newAid.TM_dBSPL)) * 25;
-    xR{nn}.aidInstance.MOCfactor = 0;
+    xR{nn}.useAid=0;
+    xR{nn}.noiseName = '20TalkerBabble';
     
     %Now just to wrap it up ready for processing
     if isMasterNode && ~isdir(xR{nn}.opFolder)
@@ -114,6 +110,87 @@ for nn = 0*recConditions+1:1*recConditions
     end
 end
 
+tmpIdx=0;
+for nn = 1*recConditions+1:2*recConditions    
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['SRTnewNz_'  num2str(nn)]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = testWavs; %MAX = 358
+    xR{nn}.speechLevToUse = 60;%spLevel(tmpIdx);    
+    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
+    xR{nn}.speechDist = 'None';
+    xR{nn}.noiseDist = 'None';
+%     xR{nn}.MAPparamChanges= [xL.MAPparamChanges { 'DRNLParams.a=400;' }];
+    
+    xR{nn}.useAid=0;
+    xR{nn}.noiseName = 'pink_bp';
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode && ~isdir(xR{nn}.opFolder)
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
+
+
+tmpIdx=0;
+for nn = 2*recConditions+1:3*recConditions    
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['SRTnewNz_'  num2str(nn)]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = testWavs; %MAX = 358
+    xR{nn}.speechLevToUse = 60;%spLevel(tmpIdx);    
+    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
+    xR{nn}.speechDist = 'None';
+    xR{nn}.noiseDist = 'None';
+%     xR{nn}.MAPparamChanges= [xL.MAPparamChanges { 'DRNLParams.a=400;' }];
+    
+    xR{nn}.useAid=0;
+    xR{nn}.noiseName = 'subwayLPF_bp';
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode && ~isdir(xR{nn}.opFolder)
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
+
+tmpIdx=0;
+for nn = 3*recConditions+1:4*recConditions    
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['SRTnewNz_'  num2str(nn)]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = testWavs; %MAX = 358
+    xR{nn}.speechLevToUse = 60;%spLevel(tmpIdx);    
+    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
+    xR{nn}.speechDist = 'None';
+    xR{nn}.noiseDist = 'None';
+%     xR{nn}.MAPparamChanges= [xL.MAPparamChanges { 'DRNLParams.a=400;' }];
+    
+    xR{nn}.useAid=0;
+    xR{nn}.noiseName = 'subway_bp';
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode && ~isdir(xR{nn}.opFolder)
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
 
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
