@@ -1,4 +1,4 @@
-function Exp_14_LevIndLowTC(isMasterNode)
+function Exp_14_LevIndhiTC(isMasterNode)
 % This experiment tests a recogniser on 3 different training sets with
 % different efferent conditions.
 % This is now using paramChanges and the hearing aid to correct an OHC
@@ -7,7 +7,7 @@ function Exp_14_LevIndLowTC(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '14LevShortMOC';
+expName = '14LevHighTC';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else

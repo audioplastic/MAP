@@ -7,7 +7,7 @@ function Exp_14_LevIndNoMOC(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '14LevShortMOC';
+expName = '14LevMidTC';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
