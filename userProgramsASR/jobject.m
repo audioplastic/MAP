@@ -37,6 +37,7 @@ classdef jobject
         meanSNR            = 20;
         speechDist         = 'None';
         noiseDist          = 'None';
+        noiseOffOneInX     = 0;
         
         noisePreDur        = 0.0;
         noisePostDur       = 0.0;
@@ -390,6 +391,13 @@ classdef jobject
             elseif strcmpi(obj.noiseDist,'None')
                 tempNoiseLev  = obj.noiseLevToUse;
             end
+            
+            if obj.noiseOffOneInX
+                if randi(obj.noiseOffOneInX) == 1
+                    tempNoiseLev = -200;
+                end
+            end
+            
             
             disp(['Current speech level = ' num2str(tempSpeechLev)]);
             disp(['Current noise level  = ' num2str(tempNoiseLev)]);
