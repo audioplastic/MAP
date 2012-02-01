@@ -27,7 +27,7 @@ method.segmentDuration=efferentDelay;
 if nargin<3, showParams=0; end
 if nargin<2, sampleRate=44100; end
 if nargin<1 || BFlist(1)<0 % if BFlist= -1, set BFlist to default
-    lowestBF=100; 	highestBF= 4500; 	numChannels=21;
+    lowestBF=100; 	highestBF= 4500; 	numChannels=30;
     % 21 chs (250-8k)includes BFs at 250 500 1000 2000 4000 8000
     BFlist=round(logspace(log10(lowestBF),log10(highestBF),numChannels));
 end
