@@ -2,7 +2,7 @@ function errormsg=nextStimulus(handles)
 % Handles everything concerned with the stimulus presentation
 %  called from startNewRun in subjGUI
 
-global experiment stimulusParameters withinRuns  
+global experiment stimulusParameters withinRuns  betweenRuns
 experiment.status='presentingStimulus';
 errormsg='';
 
@@ -149,27 +149,31 @@ errormsg='';
 set(handles.textMSG,'string', stimulusParameters.subjectText)
 
 % select the new levels of the between runs variables
-num=betweenRuns.runNumber;
+thisRunNumber=betweenRuns.runNumber;
 cmd=(['stimulusParameters.' betweenRuns.variableName1 '= ' ...
-    num2str(betweenRuns.var1Sequence(num)) ';']);
+    num2str(betweenRuns.var1Sequence(thisRunNumber)) ';']);
 % e.g.  stimulusParameters.targetFrequency= 1000;
 eval(cmd);
 
 cmd=(['stimulusParameters.' betweenRuns.variableName2 '= ' ...
-    num2str(betweenRuns.var2Sequence(num)) ';']);
+    num2str(betweenRuns.var2Sequence(thisRunNumber)) ';']);
 % e.g.  stimulusParameters.targetDuration= 0.1;
 eval(cmd);
 
-switch experiment.paradigm
-    % target level may vary between runs
-    case {'trainingIFMC', 'TMC','TMC_16ms', 'TMC - ELP', 'IFMC','IFMC_8ms','IFMC_16ms'}
-        idx=floor(num/length(betweenRuns.variableList1)-0.01)+1;
-        cmd=(['stimulusParameters.targetLevel = ' ...
-            num2str(stimulusParameters.targetLevels(idx)) ';']);
-        eval(cmd);
-        if withinRuns.trialNumber==1
-            disp(['targetLevel=' num2str(stimulusParameters.targetLevel)])
-        end
+% When variableList2 is 'targetFrequency' targetLevel may vary between runs 
+% If so, it is changed at the end of each variableList1.
+if strcmp(betweenRuns.variableName2, 'targetFrequency') && ...
+        length(stimulusParameters.targetLevels)>1
+    switch experiment.paradigm
+        case {'trainingIFMC', 'TMC','TMC_16ms', 'TMC - ELP', 'IFMC','IFMC_8ms','IFMC_16ms'}
+            idx=floor(thisRunNumber/length(betweenRuns.variableList1)-0.01)+1;
+            cmd=(['stimulusParameters.targetLevel = ' ...
+                num2str(stimulusParameters.targetLevels(idx)) ';']);
+            eval(cmd);
+            if withinRuns.trialNumber==1
+                disp(['targetLevel=' num2str(stimulusParameters.targetLevel)])
+            end
+    end
 end
 
 
@@ -213,76 +217,6 @@ cueGapDuration=gapDuration;
 % ----------------------------paradigm sensitive cue and masker settings
 % switch off unwanted components and base cue on target values
 % for catch trials switch off the target
-switch experiment.paradigm
-    % OHIO is a temporary special arrangement
-    case{'OHIOrand','OHIOspect','OHIOtemp','OHIOspectemp','OHIOabs'}
-        % these values must be set in MAPparamsOHIO
-        targetFrequency=experiment.OHIOfrequencies;
-        numOHIOtones=stimulusParameters.numOHIOtones;
-        maskerType='OHIO';
-        targetType='OHIO';
-        
-        % globalStimParams.beginSilences says when each tone begins
-        % targetFrequency specifies the frequency of each tone
-        % targetLevel is the level of each tone
-        switch experiment.paradigm
-            case 'OHIOabs'
-                % only one tone
-                targetFrequency=targetFrequency(numOHIOtones);
-                globalStimParams.beginSilences=0.01;
-                targetDuration=0.01;
-            case 'OHIOrand'
-                % select random frequencies from the list
-                x=rand(12,1); [x idx]=sort(x);
-                targetFrequency=targetFrequency(idx(1:numOHIOtones));
-                thresholds=experiment.OHIOthresholds;
-                targetLevel=thresholds(idx(1:numOHIOtones))+targetLevel;
-                globalStimParams.beginSilences=0.01:0.02:...
-                    0.01+0.02*(numOHIOtones-1);
-                targetDuration=numOHIOtones*0.02;
-            case 'OHIOspect'
-                % only one tone with multiple frequencies
-                targetFrequency=fliplr(targetFrequency);
-                targetFrequency=targetFrequency(1:numOHIOtones);
-                thresholds=experiment.OHIOthresholds;
-                thresholds=fliplr(thresholds);
-                targetLevel=thresholds(1:numOHIOtones)+targetLevel;
-                globalStimParams.beginSilences=...
-                    repmat(0.01, 1, numOHIOtones);
-                targetDuration=0.02;
-            case 'OHIOspectemp'
-                % only one tone with multiple frequencies
-                targetFrequency=fliplr(targetFrequency);
-                targetFrequency=targetFrequency(1:numOHIOtones);
-                thresholds=experiment.OHIOthresholds;
-                thresholds=fliplr(thresholds);
-                targetLevel=thresholds(1:numOHIOtones)+targetLevel;
-                globalStimParams.beginSilences=0.01:0.02:...
-                    0.01+0.02*(numOHIOtones-1);
-                targetDuration=numOHIOtones*0.02;
-            case 'OHIOtemp'
-                % use only one tone repeatedly
-                tonesToUse=10;
-                targetFrequency=targetFrequency(tonesToUse);
-                targetFrequency=repmat(targetFrequency,1,numOHIOtones);
-                thresholds=experiment.OHIOthresholds;
-                thresholds=thresholds(tonesToUse);
-                targetLevel=repmat(thresholds,1,numOHIOtones)+targetLevel;
-                globalStimParams.beginSilences=0.01:0.02:...
-                    0.01+0.02*(numOHIOtones-1);
-                targetDuration=numOHIOtones*0.02;
-        end
-        % still in OHIO
-        % Dummy values to make things work although no masker or cue used
-        % target values have changed and this affects the cue values
-        cueMaskerLevel=targetLevel;
-        cueTargetLevel=targetLevel;
-        cueTargetFrequency=targetFrequency;
-        cueMaskerFrequency=targetFrequency;
-        maskerFrequency=targetFrequency;
-        maskerLevel=targetLevel;
-        disp(['OHIO frequencies= ' num2str(targetFrequency)])
-end
 
 % --- set cueTarget level according to assessment method
 % cue-test difference applies only with singleInterval
@@ -300,13 +234,130 @@ switch experiment.threshEstMethod
             case {'training','absThreshold', 'absThreshold_8',  ...
                     'TENtest', 'threshold_duration','discomfort',...
                     'overShoot','overShootB','overShootMB1', ...
-                    'overShootMB2', 'OHIO','OHIOabs','OHIOspect'}
+                    'overShootMB2', 'OHIO','OHIOabs','OHIOspect'...
+                    'OHIOrand', 'OHIOtemp', 'OHIOspectemp'}
                 cueTargetLevel=targetLevel+cueTestDifference;
                 
             case {'forwardMasking','forwardMaskingD','trainingIFMC', ...
-                    'TMC','TMC_16ms', 'TMC - ELP', 'IFMC','IFMC_8ms', 'FMreProbe'}
+                    'TMC','TMC_16ms', 'TMC - ELP', 'IFMC','IFMC_8ms', ...
+                    'FMreProbe'}
                 % cue masker is weaker to make target more audible
                 cueMaskerLevel=maskerLevel-cueTestDifference;
+        end
+end
+
+% thresholds (in dB SPL) of the single tone with 12 frequencies:
+%    1   2    3     4    5     6     7     8     9     10     11    12
+% 494, 663, 870, 1125, 1442, 1838, 2338, 2957, 3725, 4689, 5866, 7334
+
+% 2. ‘OHIOtemp’ is for measuring thresholds for temporally integrated
+% combinations of 2, 4, 8, and 12 tones presented simultaneously.
+% In our experiment, we used 4680Hz frequency.
+
+% 3. ‘OHIOspec’ is for measuring thresholds for spectrally integrated
+% combinations of 2(7335 and 5866Hz), 4(7334, 5866, 4680, and 3725Hz),
+% 8(7334, 5866, 4680, 3725, 2957, 2338, 1838, and
+% 1442Hz), and
+% 12(all 12 frequencies) tones presented simultaneously.
+
+% 4. ‘OHIOspectemp’ is for measuring thresholds for patterned signals
+% differing in both the spectral and temporal domains.
+% The frequency conditions are the same as that of ‘OHIOspec’.
+
+% 5. ‘OHIOrand’ is for measuring thresholds for spectrotemporally varying
+% signals with random frequency presentation.
+
+switch experiment.paradigm(1:3)
+    case 'OHI'
+        targetType='OHIO';
+        OHIOtype=experiment.paradigm;
+        % 1. ‘OHIOabs’ paradigm is a baseline procedure for measuring absolute
+
+        nTones=betweenRuns.var1Sequence(betweenRuns.runNumber);
+        allFreqs=[494, 663, 870, 1125, 1442, 1838, 2338, 2957, 3725, 4689, 5866, 7334];
+        toneLevelBoost= ...
+            [1	0	0	1	1	4	8	12	12	14	17	19 ];
+
+
+        % for nTones=nTonesList
+        switch experiment.paradigm
+            %         case ' OHIOabs'
+            %             % one tone frequency at a time
+            %             stim.frequencies=allFreqs(1);
+            %             stim.amplitudesdB=0;
+
+            case 'OHIOrand'
+                % chose nTones frequencies at random
+                x=rand(1,12);
+                [sorted idx]=sort(x);
+                cueTargetFrequency=allFreqs(idx(1:nTones));
+                cueTargetLevel=toneLevelBoost(idx)+...
+                    targetLevel + cueTestDifference;
+                targetFrequency=allFreqs(idx(1:nTones));
+                targetLevel=targetLevel + toneLevelBoost(idx);
+
+            case 'OHIOtemp'
+                % 4680 Hz repeated nTones times
+                cueTargetFrequency=4680*ones(1,nTones);
+                cueTargetLevel=repmat(toneLevelBoost(10),1,nTones)+...
+                    targetLevel + cueTestDifference;
+                targetFrequency=4680*ones(1,nTones);
+                targetLevel= targetLevel+repmat(toneLevelBoost(10),1,nTones);
+
+            case {'OHIOspect',  'OHIOspectemp'}
+                % nTones frequencies either simulataneously or sequentially
+                switch nTones
+                    case 2
+                        cueTargetFrequency=[7335 5866];
+                        targetFrequency=[7335 5866];
+                        idx=[12 11];
+                        cueTargetLevel=targetLevel + toneLevelBoost(idx)+cueTestDifference;
+                        targetLevel=targetLevel + toneLevelBoost(idx);
+                    case 4
+                        cueTargetFrequency=[7334, 5866, 4680, 3725];
+                        targetFrequency=[7334, 5866, 4680, 3725];
+                        idx=[12:-1:9 ];
+                        cueTargetLevel=targetLevel + toneLevelBoost(idx)+cueTestDifference;
+                        targetLevel=targetLevel + toneLevelBoost(idx);
+                    case 8
+                        cueTargetFrequency=...
+                            [7334, 5866, 4680, 3725, 2957, 2338, 1838, 1442];
+                        targetFrequency=...
+                            [7334, 5866, 4680, 3725, 2957, 2338, 1838, 1442];
+                        idx=[12:-1:5 ];
+                        cueTargetLevel=targetLevel + toneLevelBoost(idx)+cueTestDifference;
+                        targetLevel=targetLevel + toneLevelBoost(idx);
+                    case 12
+                        cueTargetFrequency=allFreqs;
+                        targetFrequency=allFreqs;
+                        cueTargetLevel=targetLevel + toneLevelBoost(1:12)+cueTestDifference;
+                        targetLevel=targetLevel + toneLevelBoost(1:12);
+                end
+        end
+
+    otherwise
+        OHIOtype='none';
+end
+
+switch experiment.paradigm(1:3)
+    case 'OHI'
+
+        switch experiment.threshEstMethod
+            case {'2I2AFC++', '2I2AFC+++'}
+                % the cue stimulus (masker + probe) is the 'no' window
+                % the target stimulus (masker+probe) is the 'yes' window
+                % the order of presentation is decided at the last minute.
+                cueTargetLevel=-100; 
+        end
+
+
+        switch experiment.paradigm
+            case {'OHIOabs', 'OHIOspect'}
+                OHIOtoneDuration=.02+stimulusParameters.stimulusDelay;
+                globalStimParams.overallDuration=OHIOtoneDuration;
+            otherwise
+                OHIOtoneDuration=nTones*0.02+stimulusParameters.stimulusDelay;
+                globalStimParams.overallDuration=OHIOtoneDuration;
         end
 end
 
@@ -316,13 +367,14 @@ if withinRuns.catchTrial
 end
 
 % ----------------------------- calibration of sound output
+% seperate calibration for each frequency to match headphones
 calibrationCorrectiondB=stimulusParameters.calibrationdB;
 if calibrationCorrectiondB<-50
     if maskerFrequency==targetFrequency
         load 'calibrationFile'  % calibrationFrequency calibrationAttenutation
         idx=find(calibrationFrequency==targetFrequency);
         if isempty(idx)
-            error('Calibration bty file; frequency not found')
+            error('Calibration by file; frequency not found')
         else
             calibrationCorrectiondB=calibrationAttenutation(idx)
         end
@@ -435,8 +487,8 @@ switch stimulusParameters.WRVname
             return
         end
         
-        % legacy programming
     case 'gapDuration'
+        % legacy programming
         if gapDuration<0
             errormsg=['gapDuration (' num2str(gapDuration) ...
                 ') is less than zero  ***'];
@@ -562,6 +614,20 @@ globalStimParams.overallDuration=max(duration);
 globalStimParams.nSignalPoints=...
     round(globalStimParams.overallDuration*globalStimParams.FS);
 
+% special case
+switch experiment.paradigm(1:3)
+    case 'OHI'
+        switch experiment.paradigm
+            case {'OHIOabs', 'OHIOspect'}
+                OHIOtoneDuration=.02+stimulusParameters.stimulusDelay;
+                globalStimParams.overallDuration=OHIOtoneDuration;
+            otherwise
+                OHIOtoneDuration=nTones*0.02+stimulusParameters.stimulusDelay;
+                globalStimParams.overallDuration=OHIOtoneDuration;
+        end
+end
+
+
 %           ----------------------------------------------cue stimulus
 % cue masker
 componentNo=1;
@@ -592,6 +658,7 @@ stimComponents(maskerEar,componentNo).niterations=0;    % for IRN only
 componentNo=2;
 precedingSilence=precedingSilence + maskerDuration+cueGapDuration;
 stimComponents(targetEar,componentNo).type=targetType;
+stimComponents(targetEar,componentNo).OHIOtype=OHIOtype;
 stimComponents(targetEar,componentNo).toneDuration=targetDuration;
 stimComponents(targetEar,componentNo).frequencies=cueTargetFrequency;
 stimComponents(targetEar,componentNo).amplitudesdB=cueTargetLevel;
@@ -670,6 +737,7 @@ stimComponents(maskerEar,componentNo).niterations=0;    % for IRN only
 componentNo=2;
 targetDelay=precedingSilence+ maskerDuration+ gapDuration;
 stimComponents(targetEar,componentNo).type=targetType;
+stimComponents(targetEar,componentNo).OHIOtype=OHIOtype;
 stimComponents(targetEar,componentNo).toneDuration=targetDuration;
 stimComponents(targetEar,componentNo).frequencies=targetFrequency;
 stimComponents(targetEar,componentNo).amplitudesdB=targetLevel;
@@ -726,8 +794,14 @@ switch experiment.paradigm
         %     case 'SRT'
         %         set(handles.editdigitInput,'visible','off')
     otherwise
-        stimulusParameters.testTargetBegins=targetDelay;
-        stimulusParameters.testTargetEnds=targetDelay+targetDuration;
+        switch experiment.paradigm(1:3)
+            case 'OHI'
+                stimulusParameters.testTargetBegins=0;
+                stimulusParameters.testTargetEnds=OHIOtoneDuration;
+            otherwise
+                stimulusParameters.testTargetBegins=targetDelay;
+                stimulusParameters.testTargetEnds=targetDelay+targetDuration;
+        end
 end
 
 % ------------------------------------------------------------- play!

@@ -1,5 +1,21 @@
-function testRP(BFs,MAPparamsName,paramChanges)
-% testIHC used for IHC I/O function
+function testRP(channelBFs,MAPparamsName,paramChanges)
+% testRP evaluates IHC I/O function
+%   computing DRNL I/O function
+%             IHC apical conductance
+%             peak receptor potential vs peak Pascals
+%             peak receptor potential vs dB level (AC and DC components)
+%
+% input arguments:
+%   channelBFs: normally a single value for the BF of a single channel
+%     model
+%  paramsName: parameter file name containing model parameters.
+%    (default='Normal')
+%  paramChanges: cell array contining list of changes to parameters. These
+%   are implemented after reading the parameter file (default='')
+% Example:
+%   testRP(1000,'Normal','');
+%
+% see also testRP2.m
 
 global experiment method inputStimulusParams
 global stimulusParameters IHC_VResp_VivoParams IHC_cilia_RPParams
@@ -16,6 +32,12 @@ drawnow
 if nargin<3
     paramChanges=[]; 
 end
+if nargin<2
+    MAPparamsName='Normal';
+end
+if nargin<3
+    channelBFs=800; 
+end
 
 levels=-20:10:100;
 nLevels=length(levels);
@@ -27,8 +49,8 @@ dt=1/sampleRate;
 allIHC_RP_peak=[];
 allIHC_RP_dc=[];
 
-for BFno=1:length(BFs)
-    BF=BFs(BFno);
+for BFno=1:length(channelBFs)
+    BF=channelBFs(BFno);
     targetFrequency=BF;
     % OR
     %Patuzzi and Sellick test (see ELP & AEM, 2006)
@@ -121,7 +143,7 @@ for BFno=1:length(BFs)
     referenceDisp=10e-9;
     plot(levels,20*log10(DRNL_peak/referenceDisp), drawColors(BFno), ...
         'linewidth',2), hold on
-    title([' DRNL peak:  ' num2str(BFs) ' Hz'])
+    title([' DRNL peak:  ' num2str(channelBFs) ' Hz'])
     ylabel ('log10DRNL(m)'), xlabel('dB SPL')
     xlim([min(levels) max(levels)]), ylim([-10 50])
     grid on
@@ -131,10 +153,10 @@ for BFno=1:length(BFs)
     subplot(2,2,2)
     restingIHC_cilia=IHCrestingCiliaCond;
     plot(levels, IHC_cilia_peak,'k', 'linewidth',2), hold on
-    plot(levels, IHC_cilia_min,'r', 'linewidth',2)
-    hold on,
-    plot([min(levels) max(levels)], ...
-        [restingIHC_cilia restingIHC_cilia], 'g')
+%     plot(levels, IHC_cilia_min,'r', 'linewidth',2)
+%     hold on,
+%     plot([min(levels) max(levels)], ...
+%         [restingIHC_cilia restingIHC_cilia], 'g')
     title(' IHC apical cond.')
     ylabel ('IHCcilia(conductance)'), xlabel('dB SPL')
     xlim([min(levels) max(levels)])
@@ -181,7 +203,7 @@ hold on, plot(sndLevel,RPanimal,'o')
 
     grid on
     title(['Et= ' num2str(IHC_cilia_RPParams.Et) ':  RP data 7 kHz Patuzzi'])
-    ylabel ('RP(V)'), xlabel('dB SPL')
+    ylabel ('RP(V) peak and DC'), xlabel('dB SPL')
     ylim([-0.08 -0.04])
     allIHC_RP_peak=[allIHC_RP_peak IHC_RP_peak];
     allIHC_RP_dc=[allIHC_RP_dc IHC_RP_dc];

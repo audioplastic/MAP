@@ -4,10 +4,18 @@
 function [myANprobRateOutput, mydt, myBF] = MAPwrap(stimulus, sampleRate, BFlist, participant, AN_spikesOrProbability, paramChanges)
 
 
-global ANprobRateOutput  dt savedBFlist
+global ANprobRateOutput ANoutput dt dtSpikes savedBFlist
 % disp(20*log10(sqrt(mean(stimulus.^2))/20e-6))
 MAP1_14(stimulus, sampleRate, BFlist, participant, AN_spikesOrProbability, paramChanges);
 % disp(20*log10(sqrt(mean(stimulus.^2))/20e-6))
-myANprobRateOutput   = ANprobRateOutput;
-mydt = dt;
+
+if strcmpi(AN_spikesOrProbability, 'spikes')
+    myANprobRateOutput   = ANoutput; 
+    mydt = dtSpikes; 
+else
+    myANprobRateOutput   = ANprobRateOutput;
+    mydt = dt;
+end
+
+
 myBF = savedBFlist;

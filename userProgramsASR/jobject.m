@@ -83,6 +83,7 @@ classdef jobject
         MAPopHSR                = 1;
         
         MAPparamChanges = {};
+        MAPspikesOrProb = 'spikes'
         
         %************************************************************
         % HTK stuff - writing to HTK recogniser format
@@ -650,7 +651,7 @@ classdef jobject
 %                 paramChanges{numel(paramChanges)+1}= 'DRNLParams.rateToAttenuationFactor = 0;';     % 0 = MOC off (probability)
 %                 paramChanges{numel(paramChanges)+1}= 'DRNLParams.rateToAttenuationFactorProb = 0;'; % 0 = MOC off (spikes)
 %             end
-            AN_spikesOrProbability = 'probability';
+            AN_spikesOrProbability = obj.MAPspikesOrProb; %'probability';
             
             if obj.useSpectrogram
                 lowestBF=100; 	highestBF= 4500; 	numChannels=30;
@@ -762,8 +763,14 @@ classdef jobject
             
             % OPTIONAL PLOTTING SMOOTHED
             if ~isempty(obj.probHaxesSM)
-                axes(obj.probHaxesSM); %#ok<MAXES>
-                anSM=flipud(obj.makeANsmooth(ANprobabilityResponse, 1/dt));
+%                 figure; spy(ANprobabilityResponse)
+                
+                axes(obj.probHaxesSM); %#ok<MAXES>                
+                if strcmpi(obj.MAPspikesOrProb, 'spikes')
+                    anSM=flipud(obj.makeANsmooth(ANprobabilityResponse, 1/dt))/dt;
+                else
+                    anSM=flipud(obj.makeANsmooth(ANprobabilityResponse, 1/dt));
+                end
                 imagesc((1:size(anSM,2))./100,1:size(ANprobabilityResponse,1),anSM);
                 set(obj.probHaxesSM, 'YTick', YTickIdx);
                 set(obj.probHaxesSM, 'YTickLabel', num2str(    myBFlist(YTickIdxRev)'     ));

@@ -3,6 +3,11 @@ function  MAP1_14(inputSignal, sampleRate, BFlist, MAPparamsName, ...
     AN_spikesOrProbability, paramChanges)
 % To test this function use test_MAP1_14 in this folder
 %
+% example:
+% <navigate to 'MAP1_14\MAP'>
+%  [inputSignal FS] = wavread('../wavFileStore/twister_44kHz');
+%  MAP1_14(inputSignal, FS, -1, 'Normal', 'probability', [])
+%
 % All arguments are mandatory.
 %
 %  BFlist is a vector of BFs but can be '-1' to allow MAPparams to choose
@@ -22,20 +27,23 @@ global OMEParams DRNLParams IHC_cilia_RPParams IHCpreSynapseParams
 global AN_IHCsynapseParams MacGregorParams MacGregorMultiParams
 
 % All of the results of this function are stored as global
-global dt ANdt  savedBFlist saveAN_spikesOrProbability saveMAPparamsName...
-    savedInputSignal OMEextEarPressure TMoutput OMEoutput ARattenuation ...
-    DRNLoutput IHC_cilia_output IHCrestingCiliaCond IHCrestingV...
-    IHCoutput ANprobRateOutput ANoutput savePavailable tauCas  ...
-    CNoutput  ICoutput ICmembraneOutput ICfiberTypeRates MOCattenuation
+global  savedParamChanges savedBFlist saveAN_spikesOrProbability ...
+    saveMAPparamsName savedInputSignal dt dtSpikes ...
+    OMEextEarPressure TMoutput OMEoutput DRNLoutput...
+    IHC_cilia_output IHCrestingCiliaCond IHCrestingV...
+    IHCoutput ANprobRateOutput ANoutput savePavailable saveNavailable ...
+    ANtauCas CNtauGk CNoutput ICoutput ICmembraneOutput ICfiberTypeRates...
+    MOCattenuation ARattenuation 
+
 
 % Normally only ICoutput(logical spike matrix) or ANprobRateOutput will be
 % needed by the user; so the following will suffice
-%   global ANdt ICoutput ANprobRateOutput
+%   global dtSpikes ICoutput ANprobRateOutput
 
 % Note that sampleRate has not changed from the original function call and
 %  ANprobRateOutput is sampled at this rate
 % However ANoutput, CNoutput and IC output are stored as logical
-%  'spike' matrices using a lower sample rate (see ANdt).
+%  'spike' matrices using a lower sample rate (see dtSpikes).
 
 % When AN_spikesOrProbability is set to probability,
 %  no spike matrices are computed.
@@ -44,7 +52,7 @@ global dt ANdt  savedBFlist saveAN_spikesOrProbability saveMAPparamsName...
 
 % Efferent control variables are ARattenuation and MOCattenuation
 %  These are scalars between 1 (no attenuation) and 0.
-%  They are represented with dt=1/sampleRate (not ANdt)
+%  They are represented with dt=1/sampleRate (not dtSpikes)
 %  They are computed using either AN probability rate output
 %   or IC (spikes) output as approrpriate.
 % AR is computed using across channel activity
@@ -62,13 +70,19 @@ end
 %  It means that the calling program allows MAPparams to specify the list
 cmd=['method=MAPparams' MAPparamsName ...
     '(BFlist, sampleRate, 0, paramChanges);'];
-eval(cmd);
+try
+    eval(cmd);
+catch
+    error(' MAP1_14: failure when calling MAPparams file')
+end
+
 BFlist=DRNLParams.nonlinCFs;
 
 % save as global for later plotting if required
 savedBFlist=BFlist;
 saveAN_spikesOrProbability=AN_spikesOrProbability;
 saveMAPparamsName=MAPparamsName;
+savedParamChanges=paramChanges;
 
 dt=1/sampleRate;
 duration=length(inputSignal)/sampleRate;
@@ -78,7 +92,8 @@ segmentLength=round(segmentDuration/ dt);
 segmentTime=dt*(1:segmentLength); % used in debugging plots
 
 % all spiking activity is computed using longer epochs
-ANspeedUpFactor=AN_IHCsynapseParams.ANspeedUpFactor;  % e.g.5 times
+ANspeedUpFactor=ceil(sampleRate/AN_IHCsynapseParams.spikesTargetSampleRate);
+% ANspeedUpFactor=AN_IHCsynapseParams.ANspeedUpFactor;  % e.g.5 times
 
 % inputSignal must be  row vector
 [r c]=size(inputSignal);
@@ -99,10 +114,10 @@ pad=zeros(nSignalRows,padSize);
 inputSignal=[inputSignal pad];
 [ignore signalLength]=size(inputSignal);
 
-% AN (spikes) is computed at a lower sample rate when spikes required
-%  so it has a reduced segment length (see 'ANspeeUpFactor' above)
+% spiking activity is computed at longer sampling intervals (dtSpikes)
+%  so it has a smaller number of epochs per segment(see 'ANspeeUpFactor' above)
 % AN CN and IC all use this sample interval
-ANdt=dt*ANspeedUpFactor;
+dtSpikes=dt*ANspeedUpFactor;
 reducedSegmentLength=round(segmentLength/ANspeedUpFactor);
 reducedSignalLength= round(signalLength/ANspeedUpFactor);
 
@@ -147,7 +162,7 @@ TMdisp_b=b0; TMdisp_a=[a0 a1];
 OME_TMdisplacementBndry=[];
 
 % OME high pass (simulates poor low frequency stapes response)
-OMEhighPassHighCutOff=OMEParams.OMEstapesLPcutoff;
+OMEhighPassHighCutOff=OMEParams.OMEstapesHPcutoff;
 Nyquist=sampleRate/2;
 [stapesDisp_b,stapesDisp_a] = butter(1, OMEhighPassHighCutOff/Nyquist, 'high');
 % figure(10), freqz(stapesDisp_b, stapesDisp_a)
@@ -186,44 +201,43 @@ DRNLresponse= zeros(nBFs, segmentLength);
 MOCrateToAttenuationFactor=DRNLParams.rateToAttenuationFactor;
 rateToAttenuationFactorProb=DRNLParams.rateToAttenuationFactorProb;
 MOCrateThresholdProb=DRNLParams.MOCrateThresholdProb;
+minMOCattenuation=10^(DRNLParams.minMOCattenuationdB/20);
 
 % smoothing filter for MOC
 a1=dt/DRNLParams.MOCtau-1; a0=1;
 b0=1+ a1;
 MOCfilt_b=b0; MOCfilt_a=[a0 a1];
 
-%%% NEW %%%
-MOCfilt_aR = dt/DRNLParams.MOCtauR - 1; % R = Rising edge
-MOCfilt_bR = 1.0 + MOCfilt_aR;
-MOCfilt_aF = dt/DRNLParams.MOCtauF - 1; % F = Falling edge
-MOCfilt_bF = 1.0 + MOCfilt_aF;
+a1=dt/DRNLParams.MOCtauProb-1; a0=1;
+b0=1+ a1;
+MOCfiltProb_b=b0; MOCfiltProb_a=[a0 a1];
+
 
 % figure(9), freqz(stapesDisp_b, stapesDisp_a)
 MOCboundary=cell(nBFs,1);
-MOCprobBoundary=num2cell(zeros(nBFs,1));
+MOCprobBoundary=cell(nBFs,1);
 
 MOCattSegment=zeros(nBFs,reducedSegmentLength);
 MOCattenuation=ones(nBFs,signalLength);
 
-if DRNLParams.a>0
-%     DRNLcompressionThreshold=4.2546e-012;% FIXED DISP for a=10k,b=8e-6,c=0.2 
-    DRNLcompressionThreshold=10^((1/(1-DRNLParams.c))* log10(DRNLParams.b/DRNLParams.a)); %THIS (I once thought was) WRONG!!!!!
-%     DRNLcompressionThreshold = ((DRNLParams.b^5)/DRNLParams.a)^0.25; %This is valid only for DRNLc = 0.2
-else
-    DRNLcompressionThreshold=inf;
-end
-
+% if DRNLParams.a>0
+%     DRNLcompressionThreshold=10^((1/(1-DRNLParams.c))* ...
+%     log10(DRNLParams.b/DRNLParams.a));
+% else
+%     DRNLcompressionThreshold=inf;
+% end
+% DRNLcompressionThreshold=DRNLParams.cTh;
 DRNLlinearOrder= DRNLParams.linOrder;
 DRNLnonlinearOrder= DRNLParams.nonlinOrder;
 
 DRNLa=DRNLParams.a;
-DRNLb=DRNLParams.b;
+% DRNLa2=DRNLParams.a2;
+% DRNLb=DRNLParams.b;
 DRNLc=DRNLParams.c;
-
-% Nick: now calculate b from compression threshold
-% DRNLb = DRNLcompressionThreshold / ((DRNLcompressionThreshold/DRNLa)^DRNLc);
-
 linGAIN=DRNLParams.g;
+ctBM=10e-9*10^(DRNLParams.ctBMdB/20);
+if DRNLa>0,CtS=ctBM/DRNLa; else CtS=inf; end
+
 %
 % gammatone filter coefficients for linear pathway
 bw=DRNLParams.linBWs';
@@ -285,6 +299,7 @@ a1=dt/IHC_cilia_RPParams.tc-1; a0=1;
 b0=1+ a1;
 % high pass (i.e. low pass reversed)
 IHCciliaFilter_b=[a0 a1]; IHCciliaFilter_a=b0;
+% i.e. b= [1  dt/tc-1]  and a= dt/IHC_cilia_RPParams.tc
 % figure(9), freqz(IHCciliaFilter_b, IHCciliaFilter_a)
 
 IHCciliaBndry=cell(nBFs,1);
@@ -324,7 +339,7 @@ IHC_cilia_output= zeros(nBFs,signalLength);
 % The number of channels is nBFs x nANfiberTypes
 % Fiber types are specified in terms of tauCa
 nANfiberTypes= length(IHCpreSynapseParams.tauCa);
-tauCas= IHCpreSynapseParams.tauCa;
+ANtauCas= IHCpreSynapseParams.tauCa;
 nANchannels= nANfiberTypes*nBFs;
 synapticCa= zeros(nANchannels,segmentLength);
 
@@ -339,8 +354,9 @@ synapse_z= IHCpreSynapseParams.z;
 synapse_power=IHCpreSynapseParams.power;
 
 % tauCa vector is established across channels to allow vectorization
-%  (one tauCa per channel). Do not confuse with tauCas (one pre fiber type)
-tauCa=repmat(tauCas, nBFs,1);
+%  (one tauCa per channel). 
+%  Do not confuse with ANtauCas vector (one per fiber type)
+tauCa=repmat(ANtauCas, nBFs,1);
 tauCa=reshape(tauCa, nANchannels, 1);
 
 % presynapse startup values (vectors, length:nANchannels)
@@ -386,17 +402,21 @@ Preprocess    = Pcleft*r/x; % canbe fractional
 ANprobability=zeros(nANchannels,segmentLength);
 ANprobRateOutput=zeros(nANchannels,signalLength);
 lengthAbsRefractoryP= round(AN_refractory_period/dt);
+cumANnotFireProb=ones(nANchannels,signalLength);
 % special variables for monitoring synaptic cleft (specialists only)
 savePavailableSeg=zeros(nANchannels,segmentLength);
 savePavailable=zeros(nANchannels,signalLength);
+% only one stream of available transmitter will be saved
+saveNavailableSeg=zeros(1,reducedSegmentLength);
+saveNavailable=zeros(1,reducedSignalLength);
 
 % spikes     % !  !  !    ! !        !   !  !
-lengthAbsRefractory= round(AN_refractory_period/ANdt);
+lengthAbsRefractory= round(AN_refractory_period/dtSpikes);
 
-AN_ydt= repmat(AN_IHCsynapseParams.y*ANdt, nANfibers,1);
-AN_ldt= repmat(AN_IHCsynapseParams.l*ANdt, nANfibers,1);
-AN_xdt= repmat(AN_IHCsynapseParams.x*ANdt, nANfibers,1);
-AN_rdt= repmat(AN_IHCsynapseParams.r*ANdt, nANfibers,1);
+AN_ydt= repmat(AN_IHCsynapseParams.y*dtSpikes, nANfibers,1);
+AN_ldt= repmat(AN_IHCsynapseParams.l*dtSpikes, nANfibers,1);
+AN_xdt= repmat(AN_IHCsynapseParams.x*dtSpikes, nANfibers,1);
+AN_rdt= repmat(AN_IHCsynapseParams.r*dtSpikes, nANfibers,1);
 AN_rdt_plus_ldt= AN_rdt + AN_ldt;
 AN_M= round(AN_IHCsynapseParams.M);
 
@@ -429,6 +449,8 @@ CNtauGk=MacGregorMultiParams.tauGk; % row vector of CN types (by tauGk)
 nCNtauGk=length(CNtauGk);
 
 % the total number of 'channels' is now greater
+% 'channel' is defined as collections of units with the same parameters
+%  i.e. same BF, same ANtau, same CNtauGk
 nCNchannels=nANchannels*nCNtauGk;
 
 nCNneuronsPerChannel=MacGregorMultiParams.nNeuronsPerBF;
@@ -462,12 +484,12 @@ AN_PSTH=zeros(nCNneurons,reducedSegmentLength);
 CNdendriteLPfreq= MacGregorMultiParams.dendriteLPfreq;
 CNcurrentPerSpike=MacGregorMultiParams.currentPerSpike;
 CNspikeToCurrentTau=1/(2*pi*CNdendriteLPfreq);
-t=ANdt:ANdt:5*CNspikeToCurrentTau;
+t=dtSpikes:dtSpikes:5*CNspikeToCurrentTau;
 CNalphaFunction= (1 / ...
     CNspikeToCurrentTau)*t.*exp(-t /CNspikeToCurrentTau);
 CNalphaFunction=CNalphaFunction*CNcurrentPerSpike;
 
-% figure(98), plot(t,CNalphaFunction)
+% figure(98), plot(t,CNalphaFunction), xlim([0 .020]), xlabel('time (s)'), ylabel('I')
 % working memory for implementing convolution
 
 CNcurrentTemp=...
@@ -501,12 +523,12 @@ CNoutput=false(nCNneurons,reducedSignalLength);
 nICcells=nANchannels*nCNtauGk;  % one cell per channel
 CN_PSTH=zeros(nICcells ,reducedSegmentLength);
 
-ICspikeWidth=0.00015;   % this may need revisiting
-epochsPerSpike=round(ICspikeWidth/ANdt);
-if epochsPerSpike<1
-    error(['MacGregorMulti: sample rate too low to support ' ...
-        num2str(ICspikeWidth*1e6) '  microsec spikes']);
-end
+% ICspikeWidth=0.00015;   % this may need revisiting
+% epochsPerSpike=round(ICspikeWidth/dtSpikes);
+% if epochsPerSpike<1
+%     error(['MacGregorMulti: sample rate too low to support ' ...
+%         num2str(ICspikeWidth*1e6) '  microsec spikes']);
+% end
 
 % short names
 IC_tauM=MacGregorParams.tauM;
@@ -528,7 +550,7 @@ IC_Th=IC_Th0*ones(nICcells,1);
 ICdendriteLPfreq= MacGregorParams.dendriteLPfreq;
 ICcurrentPerSpike=MacGregorParams.currentPerSpike;
 ICspikeToCurrentTau=1/(2*pi*ICdendriteLPfreq);
-t=ANdt:ANdt:3*ICspikeToCurrentTau;
+t=dtSpikes:dtSpikes:3*ICspikeToCurrentTau;
 IC_CNalphaFunction= (ICcurrentPerSpike / ...
     ICspikeToCurrentTau)*t.*exp(-t / ICspikeToCurrentTau);
 % figure(98), plot(t,IC_CNalphaFunction)
@@ -617,9 +639,11 @@ while segmentStartPTR<signalLength
 
         %            *linear* path
         linOutput = stapesDisplacement * linGAIN;  % linear gain
+       
         for order = 1 : GTlinOrder
             [linOutput GTlinBdry{BFno,order}] = ...
-                filter(GTlin_b(BFno,:), GTlin_a(BFno,:), linOutput, GTlinBdry{BFno,order});
+                filter(GTlin_b(BFno,:), GTlin_a(BFno,:), linOutput, ...
+                GTlinBdry{BFno,order});
         end
 
         %           *nonLinear* path
@@ -630,7 +654,8 @@ while segmentStartPTR<signalLength
         else    % no MOC available yet
             MOC=ones(1, segmentLength);
         end
-        % apply MOC to nonlinear input function       
+        % apply MOC to nonlinear input function      
+%         figure(88), plot(MOC)
         nonlinOutput=stapesDisplacement.* MOC;
 
         %       first gammatone filter (nonlin path)
@@ -639,27 +664,48 @@ while segmentStartPTR<signalLength
                 filter(GTnonlin_b(BFno,:), GTnonlin_a(BFno,:), ...
                 nonlinOutput, GTnonlinBdry1{BFno,order});
         end
-        %       broken stick instantaneous compression
-%         y= nonlinOutput.* DRNLa;  % linear section.
-%         % compress parts of the signal above the compression threshold
+        
+        
+        % Nick's compression algorithm
+        abs_x= abs(nonlinOutput);
+        signs= sign(nonlinOutput);
+        belowThreshold= abs_x<CtS;
+        nonlinOutput(belowThreshold)= DRNLa *nonlinOutput(belowThreshold);
+        aboveThreshold=~belowThreshold;
+        nonlinOutput(aboveThreshold)= signs(aboveThreshold) *ctBM .* ...
+            exp(DRNLc *log( DRNLa*abs_x(aboveThreshold)/ctBM ));
+                       
+        
+%         %    original   broken stick instantaneous compression
+%         holdY=nonlinOutput;
 %         abs_x = abs(nonlinOutput);
-%         idx=find(abs_x>DRNLcompressionThreshold);
+%         nonlinOutput=sign(nonlinOutput).*min(DRNLa*abs_x, DRNLb*abs_x.^DRNLc);
+% 
+
+%         %   new broken stick instantaneous compression
+%         y= nonlinOutput.* DRNLa;  % linear section attenuation/gain.
+%         % compress parts of the signal above the compression threshold
+%         %         holdY=y;
+%         abs_y = abs(y);
+%         idx=find(abs_y>DRNLcompressionThreshold);
 %         if ~isempty(idx)>0
-%             y(idx)=sign(y(idx)).* (DRNLb*abs_x(idx).^DRNLc);
+%             %             y(idx)=sign(y(idx)).* (DRNLcompressionThreshold + ...
+%             %                 (abs_y(idx)-DRNLcompressionThreshold).^DRNLc);
+%             y(idx)=sign(y(idx)).* (DRNLcompressionThreshold + ...
+%                 (abs_y(idx)-DRNLcompressionThreshold)*DRNLa2);
 %         end
-%         nonlinOutput = y;
+%         nonlinOutput=y;
 
-        x = nonlinOutput;
-%         CtBM = 1e-8 * 10^(DRNLParams.CtBMdB/20);%4.2546e-008; % using [a * 10^((1/(1-c))* log10(b/a))] where a = 10k, b=8e-6, c=0.2   
-        CtBM = DRNLParams.CtBM;
-        CtS  = CtBM/DRNLa;      %Compression threshold in units of stapes disp
-        y = zeros(size(x));
-        abs_x = abs(x);
-        y(abs_x<CtS)   = DRNLa * x(abs_x<CtS);
-        y(abs_x>=CtS)  = sign(x(abs_x>=CtS)) * DRNLa * CtS .* exp(   DRNLc * log(  abs_x(abs_x>=CtS)/CtS  )   );
-        nonlinOutput=y;
 
-        %       second filter removes distortion products
+% if segmentStartPTR==10*segmentLength+1
+%     figure(90)
+%     plot(holdY,'b'), hold on
+%     plot(nonlinOutput, 'r'), hold off
+%     ylim([-1e-5 1e-5])
+%     pause(1)
+% end
+
+%       second filter removes distortion products
         for order = 1 : GTnonlinOrder
             [ nonlinOutput GTnonlinBdry2{BFno,order}] = ...
                 filter(GTnonlin_b(BFno,:), GTnonlin_a(BFno,:), ...
@@ -668,13 +714,14 @@ while segmentStartPTR<signalLength
 
         %  combine the two paths to give the DRNL displacement
         DRNLresponse(BFno,:)=linOutput+nonlinOutput;
+%         disp(num2str(max(linOutput)))
     end % BF
 
     % segment debugging plots
     % figure(98)
     %     if size(DRNLresponse,1)>3
     %         imagesc(DRNLresponse)  % matrix display
-    %         title('DRNLresponse'); % single or double channel response
+    %         title('DRNLresponse'); 
     %     else
     %         plot(segmentTime, DRNLresponse)
     %     end
@@ -724,25 +771,28 @@ while segmentStartPTR<signalLength
 
     %% synapse -----------------------------
     % Compute the vesicle release rate for each fiber type at each BF
-    % replicate IHC_RP for each fiber type
+    
+    % replicate IHC_RP for each fiber type to obtain the driving voltage
     Vsynapse=repmat(IHC_RP, nANfiberTypes,1);
 
     % look-up table of target fraction channels open for a given IHC_RP
     mICaINF=    1./( 1 + exp(-gamma  * Vsynapse)  /beta);
-    % fraction of channel open - apply time constant
+    
+    % fraction of channels open - apply time membrane constant
     for idx=1:segmentLength
         % mICaINF is the current 'target' value of mICa
         mICaCurrent=mICaCurrent+(mICaINF(:,idx)-mICaCurrent)*dt./tauM;
         mICa(:,idx)=mICaCurrent;
     end
-
+    
+    % calcium current
     ICa=   (GmaxCa* mICa.^3) .* (Vsynapse- ECa);
-
+    % apply calcium channel time constant
     for idx=1:segmentLength
         CaCurrent=CaCurrent +  ICa(:,idx)*dt - CaCurrent*dt./tauCa;
         synapticCa(:,idx)=CaCurrent;
     end
-    synapticCa=-synapticCa; % treat IHCpreSynapseParams as positive substance
+    synapticCa=-synapticCa; % treat synapticCa as positive substance
 
     % NB vesicleReleaseRate is /s and is independent of dt
     vesicleReleaseRate = synapse_z * synapticCa.^synapse_power; % rate
@@ -755,10 +805,9 @@ while segmentStartPTR<signalLength
     %     end
 
 
-    %% AN
+    %% AN -------------------------------
     switch AN_spikesOrProbability
         case 'probability'
-            % No refractory effect is applied
             for t = 1:segmentLength;
                 M_Pq=PAN_M-Pavailable;
                 M_Pq(M_Pq<0)=0;
@@ -775,7 +824,9 @@ while segmentStartPTR<signalLength
                 Preprocess= Preprocess + reuptake - Preprocessed;
                 Pavailable(Pavailable<0)=0;
                 savePavailableSeg(:,t)=Pavailable;    % synapse tracking
+                
             end
+
             % and save it as *rate*
             ANrate=ANprobability/dt;
             ANprobRateOutput(:, segmentStartPTR:...
@@ -783,89 +834,88 @@ while segmentStartPTR<signalLength
             % monitor synapse contents (only sometimes used)
             savePavailable(:, segmentStartPTR:segmentStartPTR+segmentLength-1)=...
                 savePavailableSeg;
+            
+            %% Apply refractory effect
+               % the probability of a spike's occurring in the preceding
+               %  refractory window: t= (tnow-refractory period) :dt: tnow
+               %    pFired= 1 - II(1-p(t)),
+               % we need a running account of cumProb=II(1-p(t)) in order
+               % not to have to recompute this for each value of t
+               %   cumProb(t)= cumProb(t-1)*(1-p(t))/(1-p(t-refracPeriod))
+               %   cumProb(0)=0
+               %   pFired(t)= 1-cumProb(t)
+               % This gives the fraction of firing events that must be 
+               %  discounted because of a firing event in the refractory
+               %  period
+               %   p(t)= ANprobOutput(t) * pFired(t)
+               % where ANprobOutput is the uncorrected firing probability
+               %  based on vesicle release rate
+               % NB this covers only the absoute refractory period
+               % not the relative refractory period. To approximate this it
+               % is necessary to extend the refractory period by 50%
 
-            % Estimate efferent effects. ARattenuation (0 <> 1)
-            %  acoustic reflex
+                for t = segmentStartPTR:segmentEndPTR;
+                    if t>1
+                    ANprobRateOutput(:,t)= ANprobRateOutput(:,t)...
+                        .* cumANnotFireProb(:,t-1);
+                    end
+                    % add recent and remove distant probabilities
+                    refrac=round(lengthAbsRefractoryP * 1.5);
+                    if t>refrac
+                        cumANnotFireProb(:,t)= cumANnotFireProb(:,t-1)...
+                            .*(1-ANprobRateOutput(:,t)*dt)...
+                            ./(1-ANprobRateOutput(:,t-refrac)*dt);
+                    end
+                end
+%                 figure(88), plot(cumANnotFireProb'), title('cumNotFire')
+%                 figure(89), plot(ANprobRateOutput'), title('ANprobRateOutput')
+
+            %% Estimate acoustic reflex efferent effect:  0 < ARattenuation > 1
             [r c]=size(ANrate);
             if r>nBFs % Only if LSR fibers are computed
                 ARAttSeg=mean(ANrate(1:nBFs,:),1); %LSR channels are 1:nBF
                 % smooth
                 [ARAttSeg, ARboundaryProb] = ...
                     filter(ARfilt_b, ARfilt_a, ARAttSeg, ARboundaryProb);
-%                 ARAttSeg=ARAttSeg-ARrateThreshold;
-%                 ARAttSeg(ARAttSeg<0)=0;   % prevent negative strengths
-%                 ARattenuation(segmentStartPTR:segmentEndPTR)=...
-%                     (1-ARrateToAttenuationFactorProb.* ARAttSeg);
-                
-                x = -20*log10(  max(ARAttSeg/ARrateThreshold,1)  )*ARrateToAttenuationFactorProb; %dB attenuation
-                x = 10.^(x/20);
-%                     x = max(x,10^(-35/20)); 
-                ARattenuation(segmentStartPTR:segmentEndPTR) = x;
+                ARAttSeg=ARAttSeg-ARrateThreshold;
+                ARAttSeg(ARAttSeg<0)=0;   % prevent negative strengths
+                ARattenuation(segmentStartPTR:segmentEndPTR)=...
+                    (1-ARrateToAttenuationFactorProb.* ARAttSeg);
             end
             %             plot(ARattenuation)
 
-            % MOC attenuation
-            % within-channel HSR response only
+            % MOC attenuation based on within-channel HSR fiber activity
             HSRbegins=nBFs*(nANfiberTypes-1)+1;
             rates=ANrate(HSRbegins:end,:);
             if rateToAttenuationFactorProb<0
-                
                 % negative factor implies a fixed attenuation
                 MOCattenuation(:,segmentStartPTR:segmentEndPTR)= ...
-                    ones(size(rates))* -rateToAttenuationFactorProb;                
+                    ones(size(rates))* -rateToAttenuationFactorProb;
             else
-                
-                smoothedRates = zeros(1,c);
-                for idx=1:nBFs
-%                     [smoothedRates, MOCprobBoundary{idx}] = ...
-%                         filter(MOCfilt_b, MOCfilt_a, rates(idx,:), ...
-%                         MOCprobBoundary{idx});
-%                     smoothedRates=smoothedRates-MOCrateThresholdProb;
-%                     smoothedRates(smoothedRates<0)=0;
-%                     x =  (1- smoothedRates* rateToAttenuationFactorProb); %ORIGINAL 
 
-                    %NEW !!!
+                for idx=1:nBFs
+                    [smoothedRates, MOCprobBoundary{idx}] = ...
+                        filter(MOCfiltProb_b, MOCfiltProb_a, rates(idx,:), ...
+                        MOCprobBoundary{idx});
+                    smoothedRates=smoothedRates-MOCrateThresholdProb;
+                    smoothedRates=max(smoothedRates, 0);
                     
-                    for nn = 1:c
-                        if nn == 1
-                            comp = 0;
-                        else
-                            comp = rates(idx,nn-1);
-                        end
-                        
-                        if rates(idx,nn) < comp %// - This is line to make smoothing only apply to release
-                            smoothedRates(nn) = MOCfilt_bF*rates(idx,nn) - MOCfilt_aF*MOCprobBoundary{idx};% // difference eqn for one-pole lpf
-                        else
-                            smoothedRates(nn) = MOCfilt_bR*rates(idx,nn) - MOCfilt_aR*MOCprobBoundary{idx};% // difference eqn for one-pole lpf
-                        end
-                        MOCprobBoundary{idx} = smoothedRates(nn);
-                    end
-                    
-                    x = -20*log10(  max(smoothedRates/MOCrateThresholdProb,1)  )*rateToAttenuationFactorProb; %dB attenuation
-                    x = 10.^(x/20);
-                    %x = max(x,10^(-35/20));    
-%                     %ALSO - filter at the end - this will stop rapid attack
-%                     %and slow decay
-%                     [x, MOCprobBoundary{idx}] = ...
-%                         filter(MOCfilt_b, MOCfilt_a, x, ...
-%                         MOCprobBoundary{idx});
-                    
-                                        
-                    MOCattenuation(idx,segmentStartPTR:segmentEndPTR)= x;                                                            
+                    x=(1- smoothedRates* rateToAttenuationFactorProb);
+                    MOCattenuation(idx,segmentStartPTR:segmentEndPTR)= x;
                 end
             end
-%             MOCattenuation(MOCattenuation<0)=0.001;REDUNDANT
-
-            %             plot(MOCattenuation)
-
-
+            
+            MOCattenuation(MOCattenuation<minMOCattenuation)= minMOCattenuation;
+                
+            % plot(MOCattenuation)            
+            
         case 'spikes'
             ANtimeCount=0;
             % implement speed upt
             for t = ANspeedUpFactor:ANspeedUpFactor:segmentLength;
                 ANtimeCount=ANtimeCount+1;
                 % convert release rate to probabilities
-                releaseProb=vesicleReleaseRate(:,t)*ANdt;
+                releaseProb=vesicleReleaseRate(:,t)*dtSpikes;
                 % releaseProb is the release probability per channel
                 %  but each channel has many synapses
                 releaseProb=repmat(releaseProb',nFibersPerChannel,1);
@@ -875,32 +925,26 @@ while segmentStartPTR<signalLength
                 M_q=AN_M- AN_available;     % number of missing vesicles
                 M_q(M_q<0)= 0;              % cannot be less than 0
 
-                % AN_N1 converts probability to discrete events
-                %   it considers each event that might occur
-                %   (how many vesicles might be released)
-                %   and returns a count of how many were released
-
-                % slow line
-%                 probabilities= 1-(1-releaseProb).^AN_available;
+%                 probabilities= 1-(1-releaseProb).^AN_available; % slow
                 probabilities= 1-intpow((1-releaseProb), AN_available);
                 ejected= probabilities> rand(length(AN_available),1);
 
                 reuptakeandlost = AN_rdt_plus_ldt .* AN_cleft;
                 reuptake = AN_rdt.* AN_cleft;
-
-                % slow line
-%                 probabilities= 1-(1-AN_reprocess.*AN_xdt).^M_q;
+                
+%                 probabilities= 1-(1-AN_reprocess.*AN_xdt).^M_q; % slow
                 probabilities= 1-intpow((1-AN_reprocess.*AN_xdt), M_q);
                 reprocessed= probabilities>rand(length(M_q),1);
 
-                % slow line
-%                 probabilities= 1-(1-AN_ydt).^M_q;
+%                 probabilities= 1-(1-AN_ydt).^M_q; %slow
                  probabilities= 1-intpow((1-AN_ydt), M_q);
 
                 replenish= probabilities>rand(length(M_q),1);
 
                 AN_available = AN_available + replenish - ejected ...
                     + reprocessed;
+                saveNavailableSeg(:,ANtimeCount)=AN_available(end,:); % only last channel
+
                 AN_cleft = AN_cleft + ejected - reuptakeandlost;
                 AN_reprocess = AN_reprocess + reuptake - reprocessed;
 
@@ -936,17 +980,20 @@ while segmentStartPTR<signalLength
 
             % segment debugging
             % plotInstructions.figureNo=98;
-            % plotInstructions.displaydt=ANdt;
+            % plotInstructions.displaydt=dtSpikes;
             %  plotInstructions.numPlots=1;
             %  plotInstructions.subPlotNo=1;
             % UTIL_plotMatrix(ANspikes, plotInstructions);
 
             % and save it. NB, AN is now on 'speedUp' time
             ANoutput(:, reducedSegmentPTR: shorterSegmentEndPTR)=ANspikes;
+            % monitor synapse contents (only sometimes used)
+            saveNavailable(reducedSegmentPTR:reducedSegmentPTR+reducedSegmentLength-1)=...
+                saveNavailableSeg;
 
 
             %% CN Macgregor first neucleus -------------------------------
-            % input is from AN so ANdt is used throughout
+            % input is from AN so dtSpikes is used throughout
             % Each CNneuron has a unique set of input fibers selected
             %  at random from the available AN fibers (CNinputfiberLists)
 
@@ -957,7 +1004,7 @@ while segmentStartPTR<signalLength
                 for idx=1:nCNneuronsPerChannel
                     % determine candidate fibers for this unit
                     fibersUsed=CNinputfiberLists(synapseNo,:);
-                    % ANpsth has a bin width of ANdt
+                    % ANpsth has a bin width of dtSpikes
                     %  (just a simple sum across fibers)
                     AN_PSTH(synapseNo,:) = ...
                         sum(ANspikes(fibersUsed,:), 1);
@@ -970,7 +1017,7 @@ while segmentStartPTR<signalLength
 
             for unitNo=1:nCNneurons
                 CNcurrentTemp(unitNo,:)= ...
-                    conv(AN_PSTH(unitNo,:),CNalphaFunction);
+                    conv2(AN_PSTH(unitNo,:),CNalphaFunction);
             end
 %             disp(['sum(AN_PSTH)= ' num2str(sum(AN_PSTH(1,:)))])
             % add post-synaptic current  left over from previous segment
@@ -989,14 +1036,14 @@ while segmentStartPTR<signalLength
             if CN_c>0
                 % variable threshold condition (slow)
                 for t=1:reducedSegmentLength
-                    CNtimeSinceLastSpike=CNtimeSinceLastSpike-ANdt;
+                    CNtimeSinceLastSpike=CNtimeSinceLastSpike-dtSpikes;
                     s=CN_E>CN_Th & CNtimeSinceLastSpike<0 ;
                     CNtimeSinceLastSpike(s)=0.0005;         % 0.5 ms for sodium spike
                     dE =(-CN_E/CN_tauM + ...
                         CNcurrentInput(:,t)/CN_cap+(...
-                        CN_Gk/CN_cap).*(CN_Ek-CN_E))*ANdt;
-                    dGk=-CN_Gk*ANdt./tauGk + CN_b*s;
-                    dTh=-(CN_Th-CN_Th0)*ANdt/CN_tauTh + CN_c*s;
+                        CN_Gk/CN_cap).*(CN_Ek-CN_E))*dtSpikes;
+                    dGk=-CN_Gk*dtSpikes./tauGk + CN_b*s;
+                    dTh=-(CN_Th-CN_Th0)*dtSpikes/CN_tauTh + CN_c*s;
                     CN_E=CN_E+dE;
                     CN_Gk=CN_Gk+dGk;
                     CN_Th=CN_Th+dTh;
@@ -1009,7 +1056,7 @@ while segmentStartPTR<signalLength
                 ss=zeros(1,reducedSegmentLength);
                 for t=1:reducedSegmentLength
                     % time of previous spike moves back in time
-                    CNtimeSinceLastSpike=CNtimeSinceLastSpike-ANdt;
+                    CNtimeSinceLastSpike=CNtimeSinceLastSpike-dtSpikes;
                     % action potential if E>threshold
                     %  allow time for s to reset between events
                     s=CN_E>CN_Th0 & CNtimeSinceLastSpike<0 ;  
@@ -1017,8 +1064,8 @@ while segmentStartPTR<signalLength
                     CNtimeSinceLastSpike(s)=0.0005; % 0.5 ms for sodium spike
                     dE = (-CN_E/CN_tauM + ...
                         CNcurrentInput(:,t)/CN_cap +...
-                        (CN_Gk/CN_cap).*(CN_Ek-CN_E))*ANdt;
-                    dGk=-CN_Gk*ANdt./tauGk +CN_b*s;
+                        (CN_Gk/CN_cap).*(CN_Ek-CN_E))*dtSpikes;
+                    dGk=-CN_Gk*dtSpikes./tauGk +CN_b*s;
                     CN_E=CN_E+dE;
                     CN_Gk=CN_Gk+dGk;
                     E(t)=CN_E(1);
@@ -1049,7 +1096,7 @@ while segmentStartPTR<signalLength
 
             % segment debugging
             % plotInstructions.figureNo=98;
-            % plotInstructions.displaydt=ANdt;
+            % plotInstructions.displaydt=dtSpikes;
             %  plotInstructions.numPlots=1;
             %  plotInstructions.subPlotNo=1;
             % UTIL_plotMatrix(CN_spikes, plotInstructions);
@@ -1062,11 +1109,12 @@ while segmentStartPTR<signalLength
             %% IC ----------------------------------------------
                 %  MacGregor or some other second order neurons
 
-                % combine CN neurons in same channel, 
-                %  i.e. same BF & same tauCa
+                % combine CN neurons in same channel (BF x AN tau x CNtau) 
+                %  i.e. same BF, same tauCa, same CNtau
                 %  to generate inputs to single IC unit
                 channelNo=0;
-                for idx=1:nCNneuronsPerChannel:nCNneurons-nCNneuronsPerChannel+1;
+                for idx=1:nCNneuronsPerChannel: ...
+                        nCNneurons-nCNneuronsPerChannel+1;
                     channelNo=channelNo+1;
                     CN_PSTH(channelNo,:)=...
                         sum(CN_spikes(idx:idx+nCNneuronsPerChannel-1,:));
@@ -1075,7 +1123,7 @@ while segmentStartPTR<signalLength
                 [alphaRows alphaCols]=size(ICtrailingAlphas);
                 for ICneuronNo=1:nICcells
                     ICcurrentTemp(ICneuronNo,:)= ...
-                        conv(CN_PSTH(ICneuronNo,:),  IC_CNalphaFunction);
+                        conv2(CN_PSTH(ICneuronNo,:),  IC_CNalphaFunction);
                 end
 
                 % add the unused current from the previous convolution
@@ -1086,12 +1134,12 @@ while segmentStartPTR<signalLength
                 ICtrailingAlphas=ICcurrentTemp(:, reducedSegmentLength+1:end);
 
                 if IC_c==0
-                    % faster computation when threshold is stable (C==0)
+                    % faster computation when threshold is stable (c==0)
                     for t=1:reducedSegmentLength
                         s=IC_E>IC_Th0;
                         dE = (-IC_E/IC_tauM + inputCurrent(:,t)/IC_cap +...
-                            (IC_Gk/IC_cap).*(IC_Ek-IC_E))*ANdt;
-                        dGk=-IC_Gk*ANdt/IC_tauGk +IC_b*s;
+                            (IC_Gk/IC_cap).*(IC_Ek-IC_E))*dtSpikes;
+                        dGk=-IC_Gk*dtSpikes/IC_tauGk +IC_b*s;
                         IC_E=IC_E+dE;
                         IC_Gk=IC_Gk+dGk;
                         ICmembranePotential(:,t)=IC_E+s.*(IC_Eb-IC_E)+IC_Er;
@@ -1101,21 +1149,22 @@ while segmentStartPTR<signalLength
                     for t=1:reducedSegmentLength
                         dE = (-IC_E/IC_tauM + ...
                             inputCurrent(:,t)/IC_cap + (IC_Gk/IC_cap)...
-                            .*(IC_Ek-IC_E))*ANdt;
+                            .*(IC_Ek-IC_E))*dtSpikes;
                         IC_E=IC_E+dE;
                         s=IC_E>IC_Th;
                         ICmembranePotential(:,t)=IC_E+s.*(IC_Eb-IC_E)+IC_Er;
-                        dGk=-IC_Gk*ANdt/IC_tauGk +IC_b*s;
+                        dGk=-IC_Gk*dtSpikes/IC_tauGk +IC_b*s;
                         IC_Gk=IC_Gk+dGk;
 
                         % After a spike, the threshold is raised
                         % otherwise it settles to its baseline
-                        dTh=-(IC_Th-Th0)*ANdt/IC_tauTh +s*IC_c;
+                        dTh=-(IC_Th-Th0)*dtSpikes/IC_tauTh +s*IC_c;
                         IC_Th=IC_Th+dTh;
                     end
                 end
 
                 ICspikes=ICmembranePotential> -0.01;
+                %figure(2),plot(ICmembranePotential(2,:))
                 % now remove any spike that is immediately followed by a spike
                 % NB 'find' works on columns (whence the transposing)
                 ICspikes=ICspikes';
@@ -1133,16 +1182,22 @@ while segmentStartPTR<signalLength
                     ICfiberTypeRates(tauCount, ...
                         reducedSegmentPTR:shorterSegmentEndPTR)=...
                         sum(ICspikes(firstCell:lastCell, :))...
-                        /(nCellsPerTau*ANdt);
+                        /(nCellsPerTau*dtSpikes);
                     firstCell=firstCell+nCellsPerTau;
                     lastCell=lastCell+nCellsPerTau;
                 end
                 
                 ICoutput(:,reducedSegmentPTR:shorterSegmentEndPTR)=ICspikes;
+                % figure(3),plot(ICoutput(2,:))
                 
                 % store membrane output on original dt scale
-                if nBFs==1  % single channel
-                    x= repmat(ICmembranePotential(1,:), ANspeedUpFactor,1);
+                % do this for single channel models only 
+                % and only for the HSR-driven IC cells
+                if round(nICcells/length(ANtauCas))==1  % single channel
+                    % select HSR driven cells
+                    x= ICmembranePotential(length(ANtauCas),:);
+                    % restore original dt
+                    x= repmat(x, ANspeedUpFactor,1);
                     x= reshape(x,1,segmentLength);
                     if nANfiberTypes>1  % save HSR and LSR
                         y=repmat(ICmembranePotential(end,:),...
@@ -1152,47 +1207,56 @@ while segmentStartPTR<signalLength
                     end
                     ICmembraneOutput(:, segmentStartPTR:segmentEndPTR)= x;
                 end
+                % figure(4),plot(ICmembraneOutput(2,:))
 
                 % estimate efferent effects.
-                % ARis based on LSR units. LSR channels are 1:nBF
-                if nANfiberTypes>1  % AR is multi-channel only
-                    ARAttSeg=sum(ICspikes(1:nBFs,:),1)/ANdt;
+                % AR is based on LSR units. LSR channels are 1:nBF
+                if nANfiberTypes>1  % use only if model is multi-fiber
+                    ARAttSeg=mean(ICspikes(1:nBFs,:),1)/dtSpikes;
                     [ARAttSeg, ARboundary] = ...
                         filter(ARfilt_b, ARfilt_a, ARAttSeg, ARboundary);
-                    ARAttSeg=ARAttSeg-ARrateThreshold;
-                    ARAttSeg(ARAttSeg<0)=0;   % prevent negative strengths
-                    % scale up to dt from ANdt
-                    x=    repmat(ARAttSeg, ANspeedUpFactor,1);
-                    x=reshape(x,1,segmentLength);
+%                    ARAttSeg(ARAttSeg<0)=0;   % prevent negative strengths
+                    % scale up to dt from dtSpikes
+                    x= repmat(ARAttSeg, ANspeedUpFactor,1);
+                    x= reshape(x,1,segmentLength);
                     ARattenuation(segmentStartPTR:segmentEndPTR)=...
                         (1-ARrateToAttenuationFactor* x);
-                    ARattenuation(ARattenuation<0)=0.001;
+                    % max 60 dB attenuation
+                    ARattenuation(ARattenuation<0)=0.01;
                 else
-                    % single channel model; disable AR
+                    % single fiber type; disable AR because no LSR fibers
                     ARattenuation(segmentStartPTR:segmentEndPTR)=...
                         ones(1,segmentLength);
                 end
 
                 % MOC attenuation using HSR response only
-                % Separate MOC effect for each BF
+                %  separate MOC effect for each BF
+                %  there is only one unit per channel
                 HSRbegins=nBFs*(nANfiberTypes-1)+1;
-                rates=ICspikes(HSRbegins:end,:)/ANdt;
+                rates=ICspikes(HSRbegins:end,:)/dtSpikes;
+                % figure(4),plot(rates(1,:))
+
                 for idx=1:nBFs
                     [smoothedRates, MOCboundary{idx}] = ...
                         filter(MOCfilt_b, MOCfilt_a, rates(idx,:), ...
                         MOCboundary{idx});
                     % spont 'rates' is zero for IC
                     MOCattSegment(idx,:)=smoothedRates;
-                    % expand timescale back to model dt from ANdt
+                    % expand timescale back to model dt from dtSpikes
                     x= repmat(MOCattSegment(idx,:), ANspeedUpFactor,1);
                     x= reshape(x,1,segmentLength);
                     MOCattenuation(idx,segmentStartPTR:segmentEndPTR)= ...
                         (1- MOCrateToAttenuationFactor*  x);
+                    % figure(4),plot(x)
                 end
-                MOCattenuation(MOCattenuation<0)=0.04;
+                % max attenuation is 30 dB
+                MOCattenuation(MOCattenuation<minMOCattenuation)=...
+                    minMOCattenuation;
+                % figure(4),plot(MOCattenuation)
+                
                 % segment debugging
                 % plotInstructions.figureNo=98;
-                % plotInstructions.displaydt=ANdt;
+                % plotInstructions.displaydt=dtSpikes;
                 %  plotInstructions.numPlots=1;
                 %  plotInstructions.subPlotNo=1;
                 % UTIL_plotMatrix(ICspikes, plotInstructions);
@@ -1201,27 +1265,6 @@ while segmentStartPTR<signalLength
     segmentStartPTR=segmentStartPTR+segmentLength;
     reducedSegmentPTR=reducedSegmentPTR+reducedSegmentLength;
 
-
 end  % segment
-
-%% apply refractory correction to spike probabilities
-
-% switch AN_spikesOrProbability
-%     case 'probability'
-%         ANprobOutput=ANprobRateOutput*dt;
-%         [r nEpochs]=size(ANprobOutput);
-%         % find probability of no spikes in refractory period
-%         pNoSpikesInRefrac=ones(size(ANprobOutput));
-%         pSpike=zeros(size(ANprobOutput));
-%         for epochNo=lengthAbsRefractoryP+2:nEpochs
-%             pNoSpikesInRefrac(:,epochNo)=...
-%                 pNoSpikesInRefrac(:,epochNo-2)...
-%                 .*(1-pSpike(:,epochNo-1))...
-%                 ./(1-pSpike(:,epochNo-lengthAbsRefractoryP-1));
-%             pSpike(:,epochNo)= ANprobOutput(:,epochNo)...
-%                 .*pNoSpikesInRefrac(:,epochNo);
-%         end
-%         ANprobRateOutput=pSpike/dt;
-% end
 
 path(restorePath)

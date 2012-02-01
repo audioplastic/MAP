@@ -1,16 +1,34 @@
 function testPhaseLocking(paramsName, paramChanges)
+% testPhaseLocking estimates vector strenght at a range of frequencies
+%   and a range of levels
+%   The results are compared with Johnson 1980.
+%
+% Input arguments:
+%  paramsName: parameter file name containing model parameters.
+%   (default='Normal')
+%    NB the program assumes that two fiber types are nominated, i.e. two
+%    values of ANtauCas are specified.
+%  paramChanges: cell array contining list of changes to parameters. These
+%   are implemented after reading the parameter file (default='')
 
 if nargin<2
     paramChanges=[];
 end
 
+if nargin<1
+    paramsName='Normal';
+end
+
 testFrequencies=[250 500 1000 2000 4000 8000];
-levels=50:10:80;
+levels=0:10:100;
+
 figure(14), clf
 set(gcf,'position', [980    36   383   321])
 set(gcf,'name', 'phase locking')
+
 allStrengths=zeros(length(testFrequencies), length(levels));
 peakVectorStrength=zeros(1,length(testFrequencies));
+
 freqCount=0;
 for targetFrequency=testFrequencies;
     %single test
@@ -24,7 +42,7 @@ end
 %% plot results
 figure(14)
 subplot(2,1,2)
-plot(levels,allStrengths)
+plot(levels,allStrengths, '+')
 xlabel('levels')
 ylabel('vector strength')
 legend (num2str(testFrequencies'),'location','eastOutside')

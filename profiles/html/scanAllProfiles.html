@@ -1,0 +1,330 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN">
+<html xmlns:mwsh="http://www.mathworks.com/namespace/mcode/v1/syntaxhighlight.dtd">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      -->
+      <title>scanAllProfiles</title>
+      <meta name="generator" content="MATLAB 7.6">
+      <meta name="date" content="2011-12-27">
+      <meta name="m-file" content="scanAllProfiles"><style>
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head>
+   <body>
+      <div class="content">
+         <h2>Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#6">display results</a></li>
+            </ul>
+         </div><img vspace="5" hspace="5" src="scanAllProfiles_01.png"> <img vspace="5" hspace="5" src="scanAllProfiles_02.png"> <img vspace="5" hspace="5" src="scanAllProfiles_03.png"> <img vspace="5" hspace="5" src="scanAllProfiles_04.png"> <img vspace="5" hspace="5" src="scanAllProfiles_05.png"> <img vspace="5" hspace="5" src="scanAllProfiles_06.png"> <img vspace="5" hspace="5" src="scanAllProfiles_07.png"> <img vspace="5" hspace="5" src="scanAllProfiles_08.png"> <img vspace="5" hspace="5" src="scanAllProfiles_09.png"> <img vspace="5" hspace="5" src="scanAllProfiles_10.png"> <img vspace="5" hspace="5" src="scanAllProfiles_11.png"> <img vspace="5" hspace="5" src="scanAllProfiles_12.png"> <img vspace="5" hspace="5" src="scanAllProfiles_13.png"> <img vspace="5" hspace="5" src="scanAllProfiles_14.png"> <img vspace="5" hspace="5" src="scanAllProfiles_15.png"> <img vspace="5" hspace="5" src="scanAllProfiles_16.png"> <img vspace="5" hspace="5" src="scanAllProfiles_17.png"> <img vspace="5" hspace="5" src="scanAllProfiles_18.png"> <img vspace="5" hspace="5" src="scanAllProfiles_19.png"> <img vspace="5" hspace="5" src="scanAllProfiles_20.png"> <img vspace="5" hspace="5" src="scanAllProfiles_21.png"> <img vspace="5" hspace="5" src="scanAllProfiles_22.png"> <img vspace="5" hspace="5" src="scanAllProfiles_23.png"> <img vspace="5" hspace="5" src="scanAllProfiles_24.png"> <img vspace="5" hspace="5" src="scanAllProfiles_25.png"> <img vspace="5" hspace="5" src="scanAllProfiles_26.png"> <img vspace="5" hspace="5" src="scanAllProfiles_27.png"> <img vspace="5" hspace="5" src="scanAllProfiles_28.png"> <img vspace="5" hspace="5" src="scanAllProfiles_29.png"> <img vspace="5" hspace="5" src="scanAllProfiles_30.png"> <img vspace="5" hspace="5" src="scanAllProfiles_31.png"> <img vspace="5" hspace="5" src="scanAllProfiles_32.png"> <img vspace="5" hspace="5" src="scanAllProfiles_33.png"> <img vspace="5" hspace="5" src="scanAllProfiles_34.png"> <img vspace="5" hspace="5" src="scanAllProfiles_35.png"> <img vspace="5" hspace="5" src="scanAllProfiles_36.png"> <img vspace="5" hspace="5" src="scanAllProfiles_37.png"> <img vspace="5" hspace="5" src="scanAllProfiles_38.png"> <img vspace="5" hspace="5" src="scanAllProfiles_39.png"> <img vspace="5" hspace="5" src="scanAllProfiles_40.png"> <img vspace="5" hspace="5" src="scanAllProfiles_41.png"> <img vspace="5" hspace="5" src="scanAllProfiles_42.png"> <img vspace="5" hspace="5" src="scanAllProfiles_43.png"> <img vspace="5" hspace="5" src="scanAllProfiles_44.png"> <img vspace="5" hspace="5" src="scanAllProfiles_45.png"> <img vspace="5" hspace="5" src="scanAllProfiles_46.png"> <img vspace="5" hspace="5" src="scanAllProfiles_47.png"> <img vspace="5" hspace="5" src="scanAllProfiles_48.png"> <img vspace="5" hspace="5" src="scanAllProfiles_49.png"> <img vspace="5" hspace="5" src="scanAllProfiles_50.png"> <img vspace="5" hspace="5" src="scanAllProfiles_51.png"> <img vspace="5" hspace="5" src="scanAllProfiles_52.png"> <img vspace="5" hspace="5" src="scanAllProfiles_53.png"> <img vspace="5" hspace="5" src="scanAllProfiles_54.png"> <img vspace="5" hspace="5" src="scanAllProfiles_55.png"> <img vspace="5" hspace="5" src="scanAllProfiles_56.png"> <img vspace="5" hspace="5" src="scanAllProfiles_57.png"> <img vspace="5" hspace="5" src="scanAllProfiles_58.png"> <img vspace="5" hspace="5" src="scanAllProfiles_59.png"> <img vspace="5" hspace="5" src="scanAllProfiles_60.png"> <img vspace="5" hspace="5" src="scanAllProfiles_61.png"> <img vspace="5" hspace="5" src="scanAllProfiles_62.png"> <img vspace="5" hspace="5" src="scanAllProfiles_63.png"> <img vspace="5" hspace="5" src="scanAllProfiles_64.png"> <img vspace="5" hspace="5" src="scanAllProfiles_65.png"> <img vspace="5" hspace="5" src="scanAllProfiles_66.png"> <img vspace="5" hspace="5" src="scanAllProfiles_67.png"> <img vspace="5" hspace="5" src="scanAllProfiles_68.png"> <img vspace="5" hspace="5" src="scanAllProfiles_69.png"> <img vspace="5" hspace="5" src="scanAllProfiles_70.png"> <img vspace="5" hspace="5" src="scanAllProfiles_71.png"> <img vspace="5" hspace="5" src="scanAllProfiles_72.png"> <img vspace="5" hspace="5" src="scanAllProfiles_73.png"> <img vspace="5" hspace="5" src="scanAllProfiles_74.png"> <img vspace="5" hspace="5" src="scanAllProfiles_75.png"> <img vspace="5" hspace="5" src="scanAllProfiles_76.png"> <img vspace="5" hspace="5" src="scanAllProfiles_77.png"> <img vspace="5" hspace="5" src="scanAllProfiles_78.png"> <img vspace="5" hspace="5" src="scanAllProfiles_79.png"> <img vspace="5" hspace="5" src="scanAllProfiles_80.png"> <img vspace="5" hspace="5" src="scanAllProfiles_81.png"> <img vspace="5" hspace="5" src="scanAllProfiles_82.png"> <img vspace="5" hspace="5" src="scanAllProfiles_83.png"> <img vspace="5" hspace="5" src="scanAllProfiles_84.png"> <img vspace="5" hspace="5" src="scanAllProfiles_85.png"> <img vspace="5" hspace="5" src="scanAllProfiles_86.png"> <img vspace="5" hspace="5" src="scanAllProfiles_87.png"> <img vspace="5" hspace="5" src="scanAllProfiles_88.png"> <img vspace="5" hspace="5" src="scanAllProfiles_89.png"> <img vspace="5" hspace="5" src="scanAllProfiles_90.png"> <img vspace="5" hspace="5" src="scanAllProfiles_91.png"> <img vspace="5" hspace="5" src="scanAllProfiles_92.png"> <img vspace="5" hspace="5" src="scanAllProfiles_93.png"> <img vspace="5" hspace="5" src="scanAllProfiles_94.png"> <img vspace="5" hspace="5" src="scanAllProfiles_95.png"> <img vspace="5" hspace="5" src="scanAllProfiles_96.png"> <img vspace="5" hspace="5" src="scanAllProfiles_97.png"> <img vspace="5" hspace="5" src="scanAllProfiles_98.png"> <img vspace="5" hspace="5" src="scanAllProfiles_99.png"> <img vspace="5" hspace="5" src="scanAllProfiles_100.png"> <img vspace="5" hspace="5" src="scanAllProfiles_101.png"> <img vspace="5" hspace="5" src="scanAllProfiles_102.png"> <img vspace="5" hspace="5" src="scanAllProfiles_103.png"> <img vspace="5" hspace="5" src="scanAllProfiles_104.png"> <img vspace="5" hspace="5" src="scanAllProfiles_105.png"> <img vspace="5" hspace="5" src="scanAllProfiles_106.png"> <img vspace="5" hspace="5" src="scanAllProfiles_107.png"> <img vspace="5" hspace="5" src="scanAllProfiles_108.png"> <pre class="codeoutput">
+subfolder =
+
+normalHearing
+
+
+subfolder =
+
+impairedHearing
+
+</pre><h2>display results<a name="6"></a></h2><pre class="codeoutput">
+ans =
+
+   43.5651   18.9194    2.7515   16.9738   19.9551    4.3736
+   40.9585   22.0215    7.1438   18.0730   20.9123    7.0068
+   37.9766   24.4251   11.2019   20.5117   23.1256   11.3012
+   40.4462   26.4575   13.7780   20.5941   22.2089   13.3422
+   47.2767   28.6993   10.3916   20.8548   26.9754   11.8549
+   50.3490   19.7725   12.5476   20.0793   18.2225   11.3419
+
+</pre><img vspace="5" hspace="5" src="scanAllProfiles_109.png"> <img vspace="5" hspace="5" src="scanAllProfiles_110.png"> <p class="footer"><br>
+            Published with MATLAB&reg; 7.6<br></p>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+function meanSDsummary=scanAllProfiles(subfolder)
+% scanAllProfiles reads every file in a folder
+%  and plots it using 'plotProfile'.
+% The folder should be a subfolder of 'profiles' in MAP1_14
+%
+% Each plot can be accompanied by a second reference plot based on
+%  backgroundPlotName which can be '' to ignore
+%
+% It also summarises the results in 'allForegroundResults'
+% A profile is generated for each ear examined in 'profile'
+%  allForegroundResults & profile are both saved in a .mat file with the
+%  same name as the original folder.
+%
+% This program normally resides in 'profiles' but can sit in any
+%  subfolder of MAP1_14.
+%
+% scanAllProfiles('allParticipants')
+% scanAllProfiles('allParticipants', 'profile_CMA_L')
+
+% locate all files
+folder='profiles';
+if nargin<1
+    % presume PUBLISH
+    subfolder='normalHearing'
+    subfolder='impairedHearing'
+%    subfolder='allParticipants'
+end
+fileFolderName= ['..' filesep folder filesep subfolder];
+
+% backgroundPlotName='profile_CMA_L';
+% backgroundPlotName= ['..\' backgroundPlotName];
+backgroundPlotName='';
+
+rowNo=90; figure(rowNo), clf
+
+dbstop if error
+restorePath=path;
+addpath (['..' filesep 'MAP'],    ['..' filesep 'multiThreshold 1.46'])
+addpath    (['..' filesep 'utilities'])
+
+% input the directory
+fileList=dir(fileFolderName);
+if isempty(fileList)
+    error(['scanAllFiles: No files found in ' fileFolderName])
+end
+
+allForegroundResults=[];
+allMeanSummaries=[];
+processNumber=0;
+for fileNo=1:length(fileList)
+    if fileList(fileNo).isdir
+        continue
+    end
+    processNumber=processNumber+1;
+
+    foreGroundName=fileList(fileNo).name;
+    foreGroundName=foreGroundName(1:end-2); % remove '.m'
+    %%
+    [foregroundResults meanSummary]= ...
+        plotProfile(subfolder, foreGroundName, backgroundPlotName, ...
+        rowNo);
+
+    % add fileNumber to foregroundResults first column
+    [r c]=size(foregroundResults);
+    foregroundResults=[repmat(fileNo,r,1) foregroundResults ];
+    allForegroundResults=[allForegroundResults; foregroundResults];
+    allMeanSummaries=[allMeanSummaries; meanSummary];
+    profile(processNumber).name= foreGroundName(9:end-2);
+    profile(processNumber).ear= foreGroundName(end);
+    profile(processNumber).processNumber= processNumber;
+    profile(processNumber).meanSummary= meanSummary;
+    profile(processNumber).results= foregroundResults;
+
+end
+
+
+%% display results
+save (folder, 'allForegroundResults', 'profile')
+
+% foregroundResults=[ foreground.BFs', foreground.LongTone', ...
+%     foreground.ShortTone',  foreground.TMCFreq', slopeFit', ...
+%      foreground.IFMCFreq', fgDepth];
+% allForegroundResults matrix has the following columns
+%        1       2     3    4   5       6       7       8
+% processNumber BFs short long TMCfr  TMCslope IFMfr IFMCdepth
+
+maxDepth= max(allForegroundResults(:,8));
+maxSlope= max(allForegroundResults(:,6))/100;
+meanAbsThresholds=[]; meanDepths=[]; meanSlopes=[];
+stdevAbsThresholds=[]; stdevSlopes=[]; stdevDepths=[];
+rowNo=0;
+figure(5),clf
+figure(6), clf
+for BF=[250 500 1000 2000 4000 6000];
+    rowNo=rowNo+1;
+    %     figure(rowNo), clf, set(gcf,'name', [int2str(BF) ' Hz'])
+    figure(5)
+    % plot abs thresholds vs slope
+    idx=allForegroundResults(:,2)==BF;
+    selectedForegroundResults=allForegroundResults(idx,:);
+    subplot(6,3,(rowNo-1)*3+1)
+    plot(selectedForegroundResults(:,4),selectedForegroundResults(:,6),'o')
+    x=[selectedForegroundResults(:,4) selectedForegroundResults(:,6)];
+    [r sampleSize] =UTIL_correlatePairWithNaN (x);
+    xlim([0 100]), ylim([-10 100])
+    xlabel(['abs threshold(r= ' ...
+        num2str(r,'%4.2f') ' N=' int2str(sampleSize) ')'])
+    ylabel('TMC slope')
+    grid on
+
+    % plot abs threshold vs IFMC depth
+    subplot(6,3,(rowNo-1)*3+ 2)
+    plot(selectedForegroundResults(:,4),selectedForegroundResults(:,8),'o')
+    x=[selectedForegroundResults(:,4) selectedForegroundResults(:,8)];
+    [r sampleSize] =UTIL_correlatePairWithNaN (x);
+    xlim([0 100])
+    xlabel(['abs threshold(r= ' ...
+        num2str(r,'%4.2f') ' N=' int2str(sampleSize) ')'])
+    ylim([-10 100]), ylabel('IFMC depth')
+    grid on
+    if BF==250
+        title(subfolder)
+    end
+
+    % plot slope vs depth
+    subplot(6,3,(rowNo-1)*3+3)
+    plot(selectedForegroundResults(:,6),selectedForegroundResults(:,8),'o')
+    x=[selectedForegroundResults(:,6) selectedForegroundResults(:,8)];
+    xlim([-10 100])
+    [r sampleSize] =UTIL_correlatePairWithNaN (x);
+    if sampleSize>10
+        xlabel(['TMC slope (r= ' ...
+            num2str(r,'%4.2f') ' N=' int2str(sampleSize) ')'])
+    else
+        xlabel('TMC slope ')
+    end
+    ylim([-10 100]),ylabel('IFMC depth')
+    grid on
+
+    % Histograms Histograms Histograms Histograms 
+    figure (6)
+    edges=-10:10:90;
+    % hist abs thresholds
+    subplot(6,3,(rowNo-1)*3+1)
+    N=histc(selectedForegroundResults(:,4),edges);
+    bar(edges,N)
+    idx=isnan(selectedForegroundResults(:,4));
+    N=sum(~idx);
+    if BF==6000, xlabel('abs threshold '), end
+    if BF==6000, set(gca,'xtick', 0:20:100), else set(gca,'xtick', []),end
+    xlim([-10 100])
+    y=ylim;
+    x=xlim;
+    ave=mean(selectedForegroundResults(~idx,4));
+    stdev=std(selectedForegroundResults(~idx,4));
+    sampleSize=length(selectedForegroundResults(~idx,4));
+    if BF==250, text(-70, 1.2*y(2), 'BF (Hz)'), end
+    text(0.2*x(2),1*y(2), ...
+        [num2str(ave,'%4.0f') ' sd' num2str(stdev,'%3.0f') ' n='...
+        num2str(sampleSize,'%3.0f')],...
+        'backgroundcolor','w')
+    ylabel([num2str(BF) '     '],'rotation',0 )
+    meanAbsThresholds=[meanAbsThresholds ave];
+    stdevAbsThresholds=[stdevAbsThresholds stdev];
+
+    % hist TMC slope
+    subplot(6,3,(rowNo-1)*3+2)
+    N=histc(selectedForegroundResults(:,6),edges);
+    bar(edges,N,'histc')
+    idx=isnan(selectedForegroundResults(:,6));
+%     N=sum(~idx);
+    xlim([-10 100])
+    y=ylim;
+
+    ave=mean(selectedForegroundResults(~idx,6));
+    stdev=std(selectedForegroundResults(~idx,6));
+    sampleSize=length(selectedForegroundResults(~idx,6));
+    text(0.2*x(2),1*y(2), ...
+        [num2str(ave,'%4.0f') ' sd' num2str(stdev,'%3.0f') ' n='...
+        num2str(sampleSize,'%3.0f')],...
+        'backgroundcolor','w')
+    meanSlopes=[meanSlopes ave];
+    stdevSlopes=[stdevSlopes stdev];
+
+    if BF==6000
+        set(gca,'xtick', 0:20:100)
+        xlabel('TMC slopes')
+    else
+        set(gca,'xtick', [])
+    end
+    if BF==250
+        title(subfolder)
+    end
+
+    % hist IFMC depth
+    subplot(6,3,(rowNo-1)*3+3)
+    N=histc(selectedForegroundResults(:,8),edges);
+    bar(edges,N,'histc')
+    if BF==6000, set(gca,'xtick', 0:20:100), else set(gca,'xtick', []),end
+    idx=isnan(selectedForegroundResults(:,8));
+    N=sum(~idx);
+    if BF==6000, xlabel('IFMC depth'), end
+    xlim([-10 100])
+    y=ylim;
+    x=xlim;
+
+    ave=mean(selectedForegroundResults(~idx,8));
+    stdev=std(selectedForegroundResults(~idx,8));
+    sampleSize=length(selectedForegroundResults(~idx,8));
+    text(0.2*x(2),1*y(2), ...
+        [num2str(ave,'%4.0f') ' sd=' num2str(stdev,'%3.0f') ' n='...
+        num2str(sampleSize,'%3.0f')],...
+        'backgroundcolor','w')
+    meanDepths=[meanDepths ave];
+    stdevDepths=[stdevDepths stdev];
+
+end
+
+% means cols 1-3, stdevs cols 4-6
+meanSDsummary=[meanAbsThresholds;  meanSlopes; meanDepths; ...
+    stdevAbsThresholds; stdevSlopes; stdevDepths]';
+path(restorePath)
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

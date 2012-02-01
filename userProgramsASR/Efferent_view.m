@@ -29,14 +29,14 @@ ipSig = sin(2*pi*freq*tAxis);
 ipSig = ipSig./sqrt(mean(ipSig.^2));
 ipSig = ipSig * 20e-6 * 10 ^ (levelSPL/20);
 
-ipSig = [ipSig zeros(1, numel(ipSig)/2)];
+ipSig = [zeros(1, numel(ipSig)/2) ipSig zeros(1, numel(ipSig)/2)];
 
 paramChanges= { ...
                 'OMEParams.rateToAttenuationFactorProb=0;',...
                 'OMEParams.ARrateThreshold=30;',... %Threshold of 40 makes AR kick off around 65 dB for bb noise
                 'OMEParams.ARtau=0.1;',...
-                'DRNLParams.MOCtauR=0.150;',...
-                'DRNLParams.MOCtauF=0.450;',...%DRNLParams.MOCtauR;',...                
+                'DRNLParams.MOCtauR=0.400;',...
+                'DRNLParams.MOCtauF=0.100;',...%DRNLParams.MOCtauR;',...                
                 'DRNLParams.rateToAttenuationFactorProb=9;',...
                 'DRNLParams.MOCrateThresholdProb=85;',...
                 };
@@ -49,12 +49,16 @@ UTIL_showMAP(options)
 drawnow
 
 %%
-global MOCattenuation ANprobRateOutput
+global MOCattenuation ANprobRateOutput SAVEsmoothedRates
 size(MOCattenuation);
 
 % attFraction = sqrt(mean((MOCattenuation.^2),2));
 attdB(nn) = min( mean(20*log10(MOCattenuation(:, ceil(numel(tAxis)/2):end )), 2) )
 % attdB(nn) = min( 20*log10(MOCattenuation(:)) )
+
+figure; plot(ANprobRateOutput(31:end)')
+figure; plot(SAVEsmoothedRates')
+figure; plot(20*log10(MOCattenuation'))
 
 end
 
