@@ -25,7 +25,7 @@ learnFolder = fullfile(expFolder,'featL');
 
 xL = jobject('L', learnFolder);
 
-xL.participant = 'NormalDIFFstdHI';%'NormalDIFF';
+xL.participant = 'NormalDIFFstd';%'NormalDIFF';
 xL.MAPparamChanges= { 
                 'OMEParams.rateToAttenuationFactorProb=0;',...
                 'OMEParams.ARrateThreshold=30;',... %Threshold of 40 makes AR kick off around 65 dB for bb noise
