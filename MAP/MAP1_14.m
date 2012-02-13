@@ -809,6 +809,7 @@ while segmentStartPTR<signalLength
             HSRbegins=nBFs*(nANfiberTypes-1)+1;
             rates=ANrate(HSRbegins:end,:);
             if rateToAttenuationFactorProb<0
+                
                 % negative factor implies a fixed attenuation
                 MOCattenuation(:,segmentStartPTR:segmentEndPTR)= ...
                     ones(size(rates))* -rateToAttenuationFactorProb;                
@@ -826,7 +827,13 @@ while segmentStartPTR<signalLength
                     %NEW !!!
                     
                     for nn = 1:c
-                        if rates(idx,nn) < MOCprobBoundary{idx} %// - This is line to make smoothing only apply to release
+                        if nn == 1
+                            comp = 0;
+                        else
+                            comp = rates(idx,nn-1);
+                        end
+                        
+                        if rates(idx,nn) < comp %// - This is line to make smoothing only apply to release
                             smoothedRates(nn) = MOCfilt_bF*rates(idx,nn) - MOCfilt_aF*MOCprobBoundary{idx};% // difference eqn for one-pole lpf
                         else
                             smoothedRates(nn) = MOCfilt_bR*rates(idx,nn) - MOCfilt_aR*MOCprobBoundary{idx};% // difference eqn for one-pole lpf
@@ -844,8 +851,7 @@ while segmentStartPTR<signalLength
 %                         MOCprobBoundary{idx});
                     
                                         
-                    MOCattenuation(idx,segmentStartPTR:segmentEndPTR)= ...
-                        x;                                                            
+                    MOCattenuation(idx,segmentStartPTR:segmentEndPTR)= x;                                                            
                 end
             end
 %             MOCattenuation(MOCattenuation<0)=0.001;REDUNDANT

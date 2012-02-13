@@ -156,11 +156,11 @@ classdef jobject
                 obj.opFolder = jobFolder;
             else
                 if isunix
-                    if ismac
-                        obj.opFolder = '~/ASR/exps/_foo';
-                    else
+%                     if ismac
+%                         obj.opFolder = '~/ASR/exps/_foo';
+%                     else
                         obj.opFolder = '/scratch/nrclark/exps/_foo';
-                    end
+%                     end
                 else
                     obj.opFolder = 'D:\exps\_foo';
                 end                    
@@ -178,15 +178,15 @@ classdef jobject
         %************************************************************
         function obj = assignWavPaths(obj, LearnOrRecWavs)
             if isunix
-                if ismac
-                    lWAVpath = '~/ASR/reducedAURORA/TrainingData-Clean/';
-                    rWAVpath  = '~/ASR/reducedAURORA/TripletTestData/';
-                    obj.noiseFolder = '~/ASR/noises';
-                else                    
+%                 if ismac
+%                     lWAVpath = '~/ASR/reducedAURORA/TrainingData-Clean/';
+%                     rWAVpath  = '~/ASR/reducedAURORA/TripletTestData/';
+%                     obj.noiseFolder = '~/ASR/noises';
+%                 else                    
                     lWAVpath = '/scratch/nrclark/corpora/AURORA digits (wav)/TrainingData-Clean/';
                     rWAVpath  = '/scratch/nrclark/corpora/AURORA digits (wav)/TripletTestData/';
                     obj.noiseFolder = '/scratch/nrclark/corpora/noises';
-                end
+%                 end
             else
                 %lWAVpath = 'D:\ASRexperiments\Stimuli\AURORA digits (wav)\TrainingData-Clean';
                 %rWAVpath  = 'D:\ASRexperiments\Stimuli\AURORA digits (wav)\TripletTestData';

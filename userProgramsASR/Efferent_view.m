@@ -12,7 +12,7 @@ close all; clear all; clc;
 
 sr = 44100;
 dt = 1/sr;
-dur = 1;
+dur = 0.5;
 freq = 1000;
 
 nn=0;
@@ -23,23 +23,23 @@ tAxis = dt:dt:dur;
 
 ipSig = sin(2*pi*freq*tAxis);
 % ipSig = randn(size(tAxis));
-ipSig = wavread(fullfile('demo_wavs','noises', 'pink.wav'));
-ipSig = ipSig(1:numel(tAxis));
+% ipSig = wavread(fullfile('demo_wavs','noises', 'pink.wav'));
+% ipSig = ipSig(1:numel(tAxis));
 
 ipSig = ipSig./sqrt(mean(ipSig.^2));
 ipSig = ipSig * 20e-6 * 10 ^ (levelSPL/20);
 
-paramChanges = {};
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.rateToAttenuationFactorProb = 0.012;';%DEFAULT = 0.005;  % strength of MOC
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCrateThresholdProb = 57;';%DEFAULT = 70;
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.MOCtau =0.35;' ;%DEFAULT = 20k in new params file
-% paramChanges{numel(paramChanges)+1} = 'DRNLParams.a = 1250;';
+ipSig = [ipSig zeros(1, numel(ipSig)/2)];
 
-paramChanges{numel(paramChanges)+1} = 'OMEParams.rateToAttenuationFactorProb = 0.00;';%DEFAULT = 0.01;
-paramChanges{numel(paramChanges)+1} = 'OMEParams.ARtau=.06;';
-paramChanges{numel(paramChanges)+1} = 'OMEParams.ARrateThreshold=20;';
-
-paramChanges{numel(paramChanges)+1} = 'DRNLParams.CtBM = 8e-8;';
+paramChanges= { ...
+                'OMEParams.rateToAttenuationFactorProb=0;',...
+                'OMEParams.ARrateThreshold=30;',... %Threshold of 40 makes AR kick off around 65 dB for bb noise
+                'OMEParams.ARtau=0.1;',...
+                'DRNLParams.MOCtauR=0.150;',...
+                'DRNLParams.MOCtauF=0.450;',...%DRNLParams.MOCtauR;',...                
+                'DRNLParams.rateToAttenuationFactorProb=9;',...
+                'DRNLParams.MOCrateThresholdProb=85;',...
+                };
 
 AN_spikesOrProbability = 'probability';
 MAP1_14(ipSig, sr, -1, 'NormalDIFF', AN_spikesOrProbability, paramChanges)
