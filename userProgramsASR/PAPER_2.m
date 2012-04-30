@@ -54,7 +54,7 @@ xL.removeEnergyStatic = 0;
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
 testWavs = 358; %MAX = 358
-nzLevel = [-200  50   60 ];
+nzLevel = [-200  40:5:70 ];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 6; %only short lead in needed for SRT type test
@@ -81,7 +81,7 @@ tmpIdx=0;
 for nn = 0*recConditions+1:1*recConditions    
     tmpIdx=tmpIdx+1;
     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-    recFolder = fullfile(expFolder,['SNR_'  num2str(nn)]);
+    recFolder = fullfile(expFolder,['A_bab_'  num2str(nn)]);
     xR{nn}.opFolder = recFolder;    
     
     %These are the interesting differences between training and testing
@@ -96,7 +96,69 @@ for nn = 0*recConditions+1:1*recConditions
                 'OMEParams.ARtau=0.1;',...
                 'DRNLParams.MOCtauR=2;',...
                 'DRNLParams.MOCtauF=DRNLParams.MOCtauR;',...                
-                'DRNLParams.rateToAttenuationFactorProb=9;',...
+                'DRNLParams.rateToAttenuationFactorProb=7;',...
+                'DRNLParams.MOCrateThresholdProb=85;'};
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode && ~isdir(xR{nn}.opFolder)
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
+
+tmpIdx=0;
+for nn = 1*recConditions+1:2*recConditions    
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['OFF_bab_'  num2str(nn)]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = testWavs; %MAX = 358
+    xR{nn}.speechLevToUse = 60;%spLevel(tmpIdx);    
+    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
+    xR{nn}.speechDist = 'None';
+    xR{nn}.noiseDist = 'None';
+    xR{nn}.MAPparamChanges= { 
+                'OMEParams.rateToAttenuationFactorProb=0;',...
+                'OMEParams.ARrateThreshold=30;',... %Threshold of 40 makes AR kick off around 65 dB for bb noise
+                'OMEParams.ARtau=0.1;',...
+                'DRNLParams.MOCtauR=2;',...
+                'DRNLParams.MOCtauF=DRNLParams.MOCtauR;',...                
+                'DRNLParams.rateToAttenuationFactorProb=0',...
+                'DRNLParams.MOCrateThresholdProb=85;'};
+    
+    %Now just to wrap it up ready for processing
+    if isMasterNode && ~isdir(xR{nn}.opFolder)
+        mkdir(xR{nn}.opFolder);
+        xR{nn} = xR{nn}.assignWavPaths('R');
+        xR{nn} = xR{nn}.assignFiles;
+        xR{nn}.storeSelf;
+    end
+end
+
+tmpIdx=0;
+for nn = 1*recConditions+1:2*recConditions    
+    tmpIdx=tmpIdx+1;
+    xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
+    recFolder = fullfile(expFolder,['FIX10_bab_'  num2str(nn)]);
+    xR{nn}.opFolder = recFolder;    
+    
+    %These are the interesting differences between training and testing
+    xR{nn}.numWavs = testWavs; %MAX = 358
+    xR{nn}.speechLevToUse = 60;%spLevel(tmpIdx);    
+    xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
+    xR{nn}.speechDist = 'None';
+    xR{nn}.noiseDist = 'None';
+    xR{nn}.MAPparamChanges= { 
+                'OMEParams.rateToAttenuationFactorProb=0;',...
+                'OMEParams.ARrateThreshold=30;',... %Threshold of 40 makes AR kick off around 65 dB for bb noise
+                'OMEParams.ARtau=0.1;',...
+                'DRNLParams.MOCtauR=2;',...
+                'DRNLParams.MOCtauF=DRNLParams.MOCtauR;',...                
+                'DRNLParams.rateToAttenuationFactorProb=-10^(-10/20);',...
                 'DRNLParams.MOCrateThresholdProb=85;'};
     
     %Now just to wrap it up ready for processing
@@ -109,36 +171,6 @@ for nn = 0*recConditions+1:1*recConditions
 end
 
 
-% tmpIdx=0;
-% for nn = 1*recConditions+1:2*recConditions    
-%     tmpIdx=tmpIdx+1;
-%     xR{nn} = xL; %simply copy the "Learn" object and change it a bit below
-%     recFolder = fullfile(expFolder,['SNR_'  num2str(nn)]);
-%     xR{nn}.opFolder = recFolder;    
-%     
-%     %These are the interesting differences between training and testing
-%     xR{nn}.numWavs = testWavs; %MAX = 358
-%     xR{nn}.speechLevToUse = 60;%spLevel(tmpIdx);    
-%     xR{nn}.noiseLevToUse = nzLevel(tmpIdx);
-%     xR{nn}.speechDist = 'None';
-%     xR{nn}.noiseDist = 'None';
-%     xR{nn}.MAPparamChanges= { 
-%                 'OMEParams.rateToAttenuationFactorProb=0;',...
-%                 'OMEParams.ARrateThreshold=30;',... %Threshold of 40 makes AR kick off around 65 dB for bb noise
-%                 'OMEParams.ARtau=0.1;',...
-%                 'DRNLParams.MOCtauR=0.150;',...
-%                 'DRNLParams.MOCtauF=DRNLParams.MOCtauR;',...                
-%                 'DRNLParams.rateToAttenuationFactorProb=9;',...
-%                 'DRNLParams.MOCrateThresholdProb=85;'};
-%     
-%     %Now just to wrap it up ready for processing
-%     if isMasterNode && ~isdir(xR{nn}.opFolder)
-%         mkdir(xR{nn}.opFolder);
-%         xR{nn} = xR{nn}.assignWavPaths('R');
-%         xR{nn} = xR{nn}.assignFiles;
-%         xR{nn}.storeSelf;
-%     end
-% end
 
 
 
