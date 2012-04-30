@@ -84,7 +84,19 @@ for nn = 0*recConditions+1:1*recConditions
     end
 end
 
-
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ** Generate features **
+% This is the time consuming, processing intensive portion of the program.
+% Nodes that are not the master node are only interested in the opFolder
+% member of the jobjects.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% worker(xL.opFolder);
+maxConds = nn;
+if ~isMasterNode %dont bother wasting master node effort on generating testing features (for now)
+    for nn = 1:maxConds
+        worker(xR{nn}.opFolder);
+    end
+end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Train and test the recogniser - a job for the master node only
