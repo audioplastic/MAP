@@ -1,4 +1,4 @@
-function Exp_7_LongTC(isMasterNode)
+function PAPER_1(isMasterNode)
 % This experiment tests a recogniser on 3 different training sets with
 % different efferent conditions.
 % This is now using paramChanges and the hearing aid to correct an OHC
@@ -7,7 +7,7 @@ function Exp_7_LongTC(isMasterNode)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up the basic experiment parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-expName = '10a';
+expName = '11a';
 if isunix
     expFolderPrefix = '/scratch/nrclark/exps/';
 else
@@ -41,8 +41,8 @@ xL.removeEnergyStatic = 0;
 
 %%%%% Group of params that will influence simulation run time %%%%%%%
 xL.numWavs = 8440; %MAx=8440
-testWavs = 200; %MAX = 358
-nzLevel = [-200 50 60 70];%[-200 40:5:70];
+testWavs = 100; %MAX = 358
+nzLevel = [-200 50 60];%[-200 40:5:70];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 xL.noisePreDur = 12;
