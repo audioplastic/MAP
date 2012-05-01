@@ -80,7 +80,7 @@ recConditions = numel(nzLevel);
 
 nn=0;
 
-ATT = 1;
+ATT = 2;
 while ATT < 40
     
     tmpIdx=0;
@@ -115,14 +115,15 @@ while ATT < 40
             xR{nn} = xR{nn}.assignWavPaths('R');
             xR{nn} = xR{nn}.assignFiles;
             xR{nn}.storeSelf;
-        end
-        
-        ATT = ATT + 2;
-        if ATT == 10 % Don't bother as we already done that one!
-            ATT = ATT + 2;
-        end
+        end                
         
     end
+    
+    ATT = ATT + 2;
+    if ATT == 10 % Don't bother as we already done that one!
+        ATT = ATT + 2;
+    end
+        
 end
 
 

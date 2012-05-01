@@ -115,14 +115,15 @@ while ATT < 40
             xR{nn} = xR{nn}.assignWavPaths('R');
             xR{nn} = xR{nn}.assignFiles;
             xR{nn}.storeSelf;
-        end
-        
-        ATT = ATT + 2;
-        if ATT == 10 % Don't bother as we already done that one!
-            ATT = ATT + 2;
-        end
+        end                
         
     end
+    
+    ATT = ATT + 2;
+    if ATT == 10 % Don't bother as we already done that one!
+        ATT = ATT + 2;
+    end
+    
 end
 
 
