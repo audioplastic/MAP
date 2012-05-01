@@ -118,6 +118,9 @@ while ATT < 40
         end
         
         ATT = ATT + 2;
+        if ATT == 10 % Don't bother as we already done that one!
+            ATT = ATT + 2;
+        end
         
     end
 end
