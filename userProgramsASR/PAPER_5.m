@@ -80,7 +80,7 @@ recConditions = numel(nzLevel);
 
 nn=0;
 
-ATT = 2;
+ATT = 1;
 while ATT < 40
     
     tmpIdx=0;
